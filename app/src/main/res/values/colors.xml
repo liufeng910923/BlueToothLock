@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">@android:color/holo_red_light</color>
+    <color name="colorPrimaryDark">@android:color/holo_red_dark</color>
+    <color name="blue_light">@android:color/holo_blue_light</color>
+    <color name="blue_dark">@android:color/holo_blue_dark</color>
+    <!--<color name="colorPrimaryDark">@android:color/holo_red_dark</color>-->
+    <color name="colorAccent">#5c5cff</color>
+    <color name="colorActiveText">#FF4081</color>
+    <color name="colorFrame">@android:color/white</color>
+    <color name="colorFrameGround">#efeff4</color>
+    <color name="colorPressDark">#cfcfcf</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="darkGray">@android:color/darker_gray</color>
+    <color name="lighterGray">#efefef</color>
+    <color name="animateFinger">#D8D6D6D6</color>
+</resources>

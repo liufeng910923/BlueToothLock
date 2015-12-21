@@ -1,0 +1,18 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.lncosie.ilandroidos.view.DeviceSelectorFragment">
+    <com.lncosie.ilandroidos.view.LanguageTextView
+        android:text="@string/searching"
+        style="@style/PreferencePageTitle"
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="48dp" />
+    <ListView
+        android:id="@+id/device_search"
+        android:layout_marginLeft="@dimen/padding_normal"
+        android:layout_marginRight="@dimen/padding_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" />
+</LinearLayout>

@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorFrameGround"
+    >
+<com.lncosie.ilandroidos.view.LanguageTextView
+    android:id="@+id/title"
+    android:text="@string/setting"
+    app:lang="setting"
+    style="@style/PreferencePageTitle"
+    />
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorFrameGround"
+    >
+    <LinearLayout
+        android:layout_marginTop="@dimen/padding_normal"
+        android:id="@+id/frame_time"
+        style="@style/FrameLayoutClickable"
+        >
+        <ImageView
+            android:src="@drawable/calendar"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size" />
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            app:lang="time_setting"
+            android:text="@string/time_setting"
+            style="@style/PreferenceTitleText"
+            />
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/time_text"
+            android:layout_marginRight="@dimen/padding_small"
+            style="@style/PreferenceTitleText"/>
+        <ImageView
+            android:src="@drawable/forward"
+            android:layout_width="@dimen/icon_size_small"
+            android:layout_height="@dimen/icon_size_small" />
+    </LinearLayout>
+    <include layout="@layout/line_seperator"/>
+    <LinearLayout
+        android:id="@+id/frame_volumn"
+        style="@style/FrameLayoutClickable"
+        >
+        <ImageView
+            android:src="@drawable/high_volume"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size" />
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            app:lang="voice_setting"
+            android:text="@string/voice_setting"
+            style="@style/PreferenceTitleText"
+            />
+        <Space
+            android:layout_weight="0.1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <SeekBar
+            android:id="@+id/set_volumn_scroll"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:max="3"
+            android:progress="10" />
+        <ImageView
+            android:src="@drawable/forward"
+            android:layout_width="@dimen/icon_size_small"
+            android:layout_height="@dimen/icon_size_small" />
+    </LinearLayout>
+    <include layout="@layout/line_seperator"/>
+    <LinearLayout
+        android:id="@+id/frame_language"
+        style="@style/FrameLayoutClickable"
+        >
+        <ImageView
+            android:src="@drawable/geography"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size" />
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            app:lang="language_setting"
+            android:text="@string/language_setting"
+            style="@style/PreferenceTitleText"
+            />
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:src="@drawable/forward"
+            android:layout_width="@dimen/icon_size_small"
+            android:layout_height="@dimen/icon_size_small" />
+    </LinearLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+    <LinearLayout
+        style="@style/FrameLayoutClickable"
+        >
+        <ImageView
+            android:src="@drawable/password"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size" />
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            app:lang="free_password"
+            android:text="@string/free_password"
+            style="@style/PreferenceTitleText"
+            />
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/space_pwd_text"
+            android:layout_marginRight="@dimen/padding_small"
+            style="@style/PreferenceTitleText"/>
+    </LinearLayout>
+    <include layout="@layout/line_seperator"/>
+    <LinearLayout
+        style="@style/FrameLayoutClickable"
+        >
+        <ImageView
+            android:src="@drawable/fingerprint_scan"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size" />
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            app:lang="free_finger"
+            android:text="@string/free_finger"
+            style="@style/PreferenceTitleText"
+            />
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <TextView
+            android:id="@+id/space_finger_text"
+            android:layout_marginRight="@dimen/padding_small"
+            style="@style/PreferenceTitleText"/>
+    </LinearLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+    <LinearLayout
+        android:id="@+id/frame_reset_factory"
+        style="@style/FrameLayoutClickable"
+        >
+        <ImageView
+            android:src="@drawable/warning_shield"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size" />
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            app:lang="factory_settings"
+            android:text="@string/factory_settings"
+            style="@style/PreferenceTitleText"
+            />
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:src="@drawable/forward"
+            android:layout_width="@dimen/icon_size_small"
+            android:layout_height="@dimen/icon_size_small" />
+    </LinearLayout>
+    <include layout="@layout/line_seperator"/>
+    <LinearLayout
+        android:id="@+id/frame_reset_pwd"
+        style="@style/FrameLayoutClickable"
+        >
+        <ImageView
+            android:src="@drawable/approval"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size" />
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            app:lang="reset_managerpwd"
+            android:text="@string/reset_managerpwd"
+
+            style="@style/PreferenceTitleText"
+            />
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:src="@drawable/forward"
+            android:layout_width="@dimen/icon_size_small"
+            android:layout_height="@dimen/icon_size_small" />
+    </LinearLayout>
+    <include layout="@layout/line_seperator"/>
+    <LinearLayout
+        style="@style/FrameLayoutClickable"
+        >
+        <ImageView
+            android:src="@drawable/sheets"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size" />
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            app:lang="version_update"
+            android:text="@string/version_update"
+
+            style="@style/PreferenceTitleText"
+            />
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+    <include layout="@layout/line_seperator"/>
+    <LinearLayout
+        style="@style/FrameLayoutClickable"
+        >
+        <ImageView
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size" />
+        <TextView
+            android:id="@+id/version_text"
+            style="@style/PreferenceTitleText"
+            />
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+    <LinearLayout
+        android:id="@+id/frame_about"
+        android:layout_marginBottom="@dimen/padding_normal"
+        style="@style/FrameLayoutClickable"
+        >
+        <ImageView
+            android:src="@drawable/attention"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="@dimen/icon_size" />
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            app:lang="about_us"
+            android:text="@string/about_us"
+
+            style="@style/PreferenceTitleText"
+            />
+        <Space
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <ImageView
+            android:src="@drawable/forward"
+            android:layout_width="@dimen/icon_size_small"
+            android:layout_height="@dimen/icon_size_small" />
+    </LinearLayout>
+</LinearLayout>
+</ScrollView>
+</LinearLayout>

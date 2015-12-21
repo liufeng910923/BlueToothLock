@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/auth_add_pwd_page"
+    android:background="@color/lighterGray"
+    >
+    <LinearLayout
+        style="@style/FrameLayoutWhite">
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            android:text="@string/id"
+            style="@style/W2HeaderText"
+            />
+        <include layout="@layout/v_seperator"/>
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            android:id="@+id/id_of_pwd"
+            android:hint="@string/id"
+            style="@style/W4LengthInput" />
+    </LinearLayout>
+    <LinearLayout
+        style="@style/FrameLayoutWhite">
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            android:text="@string/password"
+            style="@style/W2HeaderText"
+            />
+        <include layout="@layout/v_seperator"/>
+        <EditText
+                android:id="@+id/password"
+                android:hint="@string/password_input"
+                style="@style/FixLengthInputPassword" />
+
+    </LinearLayout>
+    <LinearLayout
+        style="@style/FrameLayoutWhite">
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            android:text="@string/password_re"
+            style="@style/W2HeaderText"/>
+        <include layout="@layout/v_seperator"/>
+        <EditText
+            android:id="@+id/password_re"
+            android:hint="@string/password_input_re"
+            style="@style/FixLengthInputPassword" />
+
+    </LinearLayout>
+
+</LinearLayout>

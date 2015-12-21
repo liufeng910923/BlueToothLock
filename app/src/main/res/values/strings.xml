@@ -1,0 +1,119 @@
+<resources>
+ <string name="app_name">BleInterLock</string>
+ <string name="action_settings">Settings</string>
+
+ <string name="ok">OK</string>
+ <string name="cancel">Cancel</string>
+ <string name="stub">Stub</string>
+ <!-- tip of operation-->
+ <string name="network_disconnect">Device disconnected</string>
+ <string name="timeout_op">Operation timeout</string>
+ <string name="timeout_op_finger">No finger detected</string>
+ <string name="succ_op_pwd">Modify password success</string>
+ <string name="succ_op_time">Set time success</string>
+
+ <string name="succ_op_volume">Set volume success</string>
+ <string name="succ_op_resetadmin">Reset admin password success</string>
+ <string name="succ_op_factory">Reset to factory success</string>
+ <string name="name_must_set">Please input name</string>
+ <string name="password_shoter">Password too short</string>
+ <string name="password_error">Password error</string>
+ <string name="password_no_equal">Password not equal</string>
+ <string name="user_full">No Space Left</string>
+ <!-- open-->
+ <string name="open_the_door">open the door</string>
+ <string name="open_by_password">&#160;use password&#160;</string>
+ <string name="open_by_finger">&#160;use finger&#160;</string>
+
+ <!-- menu-->
+ <string name="menu_title">Select</string>
+ <string name="menu_item_english">English</string>
+ <string name="menu_item_chinese">中文</string>
+ <string name="menu_item_delete">Delete</string>
+ <string name="menu_item_modify">Modify Password</string>
+
+ <string name="menu_item_view">Edit User</string>
+ <string name="menu_item_log">View Logs</string>
+ <string name="menu_item_delete_user">Delete</string>
+
+ <!-- input-->
+ <string name="save">Save</string>
+ <string name="username">Username</string>
+ <string name="username_input">Input Username</string>
+ <string name="finger">Finger</string>
+ <string name="password">Password</string>
+ <string name="password_input">Input Password</string>
+ <string name="password_input_admin">Input Admin Password</string>
+ <string name="password_re">Re-Password</string>
+ <string name="password_input_re">Input Re-Password</string>
+ <string name="password_with_id_prompt">Password changed,please input admin password</string>
+ <string name="password_with_id">Login</string>
+ <string name="search">Search</string>
+ <!-- add users-->
+ <string name="id">ID</string>
+ <string name="user_add_pwd">User Password</string>
+ <string name="user_add_pwd_admin">Admin Password</string>
+ <string name="user_add_finger">User Finger</string>
+ <string name="user_add_finger_admin">Admin Finger</string>
+
+ <!-- state-->
+ <string name="connected">Connected</string>
+ <string name="disconnected">Disconnected</string>
+ <!-- tips -->
+ <string name="delete_conform_title">Delete Conform</string>
+ <string name="delete_conform_user">Are you sure delete %s?</string>
+ <string name="delete_conform_id">Are you sure delete %02d?</string>
+
+ <string name="exit_tip">Are you sure exit?</string>
+ <string name="connect_to_title">Connect Device</string>
+ <string name="connect_to">Are you sure to connect this device?</string>
+ <string name="reset_factory_tip">Are you sure to reset factory?</string>
+ <string name="reset_password_tip">Are you sure to init the admin password?</string>
+ <!--SearchFragment-->
+ <string name="searching">Select Device</string>
+ <string name="scan_device">Scan Device</string>
+ <!-- title-->
+ <string name="exit">Exit</string>
+ <string name="home">Home</string>
+ <string name="users">Users</string>
+ <string name="user_add">Add</string>
+ <string name="user_edit">Edit</string>
+ <string name="history">History</string>
+ <string name="setting">Setting</string>
+ <string name="modify_name">Username</string>
+ <string name="modify_password">Modify Password</string>
+ <string name="reset_titile">Reset</string>
+
+
+ <!--settings-->
+ <string name="time_setting">Set Time</string>
+ <string name="voice_setting">Set Volume</string>
+ <string name="language_setting">Language</string>
+ <string name="free_password">Password Space</string>
+ <string name="free_finger">Finger Space</string>
+ <string name="factory_settings">Reset to Factory</string>
+ <string name="reset_managerpwd">Reset Admin Password</string>
+ <string name="version_update">Version</string>
+ <string name="about_us">About</string>
+ <!-- View User-->
+
+ <!-- TODO: Remove or change this placeholder text -->
+ <string name="hello_blank_fragment">Hello blank fragment</string>
+ <string name="title_activity_user_view_detail">UserViewDetailActivity</string>
+ <string name="title_activity_setup">SetupActivity</string>
+ <string name="title_activity_setup_desc">SetupDescActivity</string>
+ <string name="title_activity_about">AboutActivity</string>
+   <!--about-->
+    <string name="contact_us">Contact us</string>
+    <string name="about_us_content">
+    "\u0020\u0020\u0020\u0020    Department of Tyrone company, founded in 1996, is headquartered in Guangzhou CBD-- Guangzhou Pearl River New City, with an area of 50,000 square meters of modern production base in Foshan, products, including smart locks, decorative hardware, shower room of the three systems, the strength , outstanding performance. Department of Tyrone combination of three products of the system, covering the full range of home decorative hardware bathroom accessories portfolio.
+    \u0020\u0020\u0020\u0020    Department of Tyrone, targeted at high-end home improvement projects and five-star decoration, remodeling the perfect space to open a respect for freedom, science and technology experience and enjoy a new era of living life. Two years of sharpening, attention to detail, adhere to professional. Product technology and changes in the times, constantly improve the level, quality and excellence eternity.
+    </string>
+    <string name="contact_us_address_0">"\u0020\u0020\u0020\u0020    Add："</string>
+    <string name="contact_us_address_1">"Nanhai District of Foshan City in the Township Industrial Park in eastern Guangdong Province"</string>
+    <string name="contact_us_tel_0">  "\u0020\u0020\u0020\u0020    Tel："</string>
+    <string name="contact_us_tel_1">0755-81060999</string>
+    <string name="contact_us_tel_2">0755-81060888</string>
+    <string name="contact_us_official_web1">"\u0020\u0020\u0020\u0020    Web："</string>
+    <string name="contact_us_official_web2">"www.hutlon.com.cn"</string>
+</resources>

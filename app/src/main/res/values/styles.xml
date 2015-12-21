@@ -1,0 +1,135 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="PreferencePageTitle" parent="@style/Base.TextAppearance.AppCompat.Subhead">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/preference_height</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="PreferenceTitleText" parent="@style/Base.TextAppearance.AppCompat.Small">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:paddingLeft">@dimen/text_icon_padding</item>
+    </style>
+    <style name="MasterText" parent="@style/Base.TextAppearance.AppCompat.Small">
+        <item name="android:layout_gravity">left|center_vertical</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/text_master</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/text_icon_padding</item>
+    </style>
+    <style name="DetailText" parent="@style/Base.TextAppearance.AppCompat.Small">
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:textSize">@dimen/text_detail</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/text_icon_padding</item>
+        <item name="android:paddingRight">@dimen/text_icon_padding</item>
+    </style>
+    <style name="W2HeaderText" parent="@style/Base.TextAppearance.AppCompat.Small">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/text_detail</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">@dimen/text_icon_padding</item>
+
+    </style>
+    <style name="W4LengthInput" parent="@style/Base.TextAppearance.AppCompat.Small">
+        <item name="android:gravity">center_vertical|left</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/text_detail</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">4</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_margin">@dimen/text_icon_padding</item>
+        <item name="android:background">@null</item>
+    </style>
+    <style name="FixLengthInputPassword" parent="W4LengthInput">
+        <item name="android:inputType">numberPassword</item>
+        <item name="android:maxLength">8</item>
+    </style>
+
+    <style name="FrameLayoutWhite">
+        <item name="android:paddingLeft">@dimen/frame_padding</item>
+        <item name="android:paddingRight">@dimen/frame_padding</item>
+        <item name="android:layout_marginTop">@dimen/margin_small</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_height">@dimen/preference_height</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@color/white</item>
+    </style>
+    <style name="FrameLayoutClosed" parent="FrameLayoutWhite">
+        <item name="android:layout_marginLeft">@dimen/padding_small</item>
+        <item name="android:layout_marginRight">@dimen/padding_small</item>
+        <item name="android:background">@android:drawable/editbox_background_normal</item>
+    </style>
+    <style name="FrameLayoutClickable" parent="FrameLayoutWhite">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:background">@drawable/clickable_frame</item>
+    </style>
+    <style name="FrameLayoutRed" parent="FrameLayoutWhite">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:background">@drawable/clickable_red_frame</item>
+    </style>
+    <style name="FrameLayoutMenu" parent="FrameLayoutWhite">
+        <!--<item name="android:layout_marginLeft">@dimen/padding_small</item>-->
+        <!--<item name="android:layout_marginRight">@dimen/padding_small</item>-->
+        <item name="android:background">@drawable/clickable_frame</item>
+    </style>
+
+    <style name="InputPassword" parent="@style/Widget.AppCompat.EditText">
+        <item name="android:inputType">numberPassword</item>
+        <item name="android:maxLength">8</item>
+    </style>
+    <style name="NagativeButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:button">@null</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:elevation">0dp</item>
+    </style>
+    <style name="NagativeCircleButton" parent="NagativeButton">
+        <item name="android:background">@drawable/frame_button</item>
+        <item name="android:layout_margin">2dp</item>
+        <item name="android:padding">6dp</item>
+        <item name="android:textSize">10dp</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+    <style name="ImageStyle">
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginBottom">20dp</item>
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">100dp</item>
+    </style>
+</resources>

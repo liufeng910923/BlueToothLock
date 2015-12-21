@@ -1,0 +1,5 @@
+<resources>
+    <declare-styleable name="LanguageEditView">
+        <attr name="hint" format="string" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    >
+    <com.lncosie.ilandroidos.view.LanguageTextView
+        android:id="@+id/title"
+        app:lang="home"
+        android:text="@string/home"
+        style="@style/PreferencePageTitle"
+         />
+    <View
+        android:background="@drawable/homepage"
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        ></View>
+
+
+    <com.lncosie.ilandroidos.view.LanguageTextView
+        android:id="@+id/search_device"
+        app:lang="scan_device"
+        android:text="@string/scan_device"
+        android:textColor="@color/white"
+        android:elevation="4dp"
+        style="@style/FrameLayoutRed"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@color/lighterGray"
+        android:gravity="center"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <ListView
+            android:paddingTop="@dimen/padding_normal"
+            android:id="@+id/devices"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</LinearLayout>

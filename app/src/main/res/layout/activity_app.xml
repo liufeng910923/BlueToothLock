@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true" tools:context=".HomeActivity">
+
+
+    <android.support.v4.view.ViewPager android:id="@+id/container"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+         />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:background="@android:color/background_light"
+        android:orientation="horizontal">
+        <RadioGroup
+            android:paddingTop="4dp"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            >
+            <RadioButton
+                android:checked="true"
+                android:id="@+id/page_home"
+                android:tag="0"
+                android:onClick="clickNegative"
+                android:drawableTop="@drawable/switch_home"
+                android:text="@string/home"
+                style="@style/NagativeButton"
+                android:textColor="@color/colorActiveText"
+                />
+            <RadioButton
+                android:id="@+id/page_users"
+                android:tag="1"
+                android:onClick="clickNegative"
+                android:drawableTop="@drawable/switch_users"
+                android:text="@string/users"
+                style="@style/NagativeButton"
+            />
+            <RadioButton
+                android:id="@+id/page_history"
+                android:tag="2"
+                android:onClick="clickNegative"
+                android:drawableTop="@drawable/switch_history"
+                android:text="@string/history"
+                style="@style/NagativeButton"
+            />
+            <RadioButton
+                android:id="@+id/page_setting"
+                android:tag="3"
+                android:onClick="clickNegative"
+                android:drawableTop="@drawable/switch_setting"
+                android:text="@string/setting"
+                style="@style/NagativeButton"
+            />
+        </RadioGroup>
+    </LinearLayout>
+</LinearLayout>

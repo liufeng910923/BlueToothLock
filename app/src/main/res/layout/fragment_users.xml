@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_height="@dimen/preference_height"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimary"
+        >
+        <Space
+            android:layout_marginLeft="@dimen/padding_normal"
+            android:layout_width="@dimen/icon_size"
+            android:layout_height="match_parent" />
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            android:id="@+id/title"
+            android:text="@string/users"
+            app:lang="users"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            style="@style/PreferencePageTitle"
+            />
+        <ImageView
+            android:id="@+id/user_add"
+            android:src="@drawable/add_user"
+            android:paddingRight="@dimen/padding_normal"
+            android:layout_width="@dimen/icon_with_click_padding"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swiper"
+        android:layout_margin="@dimen/padding_normal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/users"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>
