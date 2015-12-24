@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -86,18 +85,18 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
     @OnClick(R.id.user_name_frame)
     public void user_name_frame(View v) {
         Intent intent = new Intent(this, SetupDescriptionActivity.class);
-        intent.putExtra("description",user.name);
+        intent.putExtra("description", user.name);
         startActivityForResult(intent, 1);
     }
 
     @OnClick(R.id.auth_add)
     public void authAdd(View v) {
-        if(checkSendable()==false){
+        if (checkSendable() == false) {
             return;
         }
         Intent intent = new Intent(this, UserAddActivity.class);
         intent.putExtra("uid", user != null ? user.getId() : -1);
-        intent.putExtra("edit",false);
+        intent.putExtra("edit", false);
         startActivity(intent);
     }
 
@@ -129,21 +128,21 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
         Applyable applyable = new Applyable() {
             @Override
             public void apply(Object arg0, Object arg1) {
-                if(checkSendable()==false){
+                if (checkSendable() == false) {
                     return;
                 }
                 detailSelected = adapter.details.get(position);
                 if ((int) arg0 == 0) {
-                    Applyable del=new Applyable() {
+                    Applyable del = new Applyable() {
                         @Override
                         public void apply(Object arg0, Object arg1) {
                             InterlockOperation.deleteId(detailSelected.type, detailSelected.uid);
                         }
                     };
-                    String message=getString(R.string.delete_conform_id);
-                    MenuYesnoFragment   fragment=MenuYesnoFragment.newInstance(R.string.delete_conform_title,
-                            message,del);
-                    fragment.show(getSupportFragmentManager(),"");
+                    String message = getString(R.string.delete_conform_id);
+                    MenuYesnoFragment fragment = MenuYesnoFragment.newInstance(R.string.delete_conform_title,
+                            message, del);
+                    fragment.show(getSupportFragmentManager(), "");
                     return;
                 }
                 Intent intent = new Intent(UserViewDetailActivity.this, SetupPasswordActivity.class);
@@ -199,12 +198,12 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
         }
 
         void bind(UserDetail detail) {
-            if(detail.type==1){
+            if (detail.type == 1) {
                 authType.setText(R.string.finger);
-                authId.setText(String.format("%02d",detail.uid));
-            }else{
+                authId.setText(String.format("%02d", detail.uid));
+            } else {
                 authType.setText(R.string.password);
-                authId.setText(String.format("%02d",detail.uid)+"******");
+                authId.setText(String.format("%02d", detail.uid) + "******");
             }
 
         }

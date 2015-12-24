@@ -19,9 +19,7 @@ import android.widget.TextView;
 import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bluenet.Net;
 import com.lncosie.ilandroidos.bus.Bus;
-import com.lncosie.ilandroidos.bus.DeviceDiscovered;
-import com.lncosie.ilandroidos.model.Applyable;
-import com.lncosie.ilandroidos.model.DbHelper;
+import com.lncosie.ilandroidos.bus.BluetoothDiscovered;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -33,20 +31,20 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DeviceSelectorFragment extends DialogFragment implements AdapterView.OnItemClickListener{
+public class DeviceSelectorFragment extends DialogFragment implements AdapterView.OnItemClickListener {
 
 
     @Bind(R.id.device_search)
     ListView deviceSearch;
-    DeviceAdapter   adapter;
+    DeviceAdapter adapter;
+
     public DeviceSelectorFragment() {
         // Required empty public constructor
     }
 
 
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_device_selector, null);
@@ -60,7 +58,7 @@ public class DeviceSelectorFragment extends DialogFragment implements AdapterVie
                             }
                         });
         ButterKnife.bind(this, view);
-        adapter=new DeviceAdapter(inflater);
+        adapter = new DeviceAdapter(inflater);
         deviceSearch.setAdapter(adapter);
         Bus.register(this);
         deviceSearch.setOnItemClickListener(this);
@@ -74,46 +72,53 @@ public class DeviceSelectorFragment extends DialogFragment implements AdapterVie
         ButterKnife.unbind(this);
         super.onDestroyView();
     }
+
     @Subscribe
-    public void onScanResult(DeviceDiscovered discovered) {
+    public void onScanResult(BluetoothDiscovered discovered) {
         adapter.devices.add(discovered.device);
         adapter.notifyDataSetChanged();
     }
-    void search(){
-        Net net=Net.get();
+
+    void search() {
+        Net net = Net.get();
         net.reset();
         net.search(5000);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        adapter.selected=adapter.devices.get(position);
+        adapter.selected = adapter.devices.get(position);
         this.dismiss();
-        Net net=Net.get();
+        Net net = Net.get();
         net.setDevice(adapter.devices.get(position));
-        net.stopScan().connect().login();
+        net.stopScan().connect();
     }
 
     static class ViewHolder {
         @Bind(R.id.device_name)
         TextView device_name;
+
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
+
         void bind(BluetoothDevice device) {
-            String name=device.getName();
-            if(name==null||name.length()==0)
-                name=device.getAddress();
+            String name = device.getName();
+            if (name == null || name.length() == 0)
+                name = device.getAddress();
             device_name.setText(name);
         }
     }
-    static class DeviceAdapter extends BaseAdapter  {
-        LayoutInflater  inflater;
-        List<BluetoothDevice> devices=new ArrayList<BluetoothDevice>();
-        BluetoothDevice selected=null;
-        DeviceAdapter(LayoutInflater inflater){
-            this.inflater=inflater;
+
+    static class DeviceAdapter extends BaseAdapter {
+        LayoutInflater inflater;
+        List<BluetoothDevice> devices = new ArrayList<BluetoothDevice>();
+        BluetoothDevice selected = null;
+
+        DeviceAdapter(LayoutInflater inflater) {
+            this.inflater = inflater;
         }
+
         @Override
         public int getCount() {
             return devices.size();

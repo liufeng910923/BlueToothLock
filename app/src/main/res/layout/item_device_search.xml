@@ -1,26 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        >
-        <ImageView
-            android:src="@drawable/keepass"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size" />
-        <TextView
-            android:id="@+id/device_name"
-            android:text="@string/stub"
-            style="@style/PreferenceTitleText"
-            />
-        <View
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="48dp" />
-        <ImageView
-            android:visibility="gone"
-            android:src="@drawable/forward"
-            android:layout_width="@dimen/icon_size"
-            android:layout_height="@dimen/icon_size" />
-    </LinearLayout>
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:src="@drawable/keepass" />
+
+    <TextView
+        android:id="@+id/device_name"
+        style="@style/PreferenceTitleText"
+        android:text="@string/stub" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_weight="1" />
+
+    <ImageView
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:src="@drawable/forward"
+        android:visibility="gone" />
+</LinearLayout>

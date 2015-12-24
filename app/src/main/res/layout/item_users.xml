@@ -1,51 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginLeft="@dimen/padding_normal"
-        android:layout_marginRight="@dimen/padding_normal"
-        >
-    <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/padding_normal"
+    android:layout_marginRight="@dimen/padding_normal"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/user_image"
-        android:src="@drawable/stack_of_photos"
         android:layout_width="@dimen/icon_size_large"
         android:layout_height="@dimen/icon_size_large"
+        android:src="@drawable/stack_of_photos"
         app:civ_border_color="#FFFFFFFF"
-        app:civ_border_width="2dp"
-        />
-        <TextView
-            android:id="@+id/user_name"
-            android:text="@string/stub"
-            style="@style/PreferenceTitleText"
-            />
-            <View
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="48dp" />
-            <ImageView
-                android:src="@drawable/password"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="4dp"
-                android:layout_width="@dimen/icon_size_very_small"
-                android:layout_height="@dimen/icon_size_very_small"
-                />
-            <TextView
-                android:id="@+id/password_cnt"
-                android:text="@string/stub"
-                android:paddingBottom="4dp"
-                style="@style/DetailText"></TextView>
-            <ImageView
-                android:src="@drawable/fingerprint_scan"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="4dp"
-                android:layout_width="@dimen/icon_size_very_small"
-                android:layout_height="@dimen/icon_size_very_small" />
-            <TextView
-                android:id="@+id/finger_cnt"
-                android:text="@string/stub"
-                android:paddingBottom="4dp"
-                style="@style/DetailText"></TextView>
-    </LinearLayout>
+        app:civ_border_width="2dp" />
+
+    <TextView
+        android:id="@+id/user_name"
+        style="@style/PreferenceTitleText"
+        android:text="@string/stub" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_weight="1" />
+
+    <!--<ImageView-->
+        <!--android:layout_width="@dimen/icon_size_very_small"-->
+        <!--android:layout_height="@dimen/icon_size_very_small"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:layout_marginBottom="4dp"-->
+        <!--android:src="@drawable/password" />-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/password_cnt"-->
+        <!--style="@style/DetailText"-->
+        <!--android:paddingBottom="4dp"-->
+        <!--android:text="@string/stub"></TextView>-->
+
+    <!--<ImageView-->
+        <!--android:layout_width="@dimen/icon_size_very_small"-->
+        <!--android:layout_height="@dimen/icon_size_very_small"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:layout_marginBottom="4dp"-->
+        <!--android:src="@drawable/fingerprint_scan" />-->
+
+    <!--<TextView-->
+        <!--android:id="@+id/finger_cnt"-->
+        <!--style="@style/DetailText"-->
+        <!--android:paddingBottom="4dp"-->
+        <!--android:text="@string/stub"></TextView>-->
+</LinearLayout>

@@ -1,11 +1,5 @@
 package com.lncosie.ilandroidos.bluenet;
 
-import android.content.Context;
-
-import com.lncosie.ilandroidos.bus.Bus;
-import com.lncosie.ilandroidos.bus.NetworkError;
-
-
 public class Net extends NetTransfer {
     static Net glob;
 
@@ -14,17 +8,16 @@ public class Net extends NetTransfer {
             glob = new Net();
         return glob;
     }
-    public void sendUncheck(Task task)
-    {
-        if(isSendable())
+
+    public void sendUncheck(Task task) {
+        if (isSendable())
             super.send(task);
     }
-    public void sendChecked(Task task)
-    {
-        if(isSendable())
+
+    public void sendChecked(Task task) {
+        if (isSendable())
             super.send(task);
-        else
-        {
+        else {
             //Bus.post(new NetworkError());
         }
     }

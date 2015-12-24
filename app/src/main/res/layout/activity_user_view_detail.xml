@@ -1,92 +1,95 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lighterGray"
+    android:orientation="vertical"
     tools:context="com.lncosie.ilandroidos.view.UsersFragment">
+
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_height="@dimen/preference_height"
         android:layout_width="match_parent"
-        android:gravity="center"
+        android:layout_height="@dimen/preference_height"
         android:background="@color/colorPrimary"
-        >
+        android:gravity="center"
+        android:orientation="horizontal">
+
         <ImageView
-            android:onClick="backward"
-            android:src="@drawable/back"
-            android:paddingLeft="@dimen/padding_normal"
             android:layout_width="@dimen/icon_with_click_padding"
-            android:layout_height="match_parent" />
-        <TextView
-            android:text="@string/user_edit"
-            android:layout_gravity="center"
             android:layout_height="match_parent"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:onClick="backward"
+            android:paddingLeft="@dimen/padding_normal"
+            android:src="@drawable/back" />
+
+        <TextView
             style="@style/PreferencePageTitle"
-            />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="@string/user_edit" />
+
         <ImageView
             android:id="@+id/auth_add"
-            android:src="@drawable/plus"
-            android:paddingRight="@dimen/padding_normal"
             android:layout_width="@dimen/icon_with_click_padding"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:paddingRight="@dimen/padding_normal"
+            android:src="@drawable/plus" />
 
     </LinearLayout>
+
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/b0"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
-        <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/user_image"
-            android:src="@drawable/stack_of_photos"
             style="@style/ImageStyle"
+            android:src="@drawable/stack_of_photos"
             app:civ_border_color="#FFFFFFFF"
-            app:civ_border_width="0dp"
-            />
+            app:civ_border_width="0dp" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/user_name_frame"
         style="@style/FrameLayoutClickable"
-        android:layout_marginTop="@dimen/padding_normal"
-        >
+        android:layout_marginTop="@dimen/padding_normal">
+
         <TextView
-            android:text="@string/username"
             style="@style/W2HeaderText"
-            />
+            android:text="@string/username" />
+
         <TextView
             android:id="@+id/user_name"
-            android:hint="@string/username"
-            style="@style/PreferenceTitleText" />
+            style="@style/PreferenceTitleText"
+            android:hint="@string/username" />
+
         <ImageView
-            android:src="@drawable/forward"
             android:layout_width="@dimen/icon_size_small"
-            android:layout_height="@dimen/icon_size_small" />
+            android:layout_height="@dimen/icon_size_small"
+            android:src="@drawable/forward" />
     </LinearLayout>
+
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/padding_normal"
-        >
+        android:orientation="horizontal">
+
         <ListView
             android:id="@+id/auth_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </ListView>
+            android:layout_height="wrap_content"></ListView>
     </LinearLayout>
     <!--<TextView-->
-        <!--android:id="@+id/user_view_ok"-->
-        <!--android:text="@string/ok"-->
-        <!--android:layout_marginLeft="@dimen/padding_normal"-->
-        <!--android:layout_marginRight="@dimen/padding_normal"-->
-        <!--android:layout_height="48dp"-->
-        <!--android:layout_width="match_parent"-->
-        <!--style="@style/PreferencePageTitle"-->
-        <!--/>-->
+    <!--android:id="@+id/user_view_ok"-->
+    <!--android:text="@string/ok"-->
+    <!--android:layout_marginLeft="@dimen/padding_normal"-->
+    <!--android:layout_marginRight="@dimen/padding_normal"-->
+    <!--android:layout_height="48dp"-->
+    <!--android:layout_width="match_parent"-->
+    <!--style="@style/PreferencePageTitle"-->
+    <!--/>-->
 </LinearLayout>

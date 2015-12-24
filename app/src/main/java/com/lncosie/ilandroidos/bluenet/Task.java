@@ -2,24 +2,31 @@ package com.lncosie.ilandroidos.bluenet;
 
 
 public abstract class Task {
-    NetTransfer transfer;
+    NetTransfer net;
+    long timeout = 4000;
+
     public Task(NetTransfer transfer) {
-        this.transfer = transfer;
+        this.net = transfer;
     }
-    long    timeout=4000;
+
     public long delayTime() {
         return 200;
     }
-    public void setTimeout(long timeout) {
-        this.timeout=timeout;
-    }
+
     protected long getTimeout() {
         return timeout;
     }
+
+    public void setTimeout(long timeout) {
+        this.timeout = timeout;
+    }
+
     protected void onTimeout() {
     }
+
     protected void onTaskStart() {
     }
+
     protected abstract void onTaskDown();
 }
 

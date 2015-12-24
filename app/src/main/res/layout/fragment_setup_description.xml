@@ -1,46 +1,51 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
 
     tools:context="com.lncosie.ilandroidos.view.DeviceSelectorFragment">
+
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_height="@dimen/preference_height"
         android:layout_width="match_parent"
-        android:gravity="center"
+        android:layout_height="@dimen/preference_height"
         android:background="@color/colorPrimary"
-        >
+        android:gravity="center"
+        android:orientation="horizontal">
+
         <ImageView
-            android:onClick="backward"
-            android:src="@drawable/back"
-            android:paddingLeft="@dimen/padding_normal"
             android:layout_width="@dimen/icon_with_click_padding"
-            android:layout_height="match_parent" />
-        <com.lncosie.ilandroidos.view.LanguageTextView
-            android:text="@string/stub"
-            android:layout_gravity="center"
             android:layout_height="match_parent"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:onClick="backward"
+            android:paddingLeft="@dimen/padding_normal"
+            android:src="@drawable/back" />
+
+        <com.lncosie.ilandroidos.view.LanguageTextView
             style="@style/PreferencePageTitle"
-            />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="@string/stub" />
+
         <ImageView
             android:id="@+id/user_add"
-            android:src="@drawable/plus"
-            android:paddingRight="@dimen/padding_normal"
             android:layout_width="@dimen/icon_with_click_padding"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:paddingRight="@dimen/padding_normal"
+            android:src="@drawable/plus" />
     </LinearLayout>
+
     <android.support.design.widget.TextInputLayout
-        android:layout_margin="@dimen/frame_padding"
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:layout_margin="@dimen/frame_padding">
+
         <EditText
             android:id="@+id/description"
+            style="@style/Widget.AppCompat.EditText"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="@string/username_input"
-            style="@style/Widget.AppCompat.EditText" />
+            android:hint="@string/username_input" />
     </android.support.design.widget.TextInputLayout>
 </LinearLayout>

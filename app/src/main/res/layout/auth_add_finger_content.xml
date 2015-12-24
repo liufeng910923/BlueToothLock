@@ -1,35 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:orientation="horizontal"
-    android:layout_height="152dp"
     android:id="@+id/auth_add_finger_page"
-    android:visibility="visible"
     style="@style/FrameLayoutWhite"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:orientation="horizontal"
+    android:visibility="visible"
 
     >
+
     <TextView
-        android:text="@string/finger"
-        style="@style/W2HeaderText" />
+        style="@style/W2HeaderText"
+        android:text="@string/finger" />
+
     <include layout="@layout/v_seperator"></include>
+
     <FrameLayout
         android:id="@+id/animate_frame"
-        android:layout_width="0dp"
-        android:layout_weight="4"
-        android:layout_height="match_parent"
         style="@style/W4LengthInput"
-        >
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4">
+
         <ImageView
-            android:scaleType="center"
-            android:gravity="center"
-            android:src="@drawable/finger_scan"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <View android:id="@+id/user_add_finger_animate"
-            android:background="@color/animateFinger"
-            android:layout_width="1dp"
-            android:visibility="invisible"
             android:layout_height="match_parent"
-            ></View>
+            android:gravity="center"
+            android:scaleType="center"
+            android:src="@drawable/finger_scan" />
+
+        <View
+            android:id="@+id/user_add_finger_animate"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/animateFinger"
+            android:visibility="invisible"></View>
     </FrameLayout>
 </LinearLayout>

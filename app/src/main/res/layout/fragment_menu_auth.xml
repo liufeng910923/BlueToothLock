@@ -1,22 +1,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="@dimen/preference_height"
-    android:background="@color/lighterGray"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/preference_height"
+    android:background="@color/lighterGray"
     android:orientation="vertical"
     android:paddingBottom="@dimen/padding_small"
     tools:context="com.lncosie.ilandroidos.view.MenuAuthFragment">
+
     <include layout="@layout/window_head"></include>
+
     <com.lncosie.ilandroidos.view.LanguageTextView
         android:id="@+id/menu_item_modify"
-        android:text="@string/menu_item_modify"
         style="@style/FrameLayoutMenu"
-        />
+        android:text="@string/menu_item_modify" />
+
     <com.lncosie.ilandroidos.view.LanguageTextView
         android:id="@+id/menu_item_delete"
-        android:text="@string/menu_item_delete"
         style="@style/FrameLayoutMenu"
+        android:text="@string/menu_item_delete"
 
         />
 </LinearLayout>

@@ -5,6 +5,6 @@ package com.lncosie.ilandroidos.bus;
  */
 public class NetworkError {
 
-    public NetworkError(){
+    public NetworkError() {
     }
 }

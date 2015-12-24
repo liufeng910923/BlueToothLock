@@ -61,7 +61,7 @@ public class SetupDescriptionFragment extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
-                                String pwd=null;
+                                String pwd = null;
                                 apply.apply(pwd, null);
                             }
                         });
@@ -76,7 +76,8 @@ public class SetupDescriptionFragment extends DialogFragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-    void    checkPwd(){
+
+    void checkPwd() {
 
     }
 

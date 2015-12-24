@@ -1,7 +1,5 @@
 package com.lncosie.ilandroidos.view;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,11 +11,13 @@ import android.widget.RadioButton;
 
 import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bluenet.Net;
+import com.lncosie.ilandroidos.bus.BluetoothConneted;
 import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.bus.LanguageChanged;
 import com.lncosie.ilandroidos.bus.ViewUserLog;
 import com.lncosie.ilandroidos.model.Applyable;
-import com.lncosie.ilandroidos.model.GrobMessage;
+import com.lncosie.ilandroidos.model.DbHelper;
+import com.lncosie.ilandroidos.bus.GrobMessage;
 import com.squareup.otto.Subscribe;
 
 import butterknife.Bind;
@@ -36,9 +36,9 @@ public class AppActivity extends EventableActivity {
     RadioButton pageUsers;
     @Bind(R.id.page_setting)
     RadioButton pageSetting;
-
-    private SectionsPagerAdapter adapter;
     GrobMessage grob;
+    RadioButton prevActive;
+    private SectionsPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,10 +64,13 @@ public class AppActivity extends EventableActivity {
                 getString(R.string.exit_tip), applyable);
         fragment.show(getSupportFragmentManager(), "");
     }
-    void exit(){
+
+    void exit() {
         Net.get().reset();
+        Repass.exit();
         super.onBackPressed();
     }
+
     @Subscribe
     public void langChanged(LanguageChanged languageChanged) {
         changeLang(container);
@@ -93,6 +96,8 @@ public class AppActivity extends EventableActivity {
         }
     }
 
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -104,8 +109,28 @@ public class AppActivity extends EventableActivity {
         estateButton(pageHistory);
         activePage(2, userLog.gid);
     }
+    @Subscribe
+    public void bluetoothConneted(BluetoothConneted state){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showLoginPassword();
+            }
+        });
 
-
+    }
+    void showLoginPassword() {
+        Applyable applyable = new Applyable() {
+            @Override
+            public void apply(Object arg0, Object arg1) {
+                Net net = Net.get();
+                DbHelper.setPassword(net.getDevice().getAddress(), (String) arg0);
+                net.login();
+            }
+        };
+        AuthPasswordFragment fragment = AuthPasswordFragment.newInstance(R.string.password_with_id, R.string.password_with_id_prompt, applyable);
+        fragment.show(getSupportFragmentManager(), "");
+    }
     public void clickNegative(View v) {
         Object tag = estateButton((RadioButton) v);
         Integer index = Integer.valueOf((String) tag);
@@ -113,8 +138,6 @@ public class AppActivity extends EventableActivity {
             return;
         activePage(index, null);
     }
-
-    RadioButton prevActive;
 
     private Object estateButton(RadioButton v) {
         RadioButton button = v;
@@ -136,12 +159,10 @@ public class AppActivity extends EventableActivity {
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        ActiveAbleFragment fragments[] = new ActiveAbleFragment[4];
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
-
-        ActiveAbleFragment fragments[] = new ActiveAbleFragment[4];
-
         @Override
         public Fragment getItem(int position) {
             if (fragments[position] == null) {

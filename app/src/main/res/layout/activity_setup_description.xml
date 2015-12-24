@@ -1,55 +1,57 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/lighterGray"
-    >
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_height="@dimen/preference_height"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:background="@color/colorPrimary"
-        >
-        <ImageView
-            android:onClick="backward"
-            android:src="@drawable/back"
-            android:paddingLeft="@dimen/padding_normal"
-            android:layout_width="@dimen/icon_with_click_padding"
-            android:layout_height="match_parent" />
-        <com.lncosie.ilandroidos.view.LanguageTextView
-            android:text="@string/modify_name"
-            android:layout_gravity="center"
-            android:layout_height="match_parent"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            style="@style/PreferencePageTitle"
-            />
-        <com.lncosie.ilandroidos.view.LanguageTextView
-            android:id="@+id/save"
-            android:onClick="onClick"
-            android:src="@android:drawable/ic_menu_myplaces"
-            android:paddingRight="@dimen/padding_normal"
-            android:text="@string/save"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+    android:orientation="vertical">
 
     <LinearLayout
-        style="@style/FrameLayoutWhite">
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/preference_height"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="@dimen/icon_with_click_padding"
+            android:layout_height="match_parent"
+            android:onClick="backward"
+            android:paddingLeft="@dimen/padding_normal"
+            android:src="@drawable/back" />
+
         <com.lncosie.ilandroidos.view.LanguageTextView
-            android:text="@string/username"
+            style="@style/PreferencePageTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="@string/modify_name" />
+
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:paddingRight="@dimen/padding_normal"
+            android:src="@android:drawable/ic_menu_myplaces"
+            android:text="@string/save"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/FrameLayoutWhite">
+
+        <com.lncosie.ilandroidos.view.LanguageTextView
             style="@style/W2HeaderText"
-            />
+            android:text="@string/username" />
+
         <include layout="@layout/v_seperator"></include>
+
         <EditText
             android:id="@+id/description"
-            android:hint="@string/username_input"
-            style="@style/W4LengthInput" >
-            <requestFocus/>
+            style="@style/W4LengthInput"
+            android:hint="@string/username_input">
+
+            <requestFocus />
         </EditText>
     </LinearLayout>
 </LinearLayout>

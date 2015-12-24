@@ -27,7 +27,7 @@ public class MenuUserFragment extends DialogFragment implements View.OnClickList
     long arg0;
 
     @Bind(R.id.window_title)
-    TextView    windowTitle;
+    TextView windowTitle;
     @Bind(R.id.menu_item_view)
     TextView menuItemView;
     @Bind(R.id.menu_item_log)
@@ -35,7 +35,7 @@ public class MenuUserFragment extends DialogFragment implements View.OnClickList
     @Bind(R.id.menu_item_delete_user)
     TextView menuItemDeleteUser;
 
-    public static MenuUserFragment newInstance(long arg0,Applyable applyable) {
+    public static MenuUserFragment newInstance(long arg0, Applyable applyable) {
         MenuUserFragment fragment = new MenuUserFragment();
         fragment.applyable = applyable;
         fragment.arg0 = arg0;
@@ -67,7 +67,7 @@ public class MenuUserFragment extends DialogFragment implements View.OnClickList
     @Override
     public void onClick(View v) {
         applyable.apply(v.getId() == menuItemView.getId() ? 0 :
-                        (v.getId() == menuItemLog.getId()?1:2), arg0);
+                (v.getId() == menuItemLog.getId() ? 1 : 2), arg0);
         this.dismiss();
     }
 

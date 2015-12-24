@@ -60,8 +60,8 @@ public class SetupPasswordFragment extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int id) {
-                                String pwd=null;
-                                apply.apply(pwd,null );
+                                String pwd = null;
+                                apply.apply(pwd, null);
                             }
                         });
 
@@ -75,7 +75,8 @@ public class SetupPasswordFragment extends DialogFragment {
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
-    void    checkPwd(){
+
+    void checkPwd() {
 
     }
 

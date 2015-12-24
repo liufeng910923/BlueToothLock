@@ -22,7 +22,7 @@ public class SetupDescriptionActivity extends EventableActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup_description);
         ButterKnife.bind(this);
-        String name=getIntent().getStringExtra("description");
+        String name = getIntent().getStringExtra("description");
         description.setText(name);
 
     }
@@ -30,8 +30,8 @@ public class SetupDescriptionActivity extends EventableActivity {
     public void onClick(View v) {
         if (v.getId() == R.id.save) {
             String desc = description.getText().toString();
-            if(desc.length()==0){
-                Bus.post(new TipOperation(-1,R.string.name_must_set));
+            if (desc.length() == 0) {
+                Bus.post(new TipOperation(-1, R.string.name_must_set));
                 description.requestFocus();
                 return;
             }

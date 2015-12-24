@@ -1,46 +1,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_margin="@dimen/preference_height"
-    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/preference_height"
+    android:background="@color/white"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/padding_small"
-    >
+    android:paddingBottom="@dimen/padding_small">
+
     <include layout="@layout/window_head"></include>
+
     <TextView
-        android:paddingLeft="@dimen/padding_normal"
         android:id="@+id/content"
-        android:text="@string/ok"
         android:layout_width="match_parent"
         android:layout_height="@dimen/item_height"
         android:gravity="center_vertical"
+        android:paddingLeft="@dimen/padding_normal"
         android:tag="zh-CN"
-        />
+        android:text="@string/ok" />
+
     <LinearLayout
-        android:orientation="horizontal"
         style="@style/FrameLayoutWhite"
         android:gravity="right|center_vertical"
-        >
+        android:orientation="horizontal">
+
         <TextView
-            android:gravity="center"
             android:id="@+id/cancel"
-            android:text="@string/cancel"
-            android:textColor="@color/colorAccent"
             android:layout_width="@dimen/item_height"
             android:layout_height="@dimen/item_height_small"
-            android:background="@drawable/clickable_frame"
             android:layout_marginRight="@dimen/padding_normal"
-            />
-        <TextView
+            android:background="@drawable/clickable_frame"
             android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/colorAccent" />
+
+        <TextView
             android:id="@+id/ok"
+            android:layout_width="@dimen/item_height"
+            android:layout_height="@dimen/item_height_small"
+            android:layout_marginRight="@dimen/padding_normal"
+            android:background="@drawable/clickable_frame"
+            android:gravity="center"
             android:text="@string/ok"
             android:textColor="@color/colorAccent"
-            android:layout_width="@dimen/item_height"
-            android:layout_height="@dimen/item_height_small"
-            android:background="@drawable/clickable_frame"
-            android:layout_marginRight="@dimen/padding_normal"
 
             />
     </LinearLayout>

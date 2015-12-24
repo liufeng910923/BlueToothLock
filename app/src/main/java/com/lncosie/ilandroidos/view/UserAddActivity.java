@@ -1,16 +1,12 @@
 package com.lncosie.ilandroidos.view;
 
 import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -58,9 +54,6 @@ public class UserAddActivity extends EventableActivity {
     boolean isAdd = false;
 
 
-
-
-
     @Bind(R.id.user_add_ok)
     TextView userAddOk;
     @Bind(R.id.user_image)
@@ -72,12 +65,12 @@ public class UserAddActivity extends EventableActivity {
     @Bind(R.id.user_name_edit_frame)
     LinearLayout user_name_edit_frame;
     @Bind(R.id.default_add_pwd)
-    RadioButton default_add_pwd;
+    RadioButton add_radio;
 
     @Bind(R.id.user_name_edit)
-    EditText    user_name_edit;
+    EditText user_name_edit;
     @Bind(R.id.user_name_view)
-    TextView    user_name_view;
+    TextView user_name_view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +108,7 @@ public class UserAddActivity extends EventableActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == 0)
             return;
-        if(checkAddUser()==false)
+        if (checkAddUser() == false)
             return;
         if (requestCode == 3) {
             String img[] = new String[1];
@@ -143,27 +136,33 @@ public class UserAddActivity extends EventableActivity {
             user_name_view.setText(user.name);
             userImage.setImageBitmap(BitmapTool.decodeBitmap(this, user.image));
         }
-        clickAddAuth(default_add_pwd);
-        default_add_pwd.setChecked(true);
+
+        clickAddAuth(add_radio);
+        add_radio.setChecked(true);
+        HideWhenTouchOutside.setupUI(this);
+        //userAddOk.requestFocus();
     }
+
     @Subscribe
     public void addFromLock(OperatorMessages.OpAddAuth result) {
         if (result.error != 0) {
             idOfPwd.setText(R.string.user_full);
             idLocked = null;
+
             return;
         }
         idLocked = result;
         switch (result.cmd) {
             case ByteableTask.CMD_ADD_ADMIN_PWD:
             case ByteableTask.CMD_ADD_USER_PWD:
-                idOfPwd.setText(String.valueOf(idLocked.uid));
+                idOfPwd.setText(String.format("%02d", idLocked.uid));
                 break;
             case ByteableTask.CMD_ADD_ADMIN_FINGER:
             case ByteableTask.CMD_ADD_USER_FINGER:
                 break;
         }
         if (isAdd) {
+            user.save();
             UserDetail detail = new UserDetail();
             detail.gid = user.getId();
             detail.type = idLocked.type;
@@ -173,6 +172,7 @@ public class UserAddActivity extends EventableActivity {
         }
 
     }
+
     public void backward(View v) {
         Bus.post(new UsersChanged());
         super.backward(v);
@@ -193,9 +193,8 @@ public class UserAddActivity extends EventableActivity {
 
     boolean checkAddUser() {
         if (user == null) {
-            String name=user_name_edit.getText().toString();
-            if(name.length()==0)
-            {
+            String name = user_name_edit.getText().toString();
+            if (name.length() == 0) {
                 Bus.post(new TipOperation(-1, R.string.name_must_set));
                 user_name_edit.requestFocus();
                 return false;
@@ -203,7 +202,6 @@ public class UserAddActivity extends EventableActivity {
             user = new Users();
             user.name = name;
             user.mac = DbHelper.getCurMac();
-            user.save();
             return true;
         }
         return true;
@@ -213,6 +211,9 @@ public class UserAddActivity extends EventableActivity {
 
         isAdd = false;
         authAddSelect = Integer.valueOf((String) v.getTag());
+        add_radio.setChecked(false);
+        add_radio = (RadioButton) v;
+        add_radio.setChecked(true);
         switch (authAddSelect) {
             case 0:
                 authAddPwdPage.setVisibility(View.VISIBLE);
@@ -222,6 +223,7 @@ public class UserAddActivity extends EventableActivity {
             case 1:
                 authAddPwdPage.setVisibility(View.GONE);
                 authAddFingerPage.setVisibility(View.VISIBLE);
+                idOfPwd.setText(null);
                 break;
             case 2:
                 authAddPwdPage.setVisibility(View.VISIBLE);
@@ -231,25 +233,25 @@ public class UserAddActivity extends EventableActivity {
             case 3:
                 authAddPwdPage.setVisibility(View.GONE);
                 authAddFingerPage.setVisibility(View.VISIBLE);
+                idOfPwd.setText(null);
                 break;
         }
-        if(checkSendable()==false){
+        if (checkSendable() == false) {
             return;
         }
     }
 
     @OnClick(R.id.user_add_ok)
     void userAddOk(View v) {
-        if(authAddSelect==1||authAddSelect==3){
-            startAnimate();
-        }
-        if(checkSendable()==false){
+        if (checkSendable() == false) {
             return;
         }
-        if(checkAddUser()==false)
-        {
+        if (checkAddUser() == false) {
             user_name_edit.requestFocus();
             return;
+        }
+        if (authAddSelect == 1 || authAddSelect == 3) {
+            startAnimate();
         }
         byte[] password = checkPassword();
         if (password == null) {
@@ -279,30 +281,38 @@ public class UserAddActivity extends EventableActivity {
     byte[] checkPassword() {
         if (authAddSelect == 1 || authAddSelect == 3)
             return new byte[]{0};
-        if (idLocked == null||Net.get().isSendable()==false)
-        {
+        if (idLocked == null || Net.get().isSendable() == false) {
             Bus.post(new NetworkError());
             return null;
         }
         String p = password.getText().toString();
         String pRe = passwordRe.getText().toString();
-        if(p.length()<6){
+        if (p.length() == 0) {
             password.requestFocus();
-            Bus.post(new TipOperation(-1, R.string.password_shoter));
+            Bus.post(new TipOperation(-1, R.string.password_input));
             return null;
-        }else if(pRe.length()<6){
+        } else if (p.length() < 6) {
+            password.requestFocus();
+            Bus.post(new TipOperation(-1, R.string.password_error));
+            return null;
+        } else if (pRe.length() == 0) {
             passwordRe.requestFocus();
-            Bus.post(new TipOperation(-1, R.string.password_shoter));
+            Bus.post(new TipOperation(-1, R.string.password_input));
             return null;
-        }else if(!p.equals(pRe)){
-            Bus.post(new TipOperation(-1,R.string.password_no_equal));
+        } else if (pRe.length() < 6) {
+            passwordRe.requestFocus();
+            Bus.post(new TipOperation(-1, R.string.password_error));
+            return null;
+        } else if (!p.equals(pRe)) {
+            Bus.post(new TipOperation(-1, R.string.password_no_equal));
             return null;
         }
         return StringTools.getPwdBytes(idLocked.uid, p, pRe);
     }
-    void startAnimate(){
-        int h=animate_frame.getHeight();
-        int w=animate_frame.getHeight();
+
+    void startAnimate() {
+        int h = animate_frame.getHeight();
+        int w = animate_frame.getHeight();
         userAddFingerAnimate.setScaleX(1);
         userAddFingerAnimate.setX(-1);
         userAddFingerAnimate.setVisibility(View.VISIBLE);

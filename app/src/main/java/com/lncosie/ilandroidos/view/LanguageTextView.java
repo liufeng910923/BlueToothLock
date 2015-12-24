@@ -15,10 +15,7 @@ import com.lncosie.ilandroidos.R;
 public class LanguageTextView extends TextView {
 
     int resid;
-    public void languageChanged(){
-        if(resid!=0)
-            setText(resid);
-    }
+
     public LanguageTextView(Context context) {
         super(context);
         init(null, 0);
@@ -40,20 +37,24 @@ public class LanguageTextView extends TextView {
         init(attrs, defStyleAttr);
     }
 
-    void init(AttributeSet attrs, int defStyleAttr){
+    public void languageChanged() {
+        if (resid != 0)
+            setText(resid);
+    }
+
+    void init(AttributeSet attrs, int defStyleAttr) {
         final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.LanguageTextView, defStyleAttr, 0);
         String txt = a.getString(R.styleable.LanguageTextView_lang);
-        if(txt==null)
-        {
+        if (txt == null) {
             a.recycle();
             return;
         }
-        resid=getResources().getIdentifier(txt,"string", getContext().getPackageName());
+        resid = getResources().getIdentifier(txt, "string", getContext().getPackageName());
         a.recycle();
     }
 
-    public void setTextRes(int res){
+    public void setTextRes(int res) {
         super.setText(res);
-        resid=res;
+        resid = res;
     }
 }

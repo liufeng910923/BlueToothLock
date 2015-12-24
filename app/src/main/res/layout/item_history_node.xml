@@ -1,47 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        >
-        <de.hdodenhof.circleimageview.CircleImageView
-            android:layout_marginLeft="@dimen/padding_small"
-            android:id="@+id/open_user_img"
-            android:src="@drawable/calendar"
-            android:layout_width="@dimen/icon_size_large"
-            android:layout_height="@dimen/icon_size_large"
-            />
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/open_user_img"
+        android:layout_width="@dimen/icon_size_large"
+        android:layout_height="@dimen/icon_size_large"
+        android:layout_marginLeft="@dimen/padding_small"
+        android:src="@drawable/calendar" />
+
     <LinearLayout
-        android:orientation="vertical"
-        android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
         <TextView
-        android:layout_marginTop="@dimen/padding_small"
-        android:id="@+id/open_time"
-        android:text="@string/stub"
-        style="@style/MasterText"
-        />
+            android:id="@+id/open_user_name"
+            style="@style/MasterText"
+            android:layout_marginTop="@dimen/padding_small"
+            android:text="@string/stub" />
+
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_marginBottom="4dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal">
+
             <com.lncosie.ilandroidos.view.LanguageTextView
-                android:id="@+id/open_user_name"
-                android:text="@string/stub"
+                android:id="@+id/open_time"
                 style="@style/DetailText"
-                />
+                android:text="@string/stub" />
+
             <View
                 android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
             <com.lncosie.ilandroidos.view.LanguageTextView
                 android:id="@+id/open_type"
-                android:text="@string/stub"
                 style="@style/DetailText"
-                />
-        </LinearLayout>
+                android:text="@string/stub" />
         </LinearLayout>
     </LinearLayout>
+</LinearLayout>
