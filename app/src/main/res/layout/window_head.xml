@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.lncosie.ilandroidos.view.LanguageTextView xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/window_title"
-style="@style/PreferencePageTitle"
-android:background="@color/colorPrimary"
-android:layout_width="match_parent"
-android:text="@string/menu_title"
-android:layout_height="48dp" />
+    android:id="@+id/window_title"
+    style="@style/PreferencePageTitle"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:background="@color/colorPrimary"
+    android:text="@string/menu_title" />

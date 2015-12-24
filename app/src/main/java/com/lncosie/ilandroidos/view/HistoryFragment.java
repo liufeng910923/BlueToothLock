@@ -19,9 +19,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lncosie.ilandroidos.R;
-import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.bus.HistoryChanged;
 import com.lncosie.ilandroidos.bus.LanguageChanged;
+import com.lncosie.ilandroidos.bus.DeviceConnedted;
+import com.lncosie.ilandroidos.bus.DeviceDisconnected;
 import com.lncosie.ilandroidos.bus.UsersChanged;
 import com.lncosie.ilandroidos.db.TimeWithUser;
 import com.lncosie.ilandroidos.db.Users;
@@ -37,6 +38,7 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,20 +55,30 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
     SwipeRefreshLayout swiper;
     @Bind(R.id.title)
     TextView title;
+    boolean changed = false;
 
-
-    public HistoryFragment() {
-        // Required empty public constructor
+    @Bind(R.id.net_tip)
+    TextView net_tip;
+    @Subscribe
+    public void OnConnected(DeviceConnedted state){
+        net_tip.setVisibility(View.GONE);
     }
-
-
+    @Subscribe
+    public void OnConnected(DeviceDisconnected state){
+        net_tip.setVisibility(View.VISIBLE);
+    }
+    @OnClick(R.id.net_tip)
+    public void connect(){
+        super.autoConnet();
+    }
+    public HistoryFragment() {
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+        super.onCreateView(inflater,container,savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_history, container, false);
         ButterKnife.bind(this, view);
-        Bus.register(this);
         adapter = new HistoryAdapter(this.getActivity());
         history.setAdapter(adapter);
         setupSwiper();
@@ -77,22 +89,22 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
-        Bus.unregister(this);
-    }
 
-    boolean changed = false;
+    }
 
     @Subscribe
     public void langChanged(LanguageChanged languageChanged) {
         //title.setText(R.string.history);
         //adapter.notifyDataSetChanged();
     }
+
     @Subscribe
     public void onUserChanged(UsersChanged changed) {
         adapter.reInit();
         adapter.filterInit(null);
         adapter.notifyDataSetChanged();
     }
+
     @Subscribe
     public void onHistoryChanged(HistoryChanged c) {
         changed = true;
@@ -107,7 +119,7 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
             adapter.filterInit(user.name);
             adapter.notifyDataSetChanged();
         } else {
-            if (changed == true) {
+            if (changed) {
                 changed = false;
                 syncHistory();
                 return;
@@ -185,7 +197,7 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
         public void bind(Context context, TimeWithUser history) {
             openUserImg.setImageBitmap(BitmapTool.decodeBitmap(context, history.image));
             openUserName.setText(history.name);
-            openType.setText(history.type==0?R.string.password:R.string.finger);
+            openType.setText(history.type == 0 ? R.string.password : R.string.finger);
             openTime.setText(TimeTools.toTimeString(history.time));
         }
     }
@@ -204,19 +216,20 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
     }
 
     class HistoryAdapter extends BaseAdapter implements Filterable {
+        final TimeWithUser nullValue = new TimeWithUser();
         List<TimeWithUser> history = new ArrayList<>();
         List<TimeWithUser> orgs = new ArrayList<>();
-
-        final TimeWithUser nullValue = new TimeWithUser();
         UserFitler fitler = new UserFitler();
 
         public HistoryAdapter(Context context) {
             nullValue.name = "";
             reInit();
         }
-        boolean index(TimeWithUser h,CharSequence filter){
-            return h.name.contains(filter)?true:TimeTools.rawString(h.time).contains(filter);
+
+        boolean index(TimeWithUser h, CharSequence filter) {
+            return h.name.contains(filter) ? true : TimeTools.rawString(h.time).contains(filter);
         }
+
         void filterInit(CharSequence filter) {
             history.clear();
             if (orgs.size() == 0) {
@@ -226,7 +239,7 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
             TimeWithUser pre = orgs.get(0);
             boolean first = false;
             for (TimeWithUser h : orgs) {
-                if (filter == null ? true : index(h,filter)) {
+                if (filter == null ? true : index(h, filter)) {
                     if (first == false) {
                         history.add(nullValue);
                         first = true;

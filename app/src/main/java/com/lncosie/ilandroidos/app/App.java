@@ -12,10 +12,10 @@ import org.codejargon.feather.Feather;
 import java.util.Locale;
 
 public class App extends com.activeandroid.app.Application {
+    Feather feather;
+
     public App() {
     }
-
-    Feather feather;
 
     @Override
     public void onCreate() {
@@ -24,12 +24,13 @@ public class App extends com.activeandroid.app.Application {
 
         Net.get().init(this);
         Bus.busInit();
-        feather=Feather.with();
+        feather = Feather.with();
 
     }
-    void setLanguage(){
-        String language=DbHelper.getLanguage();
-        if(language!=null){
+
+    void setLanguage() {
+        String language = DbHelper.getLanguage();
+        if (language != null) {
             Resources res = getResources();
             DisplayMetrics dm = res.getDisplayMetrics();
             android.content.res.Configuration conf = res.getConfiguration();
@@ -37,6 +38,7 @@ public class App extends com.activeandroid.app.Application {
             res.updateConfiguration(conf, dm);
         }
     }
+
     @Override
     public void onTerminate() {
         Net.get().disconnect();

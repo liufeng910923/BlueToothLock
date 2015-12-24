@@ -2,8 +2,6 @@ package com.lncosie.ilandroidos.db;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
-import com.activeandroid.annotation.Table;
-
 
 
 //@Table(name = "LockUsers")
@@ -19,11 +17,17 @@ public class LockUsers extends Model {
      */
     @Column(name = "TYPE")
     public int type;
-    public byte type(){return (byte)type;}
     /**
      * 锁用户id
      */
     @Column(name = "UID")
     public int uid;
-    public byte uid(){return (byte)uid;}
+
+    public byte type() {
+        return (byte) type;
+    }
+
+    public byte uid() {
+        return (byte) uid;
+    }
 }

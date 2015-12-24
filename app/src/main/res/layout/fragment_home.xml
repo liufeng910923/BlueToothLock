@@ -1,39 +1,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:orientation="vertical">
+
     <com.lncosie.ilandroidos.view.LanguageTextView
         android:id="@+id/title"
-        app:lang="home"
-        android:text="@string/home"
         style="@style/PreferencePageTitle"
-         />
+        android:text="@string/home"
+        app:lang="home" />
+    <!--<include layout="@layout/net_error"/>-->
     <View
-        android:background="@drawable/homepage"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        ></View>
+        android:background="@drawable/homepage1"></View>
 
 
     <com.lncosie.ilandroidos.view.LanguageTextView
         android:id="@+id/search_device"
-        app:lang="scan_device"
+        style="@style/FrameLayoutRed"
+        android:elevation="4dp"
         android:text="@string/scan_device"
         android:textColor="@color/white"
-        android:elevation="4dp"
-        style="@style/FrameLayoutRed"
-        />
+        app:lang="scan_device" />
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:background="@color/lighterGray"
-        android:gravity="center"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@color/lighterGray"
+        android:gravity="center">
+
         <ListView
-            android:paddingTop="@dimen/padding_normal"
             android:id="@+id/devices"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:paddingTop="@dimen/padding_normal" />
     </LinearLayout>
 </LinearLayout>

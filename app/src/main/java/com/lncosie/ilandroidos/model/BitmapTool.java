@@ -1,10 +1,8 @@
 package com.lncosie.ilandroidos.model;
 
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -24,19 +22,21 @@ import java.util.Map;
  */
 public class BitmapTool {
 
-    private static Bitmap  defimg=null;
-    private static Map<String,Bitmap> bitmaps=new HashMap<String,Bitmap>();
-    public  static Bitmap  decodeBitmap(Context context,String image){
-        if(image==null){
-            if(defimg==null){
-                defimg=BitmapFactory.decodeResource(context.getResources(), R.drawable.stack_of_photos);
+    private static Bitmap defimg = null;
+    private static Map<String, Bitmap> bitmaps = new HashMap<String, Bitmap>();
+
+    public static Bitmap decodeBitmap(Context context, String image) {
+        if (image == null) {
+            if (defimg == null) {
+                defimg = BitmapFactory.decodeResource(context.getResources(), R.drawable.stack_of_photos);
             }
             return defimg;
         }
         byte[] bytearray = Base64.decode(image, Base64.NO_WRAP);
-        return BitmapFactory.decodeByteArray(bytearray, 0,bytearray.length);
+        return BitmapFactory.decodeByteArray(bytearray, 0, bytearray.length);
     }
-    public static Bitmap    cropBitmap(Context context,Intent data,String img[]){
+
+    public static Bitmap cropBitmap(Context context, Intent data, String img[]) {
         Bitmap bmp = null;
         try {
             bmp = MediaStore.Images.Media.getBitmap(context.getContentResolver(), data.getData());
@@ -46,11 +46,12 @@ public class BitmapTool {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 5, baos);
         byte[] b = baos.toByteArray();
-        if(img!=null)
-            img[0]=Base64.encodeToString(b, Base64.NO_WRAP);
+        if (img != null)
+            img[0] = Base64.encodeToString(b, Base64.NO_WRAP);
         return BitmapFactory.decodeByteArray(b, 0, b.length);
     }
-    static public Bitmap cropBitmap(Context context, Uri uri,String img[]){
+
+    static public Bitmap cropBitmap(Context context, Uri uri, String img[]) {
 
         ContentResolver crs = context.getContentResolver();
         final BitmapFactory.Options options = new BitmapFactory.Options();
@@ -61,7 +62,7 @@ public class BitmapTool {
             options.inJustDecodeBounds = false;
             Bitmap bm = BitmapFactory.decodeStream(crs.openInputStream(uri), null, options);
             if (img != null) {
-                img[0]=encode(bm);
+                img[0] = encode(bm);
             }
             return bm;
         } catch (FileNotFoundException e) {
@@ -93,6 +94,7 @@ public class BitmapTool {
 
         return inSampleSize;
     }
+
     private static String encode(Bitmap bitmap) {
         ByteArrayOutputStream baos = null;
         try {
@@ -113,6 +115,7 @@ public class BitmapTool {
         }
         return null;
     }
+
     private static Bitmap decode(String image) {
         if (image == null)
             return null;

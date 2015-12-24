@@ -30,21 +30,29 @@ public class SetupPasswordActivity extends EventableActivity {
 
     public void onClick(View v) {
         if (v.getId() == R.id.save) {
-            if(password.length()<6){
+            if (password.length()  ==0) {
                 password.requestFocus();
-                Bus.post(new TipOperation(-1, R.string.password_shoter));
+                Bus.post(new TipOperation(-1, R.string.password_input));
                 return;
-            }else if(passwordRe.length()<6){
+            }else if (password.length() < 6) {
+                password.requestFocus();
+                Bus.post(new TipOperation(-1, R.string.password_error));
+                return;
+            } else if (passwordRe.length() ==0) {
                 passwordRe.requestFocus();
-                Bus.post(new TipOperation(-1, R.string.password_shoter));
+                Bus.post(new TipOperation(-1, R.string.password_input));
                 return;
-            }else if(!password.getText().toString().equals(passwordRe.getText().toString())){
-                Bus.post(new TipOperation(-1,R.string.password_no_equal));
+            } else if (passwordRe.length() < 6) {
+                passwordRe.requestFocus();
+                Bus.post(new TipOperation(-1, R.string.password_error));
+                return;
+            } else if (!password.getText().toString().equals(passwordRe.getText().toString())) {
+                Bus.post(new TipOperation(-1, R.string.password_no_equal));
                 return;
             }
-            Intent intent=new Intent();
-            intent.putExtra("password",password.getText().toString());
-            setResult(RESULT_FIRST_USER,intent);
+            Intent intent = new Intent();
+            intent.putExtra("password", password.getText().toString());
+            setResult(RESULT_FIRST_USER, intent);
             finish();
         }
     }

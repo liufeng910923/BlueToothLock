@@ -1,135 +1,206 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/lighterGray"
-    tools:context="com.lncosie.ilandroidos.view.UsersFragment">
+    android:fillViewport="true"
+    android:orientation="vertical">
+
     <LinearLayout
-        android:orientation="horizontal"
-        android:layout_height="@dimen/preference_height"
         android:layout_width="match_parent"
+        android:layout_height="@dimen/preference_height"
         android:background="@color/colorPrimary"
         android:gravity="center"
-        >
+        android:orientation="horizontal">
+
         <ImageView
-            android:onClick="backward"
-            android:src="@drawable/back"
-            android:paddingLeft="@dimen/padding_normal"
             android:layout_width="@dimen/icon_with_click_padding"
-            android:layout_height="match_parent" />
-        <com.lncosie.ilandroidos.view.LanguageTextView
-            android:text="@string/user_add"
-            android:layout_gravity="center"
             android:layout_height="match_parent"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:onClick="backward"
+            android:paddingLeft="@dimen/padding_normal"
+            android:src="@drawable/back" />
+
+        <com.lncosie.ilandroidos.view.LanguageTextView
             style="@style/PreferencePageTitle"
-            />
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="@string/user_add" />
+
         <Space
             android:layout_width="@dimen/icon_with_click_padding"
             android:layout_height="match_parent" />
     </LinearLayout>
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:background="@drawable/b0"
-        android:gravity="center">
-        <de.hdodenhof.circleimageview.CircleImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/user_image"
-            android:src="@drawable/stack_of_photos"
-            style="@style/ImageStyle"
-            app:civ_border_color="#90FFFFFF"
-            app:civ_border_width="0dp"
-            />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/user_name_view_frame"
-        style="@style/FrameLayoutWhite">
-        <com.lncosie.ilandroidos.view.LanguageTextView
-            android:text="@string/username"
-            style="@style/W2HeaderText"
-            />
-        <include layout="@layout/v_seperator"/>
-        <TextView
-            android:id="@+id/user_name_view"
-            android:hint="@string/username_input"
-            style="@style/W4LengthInput" >
-            <requestFocus></requestFocus>
-        </TextView>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/user_name_edit_frame"
-        style="@style/FrameLayoutWhite">
-        <com.lncosie.ilandroidos.view.LanguageTextView
-            android:text="@string/username"
-            style="@style/W2HeaderText"
-            />
-        <include layout="@layout/v_seperator"/>
-        <EditText
-            android:id="@+id/user_name_edit"
-            android:hint="@string/username_input"
-            style="@style/W4LengthInput" />
-    </LinearLayout>
-    <include layout="@layout/auth_add_pwd_content"></include>
-    <include layout="@layout/auth_add_finger_content"></include>
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_marginTop="@dimen/padding_small"
-        android:layout_height="wrap_content"
+    <ScrollView
         android:layout_width="match_parent"
-        >
-        <RadioGroup
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginLeft="@dimen/padding_small"
-            android:layout_marginRight="@dimen/padding_small"
-            >
-            <RadioButton
-                android:id="@+id/default_add_pwd"
-                android:tag="0"
-                android:onClick="clickAddAuth"
-                android:drawableTop="@drawable/switch_add_password"
-                android:text="@string/user_add_pwd"
-                style="@style/NagativeCircleButton"
-                />
 
-            <RadioButton
-                android:tag="1"
-                android:onClick="clickAddAuth"
-                android:drawableTop="@drawable/switch_add_finger"
-                android:text="@string/user_add_finger"
-                style="@style/NagativeCircleButton"
-                />
-            <RadioButton
-                android:tag="2"
-                android:onClick="clickAddAuth"
-                android:drawableTop="@drawable/switch_add_admin_password"
-                android:text="@string/user_add_pwd_admin"
-                style="@style/NagativeCircleButton"
-                />
-            <RadioButton
-                android:tag="3"
-                android:onClick="clickAddAuth"
-                android:drawableTop="@drawable/switch_add_admin_finger"
-                android:text="@string/user_add_finger_admin"
-                style="@style/NagativeCircleButton"
-                />
-        </RadioGroup>
-    </LinearLayout>
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_normal" />
-    <com.lncosie.ilandroidos.view.LanguageTextView
-        android:id="@+id/user_add_ok"
-        android:text="@string/ok"
-        android:textColor="@color/white"
-        android:elevation="4dp"
-        android:layout_marginLeft="@dimen/padding_small"
-        android:layout_marginRight="@dimen/padding_small"
-        style="@style/FrameLayoutRed"/>
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/a"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/b"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/user_image"
+                    style="@style/ImageStyle"
+                    android:src="@drawable/stack_of_photos" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/b"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="48dp"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/user_name_view_frame"
+                    style="@style/FrameLayoutWhite">
+                    <com.lncosie.ilandroidos.view.LanguageTextView
+                        style="@style/W2HeaderText"
+                        android:text="@string/username" />
+                    <include layout="@layout/v_seperator" />
+                    <TextView
+                        android:id="@+id/user_name_view"
+                        style="@style/W4LengthInput"
+                        android:hint="@string/username_input">
+                    </TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/user_name_edit_frame"
+                    style="@style/FrameLayoutWhite">
+
+                    <com.lncosie.ilandroidos.view.LanguageTextView
+                        style="@style/W2HeaderText"
+                        android:text="@string/username" />
+
+                    <include layout="@layout/v_seperator" />
+
+                    <EditText
+                        android:id="@+id/user_name_edit"
+                        style="@style/W4LengthInput"
+                        android:hint="@string/username_input" />
+                </LinearLayout>
+
+                <LinearLayout style="@style/FrameLayoutWhite">
+
+                    <com.lncosie.ilandroidos.view.LanguageTextView
+                        style="@style/W2HeaderText"
+                        android:text="@string/id" />
+
+                    <include layout="@layout/v_seperator" />
+
+                    <com.lncosie.ilandroidos.view.LanguageTextView
+                        android:id="@+id/id_of_pwd"
+                        style="@style/W4LengthInput"
+                        android:hint="@string/id" />
+                </LinearLayout>
+
+                <include layout="@layout/auth_add_pwd_content"></include>
+
+                <include layout="@layout/auth_add_finger_content"></include>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/large_icon"
+                    android:layout_marginTop="@dimen/padding_small"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <RadioGroup
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginLeft="@dimen/padding_small"
+                        android:layout_marginRight="@dimen/padding_small"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/large_icon"
+                            android:layout_weight="1"
+                            android:gravity="center">
+
+                            <RadioButton
+                                android:id="@+id/default_add_pwd"
+
+                                style="@style/NagativeCircleButton"
+                                android:drawableTop="@drawable/switch_add_password"
+                                android:onClick="clickAddAuth"
+                                android:tag="0"
+                                android:text="@string/user_add_pwd" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/large_icon"
+                            android:layout_weight="1"
+                            android:gravity="center">
+
+                            <RadioButton
+                                style="@style/NagativeCircleButton"
+                                android:drawableTop="@drawable/switch_add_finger"
+                                android:onClick="clickAddAuth"
+                                android:tag="1"
+                                android:text="@string/user_add_finger" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/large_icon"
+                            android:layout_weight="1"
+                            android:gravity="center">
+
+                            <RadioButton
+                                style="@style/NagativeCircleButton"
+                                android:drawableTop="@drawable/switch_add_admin_password"
+                                android:onClick="clickAddAuth"
+                                android:tag="2"
+                                android:text="@string/user_add_pwd_admin" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="@dimen/large_icon"
+                            android:layout_weight="1"
+                            android:gravity="center">
+
+                            <RadioButton
+                                style="@style/NagativeCircleButton"
+                                android:drawableTop="@drawable/switch_add_admin_finger"
+                                android:onClick="clickAddAuth"
+                                android:tag="3"
+                                android:text="@string/user_add_finger_admin" />
+                        </LinearLayout>
+                    </RadioGroup>
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/padding_normal" />
+
+                <com.lncosie.ilandroidos.view.LanguageTextView
+                    android:id="@+id/user_add_ok"
+                    style="@style/FrameLayoutRed"
+                    android:layout_marginLeft="@dimen/padding_small"
+                    android:layout_marginRight="@dimen/padding_small"
+                    android:elevation="4dp"
+                    android:text="@string/ok"
+                    android:textColor="@color/white">
+                    <requestFocus/>
+                </com.lncosie.ilandroidos.view.LanguageTextView>
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
 </LinearLayout>

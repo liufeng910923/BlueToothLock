@@ -13,15 +13,17 @@ public class TimeTools {
         }
         return ti;
     }
-    public static long toTime(byte[] time,int idx) {
-        if (time == null || time.length-5-idx < 0)
+
+    public static long toTime(byte[] time, int idx) {
+        if (time == null || time.length - 5 - idx < 0)
             return 0;
         long ti = 0;
-        for (int i = idx; i < idx+5; i++) {
+        for (int i = idx; i < idx + 5; i++) {
             ti = ti * 100 + time[i];
         }
         return ti;
     }
+
     public static String toString(long time) {
         if (time == 0)
             return "";
@@ -33,17 +35,17 @@ public class TimeTools {
                 time % 100
         );
     }
+
     public static String rawString(long time) {
         if (time == 0)
             return "";
-        return String.format("20%02d%02d%02d%02d%02d",
+        return String.format("20%02d-%02d-%02d",
                 time / 1_00_00_00_00L % 100,
                 time / 100_00_00 % 100,
-                time / 100_00 % 100,
-                time / 100 % 100,
-                time % 100
+                time / 100_00 % 100
         );
     }
+
     public static String toDayString2(long time) {
         return String.format("20%02d/%02d/%02d",
                 time / 100_00_00_00L % 100,

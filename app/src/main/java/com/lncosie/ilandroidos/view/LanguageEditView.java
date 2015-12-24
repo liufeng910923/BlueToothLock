@@ -14,12 +14,10 @@ import com.lncosie.ilandroidos.R;
  */
 public class LanguageEditView extends EditText {
     int resid;
-    public void languageChanged(){
-        setHint(resid);
-    }
+
     public LanguageEditView(Context context) {
         super(context);
-        init(null,0);
+        init(null, 0);
     }
 
     public LanguageEditView(Context context, AttributeSet attrs) {
@@ -37,11 +35,16 @@ public class LanguageEditView extends EditText {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs, defStyleAttr);
     }
-    void init(AttributeSet attrs, int defStyleAttr){
+
+    public void languageChanged() {
+        setHint(resid);
+    }
+
+    void init(AttributeSet attrs, int defStyleAttr) {
         final TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.LanguageEditView, defStyleAttr, 0);
         String txt = a.getString(R.styleable.LanguageEditView_hint);
-        resid=getResources().getIdentifier(txt,"string", getContext().getPackageName());
-        if(resid==0)
+        resid = getResources().getIdentifier(txt, "string", getContext().getPackageName());
+        if (resid == 0)
             return;
         setText(resid);
         a.recycle();

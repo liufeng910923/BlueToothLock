@@ -6,8 +6,9 @@ package com.lncosie.ilandroidos.bus;
 public class TipOperation {
     public int code;
     public int message;
-    public TipOperation(int code, int message){
-        this.code= code;
-        this.message=message;
+
+    public TipOperation(int code, int message) {
+        this.code = code;
+        this.message = message;
     }
 }

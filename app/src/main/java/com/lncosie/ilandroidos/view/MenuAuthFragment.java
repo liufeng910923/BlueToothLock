@@ -23,19 +23,20 @@ public class MenuAuthFragment extends DialogFragment implements View.OnClickList
 
     Applyable applyable;
     @Bind(R.id.window_title)
-    TextView    windowTitle;
+    TextView windowTitle;
     @Bind(R.id.menu_item_modify)
     TextView menuItemModify;
     @Bind(R.id.menu_item_delete)
     TextView menuItemDelete;
 
-    long    arg0;
-    long    arg1;
-    public static MenuAuthFragment newInstance(long arg0,long arg1,Applyable applyable) {
+    long arg0;
+    long arg1;
+
+    public static MenuAuthFragment newInstance(long arg0, long arg1, Applyable applyable) {
         MenuAuthFragment fragment = new MenuAuthFragment();
         fragment.applyable = applyable;
-        fragment.arg0=arg0;
-        fragment.arg1=arg1;
+        fragment.arg0 = arg0;
+        fragment.arg1 = arg1;
         return fragment;
     }
 
@@ -46,13 +47,13 @@ public class MenuAuthFragment extends DialogFragment implements View.OnClickList
         View view = inflater.inflate(R.layout.fragment_menu_auth, null);
         builder.setView(view);//.setNegativeButton(R.string.cancel,null);
         ButterKnife.bind(this, view);
-        if(arg0==0){
-            if(arg1==0){
+        if (arg0 == 0) {
+            if (arg1 == 0) {
                 menuItemDelete.setVisibility(View.GONE);
-            }else if(arg1>4){
+            } else if (arg1 > 4) {
                 menuItemModify.setVisibility(View.GONE);
             }
-        }else if(arg0==1){
+        } else if (arg0 == 1) {
             menuItemModify.setVisibility(View.GONE);
         }
         windowTitle.setText(R.string.menu_title);
@@ -68,10 +69,9 @@ public class MenuAuthFragment extends DialogFragment implements View.OnClickList
     }
 
 
-
     @Override
     public void onClick(View v) {
-        applyable.apply(v.getId()==menuItemDelete.getId()?0:1,null);
+        applyable.apply(v.getId() == menuItemDelete.getId() ? 0 : 1, null);
         this.dismiss();
     }
 }

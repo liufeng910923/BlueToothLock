@@ -6,17 +6,12 @@ package com.lncosie.ilandroidos.bluenet;
 public interface OnNetStateChange {
     void onChange(NetState state);
 
-    public enum NetState {
-        Idel,
+    enum NetState {
+        Disconnected,
         Searching,
-        SearchTimeout,
         Connecting,
         Connected,
-        ConnectFailed,
-        LoginSuccess,
         LoginFailed,
-        Disconnected,
-        Pending
-
+        Login
     }
 }

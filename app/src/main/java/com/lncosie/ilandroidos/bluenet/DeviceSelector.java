@@ -7,18 +7,23 @@ import android.bluetooth.BluetoothDevice;
 import java.util.List;
 
 
-public interface DeviceSelector{
+public interface DeviceSelector {
 
-    public abstract BluetoothDevice select();
-    public boolean onScanResult(BluetoothDevice device, int rssi, byte[] scanRecord) ;
+    BluetoothDevice select();
 
-    public void onBatchScanResults(List<BluetoothDevice> results) ;
-    public void onScanFailed(int errorCode) ;
-    public class MacSelector implements DeviceSelector{
+    boolean onScanResult(BluetoothDevice device, int rssi, byte[] scanRecord);
+
+    void onBatchScanResults(List<BluetoothDevice> results);
+
+    void onScanFailed(int errorCode);
+
+    class MacSelector implements DeviceSelector {
         String mac;
-        public MacSelector(String mac){
-            this.mac=mac;
+
+        public MacSelector(String mac) {
+            this.mac = mac;
         }
+
         @Override
         public BluetoothDevice select() {
             return BluetoothAdapter.getDefaultAdapter().getRemoteDevice(mac);

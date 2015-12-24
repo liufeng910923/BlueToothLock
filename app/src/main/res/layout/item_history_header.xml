@@ -2,14 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:gravity="center_vertical"
-    >
+    android:orientation="horizontal">
+
     <TextView
         android:id="@+id/open_date"
-        android:text="@string/app_name"
         style="@style/PreferenceTitleText"
         android:layout_height="48dp"
-        android:textSize="18dp"
-        />
+        android:text="@string/app_name"
+        android:textSize="18sp" />
 </LinearLayout>

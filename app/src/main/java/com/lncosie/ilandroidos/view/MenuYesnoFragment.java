@@ -34,11 +34,12 @@ public class MenuYesnoFragment extends DialogFragment implements View.OnClickLis
 
     int title;
     String message;
-    public static MenuYesnoFragment newInstance(int title,String message,Applyable applyable) {
+
+    public static MenuYesnoFragment newInstance(int title, String message, Applyable applyable) {
         MenuYesnoFragment fragment = new MenuYesnoFragment();
         fragment.applyable = applyable;
-        fragment.title=title;
-        fragment.message=message;
+        fragment.title = title;
+        fragment.message = message;
         return fragment;
     }
 
@@ -64,8 +65,8 @@ public class MenuYesnoFragment extends DialogFragment implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == ok.getId())
-            applyable.apply(null,null);
+        if (v.getId() == ok.getId())
+            applyable.apply(null, null);
         this.dismiss();
     }
 

@@ -5,7 +5,8 @@ package com.lncosie.ilandroidos.bus;
  */
 public class ViewUserLog {
     public long gid;
-    public ViewUserLog(long gid){
-        this.gid=gid;
+
+    public ViewUserLog(long gid) {
+        this.gid = gid;
     }
 }

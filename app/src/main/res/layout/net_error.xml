@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.lncosie.ilandroidos.view.LanguageTextView
+        android:id="@+id/net_tip"
+        android:layout_height="40dp"
+        android:background="#ff4c4c4c"
+        style="@style/PreferencePageTitle"
+        android:textColor="@color/darkGray"
+        android:textSize="12sp"
+        android:text="@string/network_disconnect_tip"
+        app:lang="network_disconnect_tip" />
+</merge>

@@ -23,11 +23,12 @@ public class MenuLanguageFragment extends DialogFragment implements View.OnClick
 
     Applyable applyable;
     @Bind(R.id.window_title)
-    TextView    windowTitle;
+    TextView windowTitle;
     @Bind(R.id.menu_item_chinese)
     TextView menu_item_chinese;
     @Bind(R.id.menu_item_english)
     TextView menu_item_english;
+
     public static MenuLanguageFragment newInstance(Applyable applyable) {
         MenuLanguageFragment fragment = new MenuLanguageFragment();
         fragment.applyable = applyable;
@@ -52,6 +53,7 @@ public class MenuLanguageFragment extends DialogFragment implements View.OnClick
         super.onDestroyView();
         ButterKnife.unbind(this);
     }
+
     @Override
     public void onClick(View v) {
         applyable.apply(v.getId() == menu_item_english.getId() ? 0 : 1, v.getTag());

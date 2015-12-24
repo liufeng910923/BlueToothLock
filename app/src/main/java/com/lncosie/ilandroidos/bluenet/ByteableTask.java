@@ -2,7 +2,7 @@ package com.lncosie.ilandroidos.bluenet;
 
 
 public abstract class ByteableTask extends Task {
-    public final static byte CMD_DEBUG= 0x2f;
+    public final static byte CMD_DEBUG = 0x2f;
     public final static byte HEART_BEAT = 0x24;
     public final static byte CMD_AUTH = 0x01;
     public final static byte CMD_DISCONNECT = 0x00;
@@ -43,14 +43,12 @@ public abstract class ByteableTask extends Task {
     public final static byte CMD_SYNC_IDS_FINGER = 0x22;
 
 
-
     final static byte CMD_HEADER_FC = -0x04;
     final static byte CMD_HEADER_FD = -0x03;
     final static byte CMD_END = -0x02;
-
+    public byte command;
     DataBuilder send = new DataBuilder();
     DataBuilder receive = new DataBuilder();
-    public byte command;
     byte error;
 
     public ByteableTask(NetTransfer transfer, byte cmd) {
