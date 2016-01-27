@@ -32,10 +32,7 @@ public class ActiveAbleFragment extends Fragment {
 
     }
     protected boolean checkSendable() {
-        if (!Net.get().isSendable()) {
-            return false;
-        }
-        return true;
+        return Net.get().isSendable();
     }
     protected void autoConnet(){
         Net net=Net.get();

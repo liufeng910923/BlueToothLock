@@ -1,6 +1,6 @@
 package com.lncosie.ilandroidos.view;
 
-import android.animation.Animator;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -15,6 +15,7 @@ import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bluenet.ByteableTask;
 import com.lncosie.ilandroidos.bluenet.Net;
 import com.lncosie.ilandroidos.bluenet.Task;
+import com.lncosie.ilandroidos.bus.BluetoothConneted;
 import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.bus.NetworkError;
 import com.lncosie.ilandroidos.bus.OperatorMessages;
@@ -96,6 +97,7 @@ public class UserAddActivity extends EventableActivity {
 
     @OnClick(R.id.user_image)
     void user_pick_image(View v) {
+        pauseDetect=true;
         Intent intent = new Intent(
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.INTERNAL_CONTENT_URI);
@@ -106,6 +108,10 @@ public class UserAddActivity extends EventableActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 3)
+        {
+            pauseDetect=false;
+        }
         if (resultCode == 0)
             return;
         if (checkAddUser() == false)
@@ -140,27 +146,34 @@ public class UserAddActivity extends EventableActivity {
         clickAddAuth(add_radio);
         add_radio.setChecked(true);
         HideWhenTouchOutside.setupUI(this);
-        //userAddOk.requestFocus();
     }
-
+    @Subscribe
+    public void bluetoothConneted(BluetoothConneted state){
+        showLoginPassword(state.needPassword);
+    }
     @Subscribe
     public void addFromLock(OperatorMessages.OpAddAuth result) {
+        endAnimate();
+        if(result.error==(byte)0xFF){
+            if(result.type==0){
+                Bus.post(new TipOperation(-1, R.string.timeout_op));
+            }else if(result.type==1){
+                Bus.post(new TipOperation(-1, R.string.timeout_op_finger));
+            }
+            return;
+        }
         if (result.error != 0) {
-            idOfPwd.setText(R.string.user_full);
-            idLocked = null;
-
+            if(result.error==0x04)
+            {
+                idOfPwd.setText(R.string.user_full);
+                return;
+            }
+            idOfPwd.setText("");
             return;
         }
         idLocked = result;
-        switch (result.cmd) {
-            case ByteableTask.CMD_ADD_ADMIN_PWD:
-            case ByteableTask.CMD_ADD_USER_PWD:
-                idOfPwd.setText(String.format("%02d", idLocked.uid));
-                break;
-            case ByteableTask.CMD_ADD_ADMIN_FINGER:
-            case ByteableTask.CMD_ADD_USER_FINGER:
-                break;
-        }
+        idOfPwd.setText(String.format("%02d", idLocked.uid));
+
         if (isAdd) {
             user.save();
             UserDetail detail = new UserDetail();
@@ -170,7 +183,6 @@ public class UserAddActivity extends EventableActivity {
             detail.save();
             gotoViewPage();
         }
-
     }
 
     public void backward(View v) {
@@ -208,7 +220,6 @@ public class UserAddActivity extends EventableActivity {
     }
 
     public void clickAddAuth(View v) {
-
         isAdd = false;
         authAddSelect = Integer.valueOf((String) v.getTag());
         add_radio.setChecked(false);
@@ -218,22 +229,22 @@ public class UserAddActivity extends EventableActivity {
             case 0:
                 authAddPwdPage.setVisibility(View.VISIBLE);
                 authAddFingerPage.setVisibility(View.GONE);
-                Net.get().sendChecked(new InterlockOperation.TaskGetPwdID(Net.get(), false));
+                Net.get().sendChecked(new InterlockOperation.TaskGetPwdAuthID(Net.get(), false));
                 break;
             case 1:
                 authAddPwdPage.setVisibility(View.GONE);
                 authAddFingerPage.setVisibility(View.VISIBLE);
-                idOfPwd.setText(null);
+                Net.get().sendChecked(new InterlockOperation.TaskGetFingerAuthID(Net.get(), false));
                 break;
             case 2:
                 authAddPwdPage.setVisibility(View.VISIBLE);
                 authAddFingerPage.setVisibility(View.GONE);
-                Net.get().sendChecked(new InterlockOperation.TaskGetPwdID(Net.get(), true));
+                Net.get().sendChecked(new InterlockOperation.TaskGetPwdAuthID(Net.get(), true));
                 break;
             case 3:
                 authAddPwdPage.setVisibility(View.GONE);
                 authAddFingerPage.setVisibility(View.VISIBLE);
-                idOfPwd.setText(null);
+                Net.get().sendChecked(new InterlockOperation.TaskGetFingerAuthID(Net.get(), true));
                 break;
         }
         if (checkSendable() == false) {
@@ -257,22 +268,22 @@ public class UserAddActivity extends EventableActivity {
         if (password == null) {
             return;
         }
-
+        byte id[]=new byte[]{(byte)(idLocked.uid/10),(byte)(idLocked.uid%10)};
         isAdd = true;
         Task task = null;
         Net net = Net.get();
         switch (authAddSelect) {
             case 0:
-                task = new InterlockOperation.TaskAddPwd(net, false, password);
+                task = new InterlockOperation.TaskAddPwdAuth(net, false, password);
                 break;
             case 1:
-                task = new InterlockOperation.TaskAddFinger(net, false);
+                task = new InterlockOperation.TaskAddFingerAuth(net, false,id);
                 break;
             case 2:
-                task = new InterlockOperation.TaskAddPwd(net, true, password);
+                task = new InterlockOperation.TaskAddPwdAuth(net, true, password);
                 break;
             case 3:
-                task = new InterlockOperation.TaskAddFinger(net, true);
+                task = new InterlockOperation.TaskAddFingerAuth(net, true,id);
                 break;
         }
         net.sendChecked(task);
@@ -293,7 +304,7 @@ public class UserAddActivity extends EventableActivity {
             return null;
         } else if (p.length() < 6) {
             password.requestFocus();
-            Bus.post(new TipOperation(-1, R.string.password_error));
+            Bus.post(new TipOperation(-1, R.string.password_shoter));
             return null;
         } else if (pRe.length() == 0) {
             passwordRe.requestFocus();
@@ -301,7 +312,7 @@ public class UserAddActivity extends EventableActivity {
             return null;
         } else if (pRe.length() < 6) {
             passwordRe.requestFocus();
-            Bus.post(new TipOperation(-1, R.string.password_error));
+            Bus.post(new TipOperation(-1, R.string.password_shoter));
             return null;
         } else if (!p.equals(pRe)) {
             Bus.post(new TipOperation(-1, R.string.password_no_equal));
@@ -309,35 +320,47 @@ public class UserAddActivity extends EventableActivity {
         }
         return StringTools.getPwdBytes(idLocked.uid, p, pRe);
     }
-
+    void endAnimate(){
+        if(dialog!=null){
+            dialog.dismiss();
+            dialog=null;
+        }
+    }
+    ProgressDialog dialog=null;
     void startAnimate() {
-        int h = animate_frame.getHeight();
-        int w = animate_frame.getHeight();
-        userAddFingerAnimate.setScaleX(1);
-        userAddFingerAnimate.setX(-1);
-        userAddFingerAnimate.setVisibility(View.VISIBLE);
+        dialog = new ProgressDialog(this);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        dialog.setMessage(getString(R.string.finger_input));
+        dialog.setCancelable(false);
+        dialog.show();
 
-        userAddFingerAnimate.animate()//.setInterpolator(new AccelerateDecelerateInterpolator())
-                .scaleX(w).setDuration(6000).setListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                userAddFingerAnimate.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        }).start();
+//        int h = animate_frame.getHeight();
+//        int w = animate_frame.getHeight();
+//        userAddFingerAnimate.setScaleX(1);
+//        userAddFingerAnimate.setX(-1);
+//        userAddFingerAnimate.setVisibility(View.VISIBLE);
+//
+//        userAddFingerAnimate.animate()//.setInterpolator(new AccelerateDecelerateInterpolator())
+//                .scaleX(w).setDuration(6000).setListener(new Animator.AnimatorListener() {
+//            @Override
+//            public void onAnimationStart(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                userAddFingerAnimate.setVisibility(View.INVISIBLE);
+//            }
+//
+//            @Override
+//            public void onAnimationCancel(Animator animation) {
+//
+//            }
+//
+//            @Override
+//            public void onAnimationRepeat(Animator animation) {
+//
+//            }
+//        }).start();
     }
 }

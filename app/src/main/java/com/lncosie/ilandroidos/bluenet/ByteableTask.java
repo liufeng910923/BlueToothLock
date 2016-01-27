@@ -33,7 +33,7 @@ public abstract class ByteableTask extends Task {
     public final static byte CMD_SET_SAFE_STATE = 0x1a;
 
     public final static byte CMD_RESET_ALL = 0x1b;
-    public final static byte CMD_RESET_ADMIN = 0x1b;
+    public final static byte CMD_RESET_ADMIN_PWD = 0x0a;
     public final static byte CMD_RESET_HISTORY = 0x1c;
     public final static byte CMD_GET_HISTORY = 0x20;
     public final static byte CMD_GET_FREE_SPACE = 0x28;

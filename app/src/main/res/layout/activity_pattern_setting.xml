@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fillViewport="true"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/preference_height"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_width="@dimen/icon_with_click_padding"
+            android:layout_height="match_parent"
+            android:onClick="backward"
+            android:paddingLeft="@dimen/padding_normal"
+            android:src="@drawable/back" />
+        <TextView
+            android:id="@+id/title"
+            style="@style/PreferencePageTitle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="@string/pattern_set_title" />
+        <ImageView
+            android:layout_width="@dimen/icon_with_click_padding"
+            android:layout_height="match_parent"
+            android:paddingLeft="@dimen/padding_normal"
+            />
+    </LinearLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+    <LinearLayout
+
+        style="@style/FrameLayoutClickable"
+        android:layout_marginBottom="@dimen/padding_normal">
+        <!--<ImageView-->
+            <!--android:layout_width="@dimen/icon_size"-->
+            <!--android:layout_height="@dimen/icon_size"-->
+            <!--android:src="@drawable/pattern" />-->
+
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            style="@style/PreferenceTitleText"
+            android:text="@string/pattern_setting"
+            app:lang="@string/pattern_setting" />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+        <Switch
+            android:id="@+id/switch_motion_pwd"
+            android:layout_width="48dp"
+            android:layout_height="@dimen/icon_size_small"
+            />
+    </LinearLayout>
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="16dp" />
+    <LinearLayout
+        android:id="@+id/frame_change_pattern"
+        style="@style/FrameLayoutClickable"
+        android:layout_marginBottom="@dimen/padding_normal">
+        <!--<ImageView-->
+            <!--android:layout_width="@dimen/icon_size"-->
+            <!--android:layout_height="@dimen/icon_size"-->
+            <!--android:src="@drawable/pattern" />-->
+
+        <com.lncosie.ilandroidos.view.LanguageTextView
+            style="@style/PreferenceTitleText"
+            android:text="@string/pattern_modify"
+            app:lang="@string/pattern_modify" />
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+        <ImageView
+            android:layout_width="@dimen/icon_size_small"
+            android:layout_height="@dimen/icon_size_small"
+            android:src="@drawable/forward" />
+    </LinearLayout>
+</LinearLayout>

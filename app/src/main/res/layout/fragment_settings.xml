@@ -250,14 +250,25 @@
 
             <LinearLayout style="@style/FrameLayoutClickable">
 
-                <ImageView
+                <View
                     android:layout_width="@dimen/icon_size"
                     android:layout_height="@dimen/icon_size" />
-
-                <TextView
-                    android:id="@+id/version_text"
+                <com.lncosie.ilandroidos.view.LanguageTextView
+                    android:text="@string/version"
+                    app:lang="version"
                     style="@style/PreferenceTitleText" />
-
+                <TextView
+                    android:id="@+id/version"
+                    android:paddingLeft="0dp"
+                    style="@style/PreferenceTitleText" />
+                <com.lncosie.ilandroidos.view.LanguageTextView
+                    android:text="@string/model"
+                    app:lang="model"
+                    style="@style/PreferenceTitleText" />
+                <TextView
+                    android:id="@+id/model"
+                    android:paddingLeft="0dp"
+                    style="@style/PreferenceTitleText" />
                 <Space
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -268,7 +279,28 @@
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="16dp" />
+            <LinearLayout
+                android:id="@+id/pattern_setting_frame"
+                style="@style/FrameLayoutClickable"
+                android:layout_marginBottom="@dimen/padding_normal">
+                <ImageView
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
+                    android:src="@drawable/pattern" />
 
+                <com.lncosie.ilandroidos.view.LanguageTextView
+                    style="@style/PreferenceTitleText"
+                    android:text="@string/pattern_setting"
+                    app:lang="@string/stub" />
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+                <ImageView
+                    android:layout_width="@dimen/icon_size_small"
+                    android:layout_height="@dimen/icon_size_small"
+                    android:src="@drawable/forward" />
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/frame_about"
                 style="@style/FrameLayoutClickable"

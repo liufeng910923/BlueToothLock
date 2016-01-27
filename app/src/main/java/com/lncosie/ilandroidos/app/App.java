@@ -21,7 +21,6 @@ public class App extends com.activeandroid.app.Application {
     public void onCreate() {
         super.onCreate();
         DbHelper.DbInit();
-
         Net.get().init(this);
         Bus.busInit();
         feather = Feather.with();
@@ -41,7 +40,7 @@ public class App extends com.activeandroid.app.Application {
 
     @Override
     public void onTerminate() {
-        Net.get().disconnect();
+        Net.get().reset();
         super.onTerminate();
     }
 }

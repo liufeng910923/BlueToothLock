@@ -11,6 +11,7 @@ public interface OnNetStateChange {
         Searching,
         Connecting,
         Connected,
+        NeedPassword,
         LoginFailed,
         Login
     }

@@ -1,10 +1,10 @@
 package com.lncosie.ilandroidos.model;
 
-import com.activeandroid.query.Delete;
 import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bluenet.ByteableTask;
 import com.lncosie.ilandroidos.bluenet.Net;
 import com.lncosie.ilandroidos.bluenet.NetTransfer;
+import com.lncosie.ilandroidos.bus.AuthDispear;
 import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.bus.HistoryChanged;
 import com.lncosie.ilandroidos.bus.OperatorMessages;
@@ -93,7 +93,6 @@ public class InterlockOperation {
         ByteableTask task = new NotifyabbleTask(Net.get(), ByteableTask.CMD_RESET_ALL) {
             @Override
             protected void onTaskDown() {
-
                 DbHelper.eraseHistory();
                 DbHelper.eraseUsers();
                 Users user=new Users();
@@ -107,6 +106,7 @@ public class InterlockOperation {
                 detail.save();
                 Bus.post(new UsersChanged());
                 Bus.post(new HistoryChanged());
+                Bus.post(new AuthDispear());
                 Bus.post(new TipOperation(getError(), R.string.succ_op_factory));
             }
         };
@@ -115,18 +115,16 @@ public class InterlockOperation {
     }
 
     public static void resetAdminPwd() {
-        byte[] init = {0, 0, 1, 2, 3, 4, 5, 6};
-        for(int i=0;i<5;i++){
-            init[1]=(byte)i;
-            Net.get().sendChecked(new NotifyabbleTask(Net.get(), ByteableTask.CMD_MODIFY_PWD, init) {
-                byte i=init[1];
+
+
+            Net.get().sendChecked(new NotifyabbleTask(Net.get(), ByteableTask.CMD_RESET_ADMIN_PWD) {
                 @Override
                 protected void onTaskDown() {
-                    if(i==4)
-                        Bus.post(new TipOperation(getError(), R.string.succ_op_resetadmin));
+                    Bus.post(new AuthDispear());
+                    Bus.post(new TipOperation(getError(), R.string.succ_op_resetadmin));
                 }
             });
-        }
+
 
     }
 
@@ -185,63 +183,69 @@ public class InterlockOperation {
             @Override
             protected void onTaskDown() {
                 byte[] data = getData();
-                String text = TimeTools.toString(TimeTools.toTime(data, 0));
+                String text = TimeTools.toString(TimeTools.toTime(data, 1));
                 applyable.apply(text, null);
             }
         });
     }
 
-    public static class TaskGetPwdID extends IdValueTask {
-        public TaskGetPwdID(NetTransfer transfer, boolean admin) {
+    public static class TaskGetPwdAuthID extends AuthIdTask {
+        public TaskGetPwdAuthID(NetTransfer transfer, boolean admin) {
             super(transfer, admin ? ByteableTask.CMD_ADD_ADMIN_PWD : ByteableTask.CMD_ADD_USER_PWD, new byte[]{25, 25, 0, 0, 0, 0, 0, 0});
         }
 
     }
+    public static class TaskGetFingerAuthID extends AuthIdTask {
+        public TaskGetFingerAuthID(NetTransfer transfer, boolean admin) {
+            super(transfer, admin ? ByteableTask.CMD_ADD_ADMIN_FINGER : ByteableTask.CMD_ADD_USER_FINGER, new byte[]{100,100});
+        }
 
-    public static class TaskAddPwd extends IdValueTask {
-        public TaskAddPwd(NetTransfer transfer, boolean admin, byte[] password) {
+    }
+
+    public static class TaskAddPwdAuth extends AuthIdTask {
+        public TaskAddPwdAuth(NetTransfer transfer, boolean admin, byte[] password) {
             super(transfer, admin ? ByteableTask.CMD_ADD_ADMIN_PWD : ByteableTask.CMD_ADD_USER_PWD, password);
         }
     }
 
-    public static class TaskAddFinger extends IdValueTask {
-        public TaskAddFinger(NetTransfer transfer, boolean admin) {
-            super(transfer, admin ? ByteableTask.CMD_ADD_ADMIN_FINGER : ByteableTask.CMD_ADD_USER_FINGER);
-            this.setTimeout(4500);
-        }
-
-        @Override
-        protected void onTimeout() {
-            Bus.post(new TipOperation(-1, R.string.timeout_op_finger));
+    public static class TaskAddFingerAuth extends AuthIdTask {
+        public TaskAddFingerAuth(NetTransfer transfer, boolean admin,byte[] id) {
+            super(transfer, admin ? ByteableTask.CMD_ADD_ADMIN_FINGER : ByteableTask.CMD_ADD_USER_FINGER,id);
+            this.setTimeout(8000);
         }
     }
 
-    public abstract static class IdValueTask extends NotifyabbleTask {
+
+    public abstract static class AuthIdTask extends NotifyabbleTask {
 
 
-        public IdValueTask(NetTransfer transfer, byte cmd) {
+        public AuthIdTask(NetTransfer transfer, byte cmd) {
             super(transfer, cmd);
         }
 
-        public IdValueTask(NetTransfer transfer, byte cmd, byte[] data) {
+        public AuthIdTask(NetTransfer transfer, byte cmd, byte[] data) {
             super(transfer, cmd, data);
         }
 
         @Override
         protected void onTaskDown() {
+            byte type = 0;
+            if (command == ByteableTask.CMD_ADD_ADMIN_FINGER || command == ByteableTask.CMD_ADD_USER_FINGER) {
+                type = 1;
+            }
             if (getError() != 0) {
-                Bus.post(new OperatorMessages.OpAddAuth(command, getError(), (byte) 0, (byte) 0));
+                Bus.post(new OperatorMessages.OpAddAuth(command, getError(), type,(byte) 0));
                 return;
             } else {
                 byte[] data = getData();
                 int id = data[1];
                 id = id * 10 + data[2];
-                byte type = 0;
-                if (command == ByteableTask.CMD_ADD_ADMIN_FINGER || command == ByteableTask.CMD_ADD_USER_FINGER) {
-                    type = 1;
-                }
                 Bus.post(new OperatorMessages.OpAddAuth(command, getError(), type, (byte) id));
             }
+        }
+        @Override
+        protected void onTimeout() {
+            Bus.post(new OperatorMessages.OpAddAuth(command, (byte)0xFF, (byte) 0, (byte) 0));
         }
     }
 

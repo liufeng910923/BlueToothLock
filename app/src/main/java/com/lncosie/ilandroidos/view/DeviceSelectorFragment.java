@@ -63,7 +63,9 @@ public class DeviceSelectorFragment extends DialogFragment implements AdapterVie
         Bus.register(this);
         deviceSearch.setOnItemClickListener(this);
         search();
-        return builder.create();
+        Dialog dialog= builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        return dialog;
     }
 
     @Override
@@ -75,8 +77,14 @@ public class DeviceSelectorFragment extends DialogFragment implements AdapterVie
 
     @Subscribe
     public void onScanResult(BluetoothDiscovered discovered) {
-        adapter.devices.add(discovered.device);
-        adapter.notifyDataSetChanged();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.devices.add(discovered.device);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
     }
 
     void search() {
@@ -90,6 +98,7 @@ public class DeviceSelectorFragment extends DialogFragment implements AdapterVie
         adapter.selected = adapter.devices.get(position);
         this.dismiss();
         Net net = Net.get();
+        net.stateRetrying=false;
         net.setDevice(adapter.devices.get(position));
         net.stopScan().connect();
     }
@@ -114,11 +123,9 @@ public class DeviceSelectorFragment extends DialogFragment implements AdapterVie
         LayoutInflater inflater;
         List<BluetoothDevice> devices = new ArrayList<BluetoothDevice>();
         BluetoothDevice selected = null;
-
         DeviceAdapter(LayoutInflater inflater) {
             this.inflater = inflater;
         }
-
         @Override
         public int getCount() {
             return devices.size();

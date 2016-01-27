@@ -102,10 +102,10 @@
 
                     <include layout="@layout/v_seperator" />
 
-                    <com.lncosie.ilandroidos.view.LanguageTextView
+                    <TextView
                         android:id="@+id/id_of_pwd"
                         style="@style/W4LengthInput"
-                        android:hint="@string/id" />
+                        />
                 </LinearLayout>
 
                 <include layout="@layout/auth_add_pwd_content"></include>

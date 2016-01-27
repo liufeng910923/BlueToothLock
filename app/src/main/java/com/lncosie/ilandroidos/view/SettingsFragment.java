@@ -1,6 +1,7 @@
 package com.lncosie.ilandroidos.view;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -8,15 +9,19 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bus.Bus;
+import com.lncosie.ilandroidos.bus.DeviceDisconnected;
 import com.lncosie.ilandroidos.bus.ErrorPassword;
 import com.lncosie.ilandroidos.bus.LanguageChanged;
-import com.lncosie.ilandroidos.bus.DeviceConnedted;
-import com.lncosie.ilandroidos.bus.DeviceDisconnected;
+import com.lncosie.ilandroidos.bus.LoginSuccess;
+import com.lncosie.ilandroidos.bus.TipOperation;
+import com.lncosie.ilandroidos.bus.UsersChanged;
 import com.lncosie.ilandroidos.model.Applyable;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.model.InterlockOperation;
@@ -27,6 +32,7 @@ import java.util.Locale;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
 public class SettingsFragment extends ActiveAbleFragment {
@@ -43,14 +49,16 @@ public class SettingsFragment extends ActiveAbleFragment {
     @Bind(R.id.space_finger_text)
     TextView spaceFingerText;
 
-    @Bind(R.id.version_text)
-    TextView versionText;
+    @Bind(R.id.version)
+    TextView version;
+    @Bind(R.id.model)
+    TextView model;
     boolean opAble = true;
     @Bind(R.id.net_tip)
     TextView net_tip;
 
     @Subscribe
-    public void OnConnected(DeviceConnedted state) {
+    public void OnConnected(LoginSuccess state) {
         net_tip.setVisibility(View.GONE);
     }
 
@@ -64,10 +72,9 @@ public class SettingsFragment extends ActiveAbleFragment {
         super.autoConnet();
     }
 
+
     public SettingsFragment() {
-
     }
-
 
     @Override
     public void onDestroyView() {
@@ -102,24 +109,14 @@ public class SettingsFragment extends ActiveAbleFragment {
         return view;
     }
 
-    @Subscribe
-    public void langChanged(LanguageChanged languageChanged) {
-        //title.setText(R.string.setting);
-        Applyable version = new Applyable() {
-            @Override
-            public void apply(Object bytes, Object arg1) {
-                byte[] data = (byte[]) bytes;
-                String formater = getString(R.string.version_formater);
-                String text = String.format(formater, data[6], data[7], data[1], data[2], data[3], data[4], data[5]);
-                versionText.setText(text);
-            }
-        };
-        InterlockOperation.getVersion(version);
-    }
-
     @Override
     protected void onActive(Object arg) {
         super.onActive(arg);
+        updataUi();
+    }
+
+    @Subscribe
+    public void usersChanged(UsersChanged u) {
         updataUi();
     }
 
@@ -146,16 +143,19 @@ public class SettingsFragment extends ActiveAbleFragment {
             }
         };
         InterlockOperation.getSpace(space);
-        Applyable version = new Applyable() {
+        Applyable ver = new Applyable() {
             @Override
             public void apply(Object bytes, Object arg1) {
                 byte[] data = (byte[]) bytes;
-                String formater = getString(R.string.version_formater);
-                String text = String.format(formater, data[6], data[7], data[1], data[2], data[3], data[4], data[5]);
-                versionText.setText(text);
+                String text = String.format("%d.%d", data[6], data[7]);
+                version.setText(text);
+                text = String.format("-%d%d%d%d%d", data[1], data[2], data[3], data[4], data[5]);
+                model.setText(text);
             }
         };
-        InterlockOperation.getVersion(version);
+        InterlockOperation.getVersion(ver);
+
+
     }
 
     @OnClick(R.id.frame_about)
@@ -182,7 +182,11 @@ public class SettingsFragment extends ActiveAbleFragment {
         MenuLanguageFragment fragment = MenuLanguageFragment.newInstance(applyable);
         fragment.show(getActivity().getSupportFragmentManager(), "");
     }
-
+    @OnClick(R.id.pattern_setting_frame)
+    void pattern_setting_frame(View view){
+        Intent intent=new Intent(this.getActivity(),PatternSettingActivity.class);
+        startActivity(intent);
+    }
     @OnClick(R.id.frame_reset_factory)
     void frame_reset_factory(View v) {
         if (checkSendable() == false) {
@@ -193,12 +197,12 @@ public class SettingsFragment extends ActiveAbleFragment {
             public void apply(Object data, Object arg1) {
                 if (DbHelper.checkPassword((String) data)) {
                     InterlockOperation.setToFactory();
-                }else{
+                } else {
                     Bus.post(new ErrorPassword());
                 }
             }
         };
-        AuthPasswordFragment fragment = AuthPasswordFragment.newInstance(false,R.string.reset_titile, R.string.reset_factory_tip, applyable);
+        AuthPasswordFragment fragment = AuthPasswordFragment.newInstance(false, R.string.reset_titile, R.string.reset_factory_tip, applyable);
         fragment.show(getActivity().getSupportFragmentManager(), "");
     }
 
@@ -212,12 +216,12 @@ public class SettingsFragment extends ActiveAbleFragment {
             public void apply(Object data, Object arg1) {
                 if (DbHelper.checkPassword((String) data)) {
                     InterlockOperation.resetAdminPwd();
-                }else{
+                } else {
                     Bus.post(new ErrorPassword());
                 }
             }
         };
-        AuthPasswordFragment fragment = AuthPasswordFragment.newInstance(false,R.string.reset_titile, R.string.reset_password_tip, applyable);
+        AuthPasswordFragment fragment = AuthPasswordFragment.newInstance(false, R.string.reset_titile, R.string.reset_password_tip, applyable);
         fragment.show(getActivity().getSupportFragmentManager(), "");
     }
 

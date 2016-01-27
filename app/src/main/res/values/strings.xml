@@ -5,6 +5,19 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="stub">Stub</string>
+    <!--pattern-->
+    <string name="pattern_setting">手势密码</string>
+
+    <string name="pattern_check_title">验证手势密码</string>
+    <string name="pattern_check_error">手势密码错误</string>
+    <string name="pattern_set_title">设置手势密码</string>
+    <string name="pattern_check">验证手势密码</string>
+    <string name="pattern_set">绘制手势密码</string>
+    <string name="pattern_modify">修改手势密码</string>
+    <string name="pattern_reset">再次绘制手势密码</string>
+    <string name="pattern_set_ok">设置成功</string>
+    <string name="pattern_error">两次手势密码不一致</string>
+    <string name="pattern_clear">清除</string>
     <!-- tip of operation-->
     <string name="network_disconnect_tip">Device disconnected,click to connect</string>
     <string name="network_disconnect">Device disconnected</string>
@@ -43,6 +56,7 @@
     <string name="username_input">Input Username</string>
     <string name="finger">Finger</string>
     <string name="password">Password</string>
+    <string name="finger_input">Please press your finger on lock</string>
     <string name="password_input">Input Password</string>
     <string name="password_input_admin">Input Admin Password</string>
     <string name="password_re">Re-Password</string>
@@ -62,14 +76,18 @@
     <string name="disconnected">Disconnected</string>
     <!-- tips -->
     <string name="connect_failed">Connect failed</string>
-    <string name="version_formater" translatable="false">Version: %d.%d Model:HZ%d%d%d%d%d</string>
+    <string name="version">Version:</string>
+    <string name="model">&#160;Model:HZ</string>
     <string name="delete_conform_title">Delete Conform</string>
-    <string name="delete_conform_user">Are you sure delete %s?</string>
-    <string name="delete_conform_id">Are you sure delete %02d?</string>
+    <string name="delete_conform_user">Are you sure delete user?</string>
+    <string name="delete_conform_id">Are you sure delete auth?</string>
 
     <string name="exit_tip">Are you sure exit?</string>
     <string name="connect_to_title">Connect Device</string>
     <string name="connect_to">Are you sure to connect this device?</string>
+    <string name="disconnect_title">Disconnect Device</string>
+    <string name="disconnect_tip">Are you sure to disconnect this device?</string>
+
     <string name="reset_factory_tip">Are you sure to reset factory?</string>
     <string name="reset_password_tip">Are you sure to init the admin password?</string>
     <!--SearchFragment-->
@@ -80,7 +98,7 @@
     <string name="home">Home</string>
     <string name="users">Users</string>
     <string name="user_add">Add</string>
-    <string name="user_edit">Edit</string>
+    <string name="user_edit">Edit User</string>
     <string name="history">History</string>
     <string name="setting">Setting</string>
     <string name="modify_name">Username</string>

@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +18,10 @@ import android.widget.TextView;
 import com.lncosie.ilandroidos.R;
 
 import com.lncosie.ilandroidos.bluenet.Net;
+import com.lncosie.ilandroidos.bus.AuthDispear;
 import com.lncosie.ilandroidos.bus.AuthSuccess;
 import com.lncosie.ilandroidos.bus.Bus;
-import com.lncosie.ilandroidos.bus.DeviceConnedted;
+import com.lncosie.ilandroidos.bus.LoginSuccess;
 import com.lncosie.ilandroidos.bus.TipOperation;
 import com.lncosie.ilandroidos.model.Applyable;
 import com.squareup.otto.Subscribe;
@@ -37,6 +39,7 @@ public class AuthPasswordFragment extends DialogFragment implements View.OnClick
     Applyable applyable;
     int title;
     int tip;
+
     boolean diconnectIfCancel;
     @Bind(R.id.tip)
     TextView tipText;
@@ -55,19 +58,21 @@ public class AuthPasswordFragment extends DialogFragment implements View.OnClick
     public static AuthPasswordFragment newInstance(boolean diconnectIfCancel,int title, int tip, Applyable applyable) {
         if(glob!=null)
             return glob;
+
         AuthPasswordFragment fragment = new AuthPasswordFragment();
         fragment.applyable = applyable;
         fragment.title = title;
         fragment.tip = tip;
         fragment.diconnectIfCancel=diconnectIfCancel;
+        glob=fragment;
         return fragment;
     }
 
     @Override
     public void show(FragmentManager manager, String tag) {
-        if(glob!=null)
-            return;
-        super.show(manager, tag);
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.add(this,"");
+        ft.commitAllowingStateLoss();
     }
 
     @Override
@@ -75,13 +80,18 @@ public class AuthPasswordFragment extends DialogFragment implements View.OnClick
         super.onCreate(savedInstanceState);
     }
     @Subscribe
-    public void DeviceConnedted(DeviceConnedted state){
+    public void DeviceConnedted(LoginSuccess state){
         this.dismiss();
     }
     @Subscribe
     public void AuthSuccess(AuthSuccess state){
         this.dismiss();
     }
+    @Subscribe
+    public void AuthDispear(AuthDispear state){
+        this.dismiss();
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -95,8 +105,10 @@ public class AuthPasswordFragment extends DialogFragment implements View.OnClick
         }
         ok.setOnClickListener(this);
         cancel.setOnClickListener(this);
-        glob=this;
-        return builder.create();
+
+        Dialog dialog= builder.create();
+        dialog.setCanceledOnTouchOutside(false);
+        return dialog;
     }
 
     @Override
@@ -113,11 +125,11 @@ public class AuthPasswordFragment extends DialogFragment implements View.OnClick
             int max = (title == R.string.password_with_id ? 8 : 6);
             if (password.length() ==0) {
                 password.requestFocus();
-                Bus.post(new TipOperation(-1, R.string.password_input));
+                Bus.post(new TipOperation(-1, R.string.password_input_admin));
                 return;
             }else if (password.length() < max) {
                 password.requestFocus();
-                Bus.post(new TipOperation(-1, R.string.password_error));
+                Bus.post(new TipOperation(-1, R.string.password_shoter));
                 return;
             }
             applyable.apply(password.getText().toString(), null);
@@ -134,7 +146,12 @@ public class AuthPasswordFragment extends DialogFragment implements View.OnClick
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         windowTitle.setText(title);
-        tipText.setText(tip);
+        if(tip==0)
+            tipText.setVisibility(View.GONE);
+        else{
+            tipText.setText(tip);
+        }
+        //password.setHint(tip);
         return rootView;
     }
 

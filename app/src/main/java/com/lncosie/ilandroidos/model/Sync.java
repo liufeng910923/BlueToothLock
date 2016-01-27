@@ -13,9 +13,6 @@ import com.lncosie.ilandroidos.db.Users;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Administrator on 2015/8/12.
- */
 public class Sync {
 
     public static void syncIds(Applyable apply) {
@@ -71,20 +68,16 @@ class SynIDs extends ByteableTask {
             detail.save();
         }
     }
-
     protected long getTimeout() {
         return 10000;
     }
-
     @Override
     protected void onTimeout() {
         if (apply != null)
             apply.cancel();
     }
-
     @Override
     protected void onTaskDown() {
-
         final byte[] bytes = getData();
         try {
             List<Byte> remote = new ArrayList<>();

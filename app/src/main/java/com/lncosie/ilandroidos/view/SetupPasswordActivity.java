@@ -25,7 +25,6 @@ public class SetupPasswordActivity extends EventableActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup_password);
         ButterKnife.bind(this);
-
     }
 
     public void onClick(View v) {
@@ -36,7 +35,7 @@ public class SetupPasswordActivity extends EventableActivity {
                 return;
             }else if (password.length() < 6) {
                 password.requestFocus();
-                Bus.post(new TipOperation(-1, R.string.password_error));
+                Bus.post(new TipOperation(-1, R.string.password_shoter));
                 return;
             } else if (passwordRe.length() ==0) {
                 passwordRe.requestFocus();
@@ -44,7 +43,7 @@ public class SetupPasswordActivity extends EventableActivity {
                 return;
             } else if (passwordRe.length() < 6) {
                 passwordRe.requestFocus();
-                Bus.post(new TipOperation(-1, R.string.password_error));
+                Bus.post(new TipOperation(-1, R.string.password_shoter));
                 return;
             } else if (!password.getText().toString().equals(passwordRe.getText().toString())) {
                 Bus.post(new TipOperation(-1, R.string.password_no_equal));

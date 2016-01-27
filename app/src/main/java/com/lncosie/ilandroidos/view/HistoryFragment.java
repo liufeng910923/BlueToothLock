@@ -10,6 +10,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.Filter;
@@ -21,7 +22,7 @@ import android.widget.TextView;
 import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bus.HistoryChanged;
 import com.lncosie.ilandroidos.bus.LanguageChanged;
-import com.lncosie.ilandroidos.bus.DeviceConnedted;
+import com.lncosie.ilandroidos.bus.LoginSuccess;
 import com.lncosie.ilandroidos.bus.DeviceDisconnected;
 import com.lncosie.ilandroidos.bus.UsersChanged;
 import com.lncosie.ilandroidos.db.TimeWithUser;
@@ -60,7 +61,7 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
     @Bind(R.id.net_tip)
     TextView net_tip;
     @Subscribe
-    public void OnConnected(DeviceConnedted state){
+    public void OnConnected(LoginSuccess state){
         net_tip.setVisibility(View.GONE);
     }
     @Subscribe
@@ -82,7 +83,15 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
         adapter = new HistoryAdapter(this.getActivity());
         history.setAdapter(adapter);
         setupSwiper();
+        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(search.getWindowToken(),0);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Override
@@ -244,7 +253,7 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
                         history.add(nullValue);
                         first = true;
                     }
-                    if (h.time / 1000000 != pre.time / 1000000) {
+                    if (h.time / 10000 != pre.time / 10000) {
                         if (history.size() != 1)
                             history.add(nullValue);
                     }

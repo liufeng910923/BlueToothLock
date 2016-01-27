@@ -5,9 +5,20 @@
     <string name="ok">确定</string>
     <string name="cancel">取消</string>
     <string name="stub">Stub</string>
-
+    <!--pattern-->
+    <string name="pattern_setting">手势密码</string>
+    <string name="pattern_check_title">验证手势密码</string>
+    <string name="pattern_check_error">手势密码错误</string>
+    <string name="pattern_set_title">设置手势密码</string>
+    <string name="pattern_check">验证手势密码</string>
+    <string name="pattern_set">绘制手势密码</string>
+    <string name="pattern_modify">修改手势密码</string>
+    <string name="pattern_set_ok">设置成功</string>
+    <string name="pattern_reset">再次绘制手势密码</string>
+    <string name="pattern_error">两次手势密码不一致</string>
+    <string name="pattern_clear">清除</string>
     <!-- tip of operation-->
-    <string name="network_disconnect_tip">设备未连接，点击这里</string>
+    <string name="network_disconnect_tip">设备未连接，请点击获取连接</string>
     <string name="network_disconnect">设备未连接</string>
     <string name="timeout_op">配置失败</string>
     <string name="succ_op_pwd">修改密码成功</string>
@@ -44,6 +55,7 @@
     <string name="username_input">请输入用户名</string>
     <string name="finger">指纹</string>
     <string name="password">密码</string>
+    <string name="finger_input">请在锁上输入指纹</string>
     <string name="password_input">请输入用户密码</string>
     <string name="password_input_admin">请输入管理员密码</string>
     <string name="password_re">确认密码</string>
@@ -61,13 +73,16 @@
     <string name="disconnected">未连接</string>
     <!-- tips -->
     <string name="connect_failed">连接失败</string>
-    <string name="version_formater" translatable="false">版本: %d.%d 型号:HZ%d%d%d%d%d</string>
+    <string name="version">版本:</string>
+    <string name="model">&#160;型号:HZ</string>
     <string name="delete_conform_title">删除用户</string>
     <string name="delete_conform_user">确定要删除该用户吗?</string>
     <string name="delete_conform_id">确定要删除权限吗?</string>
     <string name="exit_tip">确定要退出程序？</string>
     <string name="connect_to_title">连接设备</string>
     <string name="connect_to">是否连接该设备?</string>
+    <string name="disconnect_title">断开设备</string>
+    <string name="disconnect_tip">是否断开该设备?</string>
     <!--SearchFragment-->
     <string name="searching">选择</string>
     <string name="scan_device">搜索设备</string>
@@ -76,7 +91,7 @@
     <string name="home">首页</string>
     <string name="users">用户管理</string>
     <string name="user_add">添加</string>
-    <string name="user_edit">编辑</string>
+    <string name="user_edit">编辑用户</string>
     <string name="history">开门记录</string>
     <string name="setting">系统设置</string>
     <string name="modify_name">用户名</string>

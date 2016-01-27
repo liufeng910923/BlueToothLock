@@ -15,10 +15,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lncosie.ilandroidos.R;
-import com.lncosie.ilandroidos.bluenet.Net;
 import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.bus.LanguageChanged;
-import com.lncosie.ilandroidos.bus.DeviceConnedted;
+import com.lncosie.ilandroidos.bus.LoginSuccess;
 import com.lncosie.ilandroidos.bus.DeviceDisconnected;
 import com.lncosie.ilandroidos.bus.NetworkError;
 import com.lncosie.ilandroidos.bus.UsersChanged;
@@ -43,8 +42,6 @@ import butterknife.OnClick;
  * A simple {@link Fragment} subclass.
  */
 public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnItemClickListener {
-
-
     @Bind(R.id.users)
     ListView users;
     DeviceAdapter adapter;
@@ -85,7 +82,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
     @Bind(R.id.net_tip)
     TextView net_tip;
     @Subscribe
-    public void OnConnected(DeviceConnedted state){
+    public void OnConnected(LoginSuccess state){
         net_tip.setVisibility(View.GONE);
     }
     @Subscribe
@@ -102,7 +99,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
         adapter.notifyDataSetChanged();
     }
     void setupSwiper() {
-        swiper.setEnabled(true);
+        swiper.setEnabled(false);
         swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -120,15 +117,17 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
 
             }
         });
-
     }
-
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
         Applyable applyable = new Applyable() {
             @Override
             public void apply(Object arg0, Object arg1) {
+                if (!checkSendable()) {
+                    Bus.post(new NetworkError());
+                    return;
+                }
                 int action = (int) arg0;
                 long gid = (long) arg1;
                 if (action == 0) {
@@ -138,9 +137,6 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
                 } else if (action == 1) {
                     Bus.post(new ViewUserLog(gid));
                 } else if (action == 2) {
-                    if (checkSendable() == false) {
-                        return;
-                    }
                     deleteUser(gid);
                 }
 
@@ -152,6 +148,10 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
     }
 
     private void deleteUser(final long gid) {
+        if (!checkSendable()) {
+            Bus.post(new NetworkError());
+            return;
+        }
         Applyable delete = new Applyable() {
             public void apply(Object arg0, Object arg1) {
                 boolean deleteGid = true;
@@ -161,10 +161,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
                     adapter.reInit();
                     return;
                 }
-                if (!Net.get().isSendable()) {
-                    Bus.post(new NetworkError());
-                    return;
-                }
+
                 for (UserDetail detail : details) {
                     if (detail.type == 0 && detail.uid == 0) {
                         deleteGid = false;
@@ -184,19 +181,14 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
         String message = getString(R.string.delete_conform_user);
         MenuYesnoFragment yesnoFragment = MenuYesnoFragment.newInstance(R.string.delete_conform_title, message, delete);
         yesnoFragment.show(getFragmentManager(), "");
-        return;
-//
-//        String message=String.format(getString(R.string.delete_conform),user.name);
-//        new AlertDialog.Builder(getActivity())
-//                .setTitle(R.string.delete_conform_title)
-//                .setMessage(message)
-//                .setPositiveButton(android.R.string.yes,delete)
-//                .setNegativeButton(android.R.string.no, null)
-//                .show().getWindow().setTitleColor(getResources().getColor(R.color.colorPrimary));
     }
 
     @OnClick(R.id.user_add)
     public void userAdd(View v) {
+        if (!checkSendable()) {
+            Bus.post(new NetworkError());
+            return;
+        }
         Intent intent = new Intent(getContext(), UserAddActivity.class);
         intent.putExtra("uid", -1);
         intent.putExtra("edit", true);
@@ -225,8 +217,6 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
         void bind(UserWithTime user) {
             userName.setText(user.name);
             userImage.setImageBitmap(BitmapTool.decodeBitmap(userImage.getContext(), user.image));
-//            passwordCnt.setText(String.valueOf(user.pAccounts));
-//            fingerCnt.setText(String.valueOf(user.fAccounts));
         }
     }
 

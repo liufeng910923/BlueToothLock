@@ -16,10 +16,9 @@ import android.util.Log;
 import com.lncosie.ilandroidos.bus.BluetoothConneted;
 import com.lncosie.ilandroidos.bus.BluetoothDiscovered;
 import com.lncosie.ilandroidos.bus.Bus;
-import com.lncosie.ilandroidos.bus.DeviceConnectFailed;
-import com.lncosie.ilandroidos.bus.DeviceConnedted;
+import com.lncosie.ilandroidos.bus.LoginFailed;
+import com.lncosie.ilandroidos.bus.LoginSuccess;
 import com.lncosie.ilandroidos.bus.DeviceDisconnected;
-import com.lncosie.ilandroidos.bus.DeviceLoginFailed;
 import com.lncosie.ilandroidos.model.DbHelper;
 
 import java.util.ArrayList;
@@ -54,6 +53,7 @@ public class NetTransfer {
 
     boolean login = false;
     boolean connected = false;
+    public boolean stateRetrying = false;
     Hook hook;
 
     public static String bytesToHex(byte[] bytes) {
@@ -87,7 +87,7 @@ public class NetTransfer {
     public OnNetStateChange.NetState getState() {
         return state;
     }
-
+    public boolean shouldReLogin =false;
     public void setState(OnNetStateChange.NetState state) {
         this.state = state;
         Object send = null;
@@ -97,21 +97,24 @@ public class NetTransfer {
                 send = new DeviceDisconnected();
                 break;
             case Searching:
-                //send=new DeviceConnedted();
                 break;
             case Connecting:
                 heartbeat.stopBeat();
-                //send=new DeviceConnedted();
                 break;
             case Connected:
-                send = new BluetoothConneted();
+                send = new BluetoothConneted(false);
+                break;
+            case NeedPassword:
+                send = new BluetoothConneted(true);
+                this.state= OnNetStateChange.NetState.LoginFailed;
                 break;
             case LoginFailed:
-                send = new DeviceLoginFailed();
+                send = new LoginFailed();
                 break;
             case Login:
-                send = new DeviceConnedted();
+                shouldReLogin =true;
                 heartbeat.startBeat();
+                send = new LoginSuccess();
                 break;
         }
         if (send != null)
@@ -119,9 +122,6 @@ public class NetTransfer {
 
     }
 
-    public BluetoothDevice getConnected() {
-        return rawConnection.getDevice();
-    }
 
     public <Net extends NetTransfer> Net search(long timeout) {
         scanner.setTimeout(timeout);
@@ -130,32 +130,47 @@ public class NetTransfer {
     }
 
     public <Net extends NetTransfer> Net reset() {
-        commands.clear();
+        shouldReLogin =false;
+        if(device!=null)
+        {
+            commands.clear();
+            send(new LogoutTask(this));
+        }
+        return (Net) this;
+    }
+    void clearState(){
         if (heartbeat != null) {
             heartbeat.stopBeat();
             heartbeat.stopRetry();
         }
-        device = null;
+        login = false;
+        connected = false;
+        device=null;
         eraseCurrentTask();
         stopScan();
-        disconnect();
+        if (rawConnection != null) {
+            Log.e("DATA", "time to disconnected");
+            rawConnection.disconnect();
+            rawConnection.close();
+        }
+        writer = null;
+        rawConnection = null;
         enable();
-        return (Net) this;
+        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+        if(adapter!=null)
+            device=adapter.getRemoteDevice(mac);
     }
-
     public <Net extends NetTransfer> Net connect() {
         send(connector);
         return (Net) this;
     }
-
     public <Net extends NetTransfer> Net stopScan() {
         setState(OnNetStateChange.NetState.Disconnected);
         scanner.onTaskDown();
         return (Net) this;
     }
-
     public <Net extends NetTransfer> Net login() {
-        send(new LoginTask(this, DbHelper.getPassword(device.getAddress())));
+        send(new LoginTask(this, DbHelper.getPassword(getMac())));
         return (Net) this;
     }
 
@@ -164,25 +179,7 @@ public class NetTransfer {
     }
 
     public void disconnect() {
-        Bus.post(new DeviceDisconnected());
-        setState(OnNetStateChange.NetState.Disconnected);
-        login = false;
-        connected = false;
-
-        if (rawConnection != null) {
-            ByteableTask disconnect = new ByteableTask(this, ByteableTask.CMD_DISCONNECT) {
-                @Override
-                protected void onTaskDown() {
-                }
-            };
-            write(disconnect);
-            Thread.yield();
-            rawConnection.disconnect();
-            rawConnection.close();
-            Thread.yield();
-            writer = null;
-            rawConnection = null;
-        }
+        send(new LogoutTask(this));
     }
 
     public void disable() {
@@ -197,11 +194,11 @@ public class NetTransfer {
                 try {
                     Thread.sleep(100L);
                 } catch (InterruptedException ie) {
-                    // unexpected interruption while enabling bluetooth
                     Thread.currentThread().interrupt(); // restore interrupted flag
                     return;
                 }
             }
+            init(appContext);
         }
     }
 
@@ -214,11 +211,20 @@ public class NetTransfer {
     public BluetoothDevice getDevice() {
         return device;
     }
+    String mac=null;
+    public String getMac() {
+        return mac;
+    }
 
     public void setDevice(BluetoothDevice device) {
         this.device = device;
+        if(device!=null)
+            this.mac=device.getAddress();
     }
-
+    void eraseAllTask(){
+        commands.clear();
+        //eraseCurrentTask();
+    }
     void eraseCurrentTask() {
         taskThread.removeCallbacks(sender);
         taskThread.removeCallbacks(timeout);
@@ -318,23 +324,35 @@ public class NetTransfer {
                         sendNext();
                     }
                 }
-
             }
-
+            byte[] dump=null;
+            long preTime=0;
             @Override
             public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
                 super.onCharacteristicChanged(gatt, characteristic);
                 heartbeat.onRead();
 
                 try {
+                    long time=System.currentTimeMillis();
                     byte[] bytes = characteristic.getValue();
+                    Log.e("DATA", "Recv:[" +time+"]"+bytesToHex(bytes) + "<--->" + time+":"+preTime);
+                    if(dump!=null){
+                        if((time-preTime)<=4){
+                            Log.e("DATA", "Ignore");
+                            return;
+                        }
+                    }
+
+                    dump=bytes;
+                    preTime=time;
+
                     int i = 0;
                     while (i < bytes.length && bytes[i] == -1) {
                         i = i + 1;
                     }
                     if (i != 0)
                         bytes = Arrays.copyOfRange(bytes, i, bytes.length);
-                    Log.e("DATA", "Recv:" + bytesToHex(bytes));
+
                     if (hook != null)
                         hook.onWrite(bytesToHex(bytes));
 
@@ -358,8 +376,10 @@ public class NetTransfer {
                         pos = 0;
                         return;
                     }
+
                     if (expectLength == 0) {
                         byte[] full = Arrays.copyOfRange(buffer, 0, pos);
+
                         onReceive(full);
                     }
                 } catch (Exception e) {
@@ -398,9 +418,7 @@ public class NetTransfer {
             contentlen = data[2];
             task.setError(data[header_len]);
             task.fromBytes(info);
-            //Log.d("bluenet.receive", bytesToHex(info) + "from" + bytesToHex(data));
         } catch (Exception e) {
-            //sendConformMessage(task.command,contentlen,crc0,crc1);
             return false;
         }
         if (data[0] == ByteableTask.CMD_HEADER_FC) {
@@ -510,11 +528,12 @@ public class NetTransfer {
     class SendTask implements Runnable {
         @Override
         public void run() {
-            currentTask.onTaskStart();
-            if (currentTask instanceof ByteableTask) {
-                write((ByteableTask) currentTask);
+            Task task=currentTask;
+            task.onTaskStart();
+            if (task instanceof ByteableTask) {
+                write((ByteableTask) task);
             }
-            taskThread.postDelayed(timeout, currentTask.getTimeout());
+            taskThread.postDelayed(timeout, task.getTimeout());
         }
     }
 
@@ -539,7 +558,8 @@ public class NetTransfer {
     class TimeoutTask implements Runnable {
         @Override
         public void run() {
-            currentTask.onTimeout();
+            if(currentTask!=null)
+                currentTask.onTimeout();
             eraseCurrentTask();
             sendNext();
         }
@@ -635,11 +655,9 @@ class Heartbeat implements Runnable {
             tryTimes = tryTimes - 1;
             if (tryTimes > 0) {
                 stopRetry();
-                net.setState(OnNetStateChange.NetState.Disconnected);
-                net.disable();
+                net.reset();
             } else {
                 net.connect();
-                net.setState(OnNetStateChange.NetState.Connecting);
                 net.taskThread.postDelayed(this, 8000);
             }
 
@@ -666,7 +684,7 @@ class Scanner extends Task {
 
     @Override
     public long delayTime() {
-        return 0;//wait bluetooth  device enable
+        return 100;//wait bluetooth  device enable
     }
 
     public long getTimeout() {
@@ -704,19 +722,16 @@ class Scanner extends Task {
 }
 
 class Connector extends Task {
-    int tryCount = 3;
+    int tryCount = 2;
+    boolean fire = true;
 
     public Connector(NetTransfer transfer) {
         super(transfer);
     }
 
-    void reset() {
-        tryCount = 3;
-    }
-
     @Override
     public long delayTime() {
-        return 500;
+        return 200;
     }
 
     @Override
@@ -726,16 +741,24 @@ class Connector extends Task {
 
     @Override
     protected void onTaskStart() {
-        Log.e("DATA", "time to connected");
+
         if (net.device != null) {
-            net.setState(OnNetStateChange.NetState.Connecting);
-            net.rawConnection = net.device.connectGatt(net.appContext, false, net.rawCallback);
+            try {
+                Log.e("DATA", "time to connected");
+                if(net.rawConnection!=null)
+                {
+                    net.clearState();
+                }
+                net.rawConnection = net.device.connectGatt(net.appContext, false, net.rawCallback);
+                net.setState(OnNetStateChange.NetState.Connecting);
+            } catch (Exception e) {
+
+            }
         }
     }
 
     @Override
     protected void onTaskDown() {
-
         net.setState(OnNetStateChange.NetState.Connected);
         Log.e("DATA", "time connected");
     }
@@ -747,9 +770,7 @@ class Connector extends Task {
             if (tryCount > 0) {
                 net.connect();
             } else {
-                net.reset();
-                net.setState(OnNetStateChange.NetState.Disconnected);
-                Bus.post(new DeviceConnectFailed());
+                net.setState(OnNetStateChange.NetState.LoginFailed);
                 Log.e("DATA", "timeout connected");
             }
         }
@@ -757,26 +778,57 @@ class Connector extends Task {
     }
 }
 
+class LogoutTask extends ByteableTask {
+
+    public LogoutTask(NetTransfer transfer) {
+        super(transfer, ByteableTask.CMD_DISCONNECT);
+        net.eraseAllTask();
+    }
+
+    @Override
+    protected void onTimeout() {
+        clearState();
+    }
+    @Override
+    protected void onTaskDown() {
+        clearState();
+    }
+    public long delayTime() {
+        return 100;
+    }
+
+    public long getTimeout() {
+        return 1000;
+    }
+
+
+    @Override
+    protected void onTaskStart() {
+
+    }
+    void clearState(){
+        Bus.post(new DeviceDisconnected());
+        net.setState(OnNetStateChange.NetState.Disconnected);
+        net.clearState();
+    }
+}
 class LoginTask extends ByteableTask {
-    int tryCount = 3;
+    int tryCount = 2;
 
     public LoginTask(NetTransfer transfer, byte[] password) {
         super(transfer, ByteableTask.CMD_AUTH, password);
-    }
-
-    void reset() {
-        tryCount = 3;
     }
 
     @Override
     protected void onTimeout() {
         Log.e("DATA", "timeout to login");
         net.setState(OnNetStateChange.NetState.Disconnected);
-        Bus.post(new DeviceConnectFailed());
+        retry(false);
+
     }
 
     public long delayTime() {
-        return 1000;
+        return 100;
     }
 
     public long getTimeout() {
@@ -786,17 +838,30 @@ class LoginTask extends ByteableTask {
     @Override
     protected void onTaskDown() {
         if (getError() != 0) {
-            tryCount = tryCount - 1;
-            if (tryCount > 0) {
-                net.send(this);
-            } else {
-                net.setState(OnNetStateChange.NetState.Disconnected);
-            }
+            net.setState(OnNetStateChange.NetState.NeedPassword);
+            //retry(true);
             return;
         }
         Log.e("DATA", "time login");
         net.login = true;
         net.setState(OnNetStateChange.NetState.Login);
+    }
+
+    private void retry(boolean errorPwd) {
+        tryCount = tryCount - 1;
+        if (tryCount > 0) {
+            net.stateRetrying = true;
+            //net.send(new LogoutTask(net));
+            //net.connect();
+            net.send(this);
+        } else {
+            if(errorPwd)
+            {
+                net.setState(OnNetStateChange.NetState.NeedPassword);
+            }else{
+                net.setState(OnNetStateChange.NetState.LoginFailed);
+            }
+        }
     }
 
     @Override

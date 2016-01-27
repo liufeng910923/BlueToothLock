@@ -4,7 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
@@ -49,6 +51,11 @@ public class AppActivity extends EventableActivity {
         grob = new GrobMessage(this);
         adapter = new SectionsPagerAdapter(getSupportFragmentManager());
         container.setOffscreenPageLimit(4);
+//        container.setOnTouchListener(new View.OnTouchListener() {
+//            public boolean onTouch(View arg0, MotionEvent arg1) {
+//                return true;
+//            }
+//        });
         container.setAdapter(adapter);
     }
 
@@ -70,7 +77,10 @@ public class AppActivity extends EventableActivity {
         Repass.exit();
         super.onBackPressed();
     }
-
+    @Subscribe
+    public void bluetoothConneted(BluetoothConneted state){
+        showLoginPassword(state.needPassword);
+    }
     @Subscribe
     public void langChanged(LanguageChanged languageChanged) {
         changeLang(container);
@@ -109,28 +119,7 @@ public class AppActivity extends EventableActivity {
         estateButton(pageHistory);
         activePage(2, userLog.gid);
     }
-    @Subscribe
-    public void bluetoothConneted(BluetoothConneted state){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                showLoginPassword();
-            }
-        });
 
-    }
-    void showLoginPassword() {
-        Applyable applyable = new Applyable() {
-            @Override
-            public void apply(Object arg0, Object arg1) {
-                Net net = Net.get();
-                DbHelper.setPassword(net.getDevice().getAddress(), (String) arg0);
-                net.login();
-            }
-        };
-        AuthPasswordFragment fragment = AuthPasswordFragment.newInstance(true,R.string.password_with_id, R.string.password_with_id_prompt, applyable);
-        fragment.show(getSupportFragmentManager(), "");
-    }
     public void clickNegative(View v) {
         Object tag = estateButton((RadioButton) v);
         Integer index = Integer.valueOf((String) tag);

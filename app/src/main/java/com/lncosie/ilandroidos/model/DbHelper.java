@@ -3,8 +3,6 @@ package com.lncosie.ilandroidos.model;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
-import com.lncosie.ilandroidos.bus.Bus;
-import com.lncosie.ilandroidos.bus.ErrorPassword;
 import com.lncosie.ilandroidos.db.ConnectedLocks;
 import com.lncosie.ilandroidos.db.LockUsers;
 import com.lncosie.ilandroidos.db.Settings;
@@ -52,7 +50,6 @@ public class DbHelper {
     static final String optimized = "CREATE INDEX IF NOT EXISTS idxUserMac ON Users (MAC ASC)";
 
     public static void DbInit() {
-
         execSQLNoThrow(dropTimeWithUser);
         execSQLNoThrow(dropUserWithTime);
         execSQLNoThrow(dropLockUser);
@@ -77,7 +74,7 @@ public class DbHelper {
 
     public static String getCurMac() {
         Settings setting = new Select().from(Settings.class).executeSingle();
-        return setting==null?null:setting.mac;
+        return setting == null ? null : setting.mac;
     }
 
     public static void setCurMac(String mac) {
@@ -99,10 +96,10 @@ public class DbHelper {
     }
 
     public static boolean checkPassword(String pwd) {
-        String mac=getCurMac();
-        if(mac==null)
+        String mac = getCurMac();
+        if (mac == null)
             return false;
-        ConnectedLocks lock = new Select().from(ConnectedLocks.class).where("mac=?",mac).executeSingle();
+        ConnectedLocks lock = new Select().from(ConnectedLocks.class).where("mac=?", mac).executeSingle();
         if (lock != null) {
             if (lock.password.equals(pwd))
                 return true;
@@ -111,6 +108,8 @@ public class DbHelper {
     }
 
     public static byte[] getPassword(String mac) {
+        if(mac==null)
+            return null;
         ConnectedLocks lock = new Select().from(ConnectedLocks.class).where("mac=?", mac).executeSingle();
         return StringTools.getPwdBytes(lock != null ? lock.password : null);
     }
@@ -124,9 +123,7 @@ public class DbHelper {
             lock = new ConnectedLocks();
             lock.password = password;
             lock.mac = mac;
-            lock.name = mac;
             lock.save();
-
         }
     }
 
@@ -137,9 +134,11 @@ public class DbHelper {
     public static List<UserWithTime> getUsers() {
         return new Select().from(UserWithTime.class).execute();
     }
+
     public static List<Users> getRawUsers() {
-        return new Select().from(Users.class).where("mac=?",getCurMac()).execute();
+        return new Select().from(Users.class).where("mac=?", getCurMac()).execute();
     }
+
     public static List<UserDetail> getUserDetails(long id) {
         return new Select().from(UserDetail.class).where("gid=?", id).execute();
     }
@@ -153,9 +152,7 @@ public class DbHelper {
     }
 
     public static void deleteUser(long id) {
-        Users user = Users.load(Users.class, id);
-        if(user!=null)
-            user.delete();
+        new Delete().from(Users.class).where("id=?", id).execute();
     }
 
     public static void deleteAuth(LockUsers id) {
@@ -175,6 +172,15 @@ public class DbHelper {
             setting = new Settings();
         }
         setting.language = language;
+        setting.save();
+    }
+    public static String getPatternPwd() {
+        Settings setting = new Select().from(Settings.class).executeSingle();
+        return setting.password;
+    }
+    public static void setPatternPwd(String password) {
+        Settings setting = new Select().from(Settings.class).executeSingle();
+        setting.password = password;
         setting.save();
     }
 

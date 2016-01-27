@@ -4,6 +4,7 @@ package com.lncosie.ilandroidos.view;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,13 @@ import android.widget.TextView;
 
 import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bluenet.Net;
-import com.lncosie.ilandroidos.bus.BluetoothConneted;
+import com.lncosie.ilandroidos.bluenet.OnNetStateChange;
 import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.bus.HistoryChanged;
 import com.lncosie.ilandroidos.bus.LanguageChanged;
-import com.lncosie.ilandroidos.bus.DeviceConnedted;
+import com.lncosie.ilandroidos.bus.LoginSuccess;
 import com.lncosie.ilandroidos.bus.DeviceDisconnected;
+import com.lncosie.ilandroidos.bus.TryLogin;
 import com.lncosie.ilandroidos.bus.UsersChanged;
 import com.lncosie.ilandroidos.db.ConnectedLocks;
 import com.lncosie.ilandroidos.model.Applyable;
@@ -85,14 +87,32 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
         DeviceSelectorFragment fragment = new DeviceSelectorFragment();
         fragment.show(getFragmentManager().beginTransaction(), "DialogFragment");
     }
+    @Subscribe
+    public void login(TryLogin a){
+        Net net=Net.get();
+        if(net.getState()== OnNetStateChange.NetState.Connected
+                ||net.getState()== OnNetStateChange.NetState.LoginFailed)
+        {
+            net.login();
+        }else
+            net.connect().login();
+    }
 
-
-
+    boolean working=false;
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        /**forbid click to fast**/
+        if(working)
+            return;
+        working=true;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                working=false;
+            }
+        },500);
 
         final ConnectedLocks lock = adapter.lockses.get(position);
-
         if (adapter.isActiveLock(position)) {
             Applyable applyable = new Applyable() {
                 @Override
@@ -100,7 +120,7 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
                     Net.get().reset();
                 }
             };
-            MenuYesnoFragment fragment = MenuYesnoFragment.newInstance(R.string.disconnect,
+            MenuYesnoFragment fragment = MenuYesnoFragment.newInstance(R.string.disconnect_title,
                     getString(R.string.disconnect_tip), applyable);
             fragment.show(getFragmentManager(), "");
 
@@ -109,6 +129,7 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
                 @Override
                 public void apply(Object arg0, Object arg1) {
                     Net net = Net.get();
+                    net.stateRetrying=false;
                     BluetoothDevice bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(lock.mac);
                     net.reset().setDevice(bluetoothDevice);
                     net.connect();
@@ -123,22 +144,27 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
     ConnectedLocks activeLock = null;
 
     @Subscribe
-    public void OnConnected(DeviceConnedted state) {
+    public void OnConnected(LoginSuccess state) {
+
         ConnectedLocks lock = null;
-        BluetoothDevice device = Net.get().getConnected();
+        BluetoothDevice device = Net.get().getDevice();
         DbHelper.setCurMac(device.getAddress());
+
+        for (ConnectedLocks it : DbHelper.getLocks()) {
+            if (device.getAddress().equals(it.mac)) {
+                lock = it;
+                lock.name = device.getName();
+                DbHelper.insertLock(lock);
+                break;
+            }
+        }
+
+        adapter.reinit();
         for (ConnectedLocks it : adapter.lockses) {
             if (device.getAddress().equals(it.mac)) {
                 lock = it;
                 break;
             }
-        }
-        if (lock == null) {
-            lock = new ConnectedLocks();
-            lock.name = device.getName();
-            lock.mac = device.getAddress();
-            DbHelper.insertLock(lock);
-            adapter.lockses.add(lock);
         }
         activeLock = lock;
         adapter.notifyDataSetChanged();
@@ -162,13 +188,18 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
     class DeviceAdapter extends BaseAdapter {
         LayoutInflater inflater;
         List<ConnectedLocks> lockses = new ArrayList<ConnectedLocks>();
-
-
         DeviceAdapter(LayoutInflater inflater) {
             this.inflater = inflater;
-            lockses.addAll(DbHelper.getLocks());
+            reinit();
         }
-
+        void reinit() {
+            lockses.clear();
+            for(ConnectedLocks lock:DbHelper.getLocks())
+            {
+                //if(lock.name!=null)
+                lockses.add(lock);
+            }
+        }
         @Override
         public int getCount() {
             return lockses.size();

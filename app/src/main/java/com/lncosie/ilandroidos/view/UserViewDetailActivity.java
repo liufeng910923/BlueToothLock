@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.lncosie.ilandroidos.R;
+import com.lncosie.ilandroidos.bus.BluetoothConneted;
 import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.bus.OperatorMessages;
 import com.lncosie.ilandroidos.bus.UsersChanged;
@@ -61,7 +62,10 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
         ButterKnife.unbind(this);
         super.onDestroy();
     }
-
+    @Subscribe
+    public void bluetoothConneted(BluetoothConneted state){
+        showLoginPassword(state.needPassword);
+    }
     @Override
     public void onBackPressed() {
         Bus.post(new UsersChanged());
@@ -75,6 +79,7 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
 
     @OnClick(R.id.user_image)
     void user_pick_image(View v) {
+        pauseDetect=true;
         Intent intent = new Intent(
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.INTERNAL_CONTENT_URI);
@@ -103,6 +108,8 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 2)
+            pauseDetect=false;
         if (resultCode == 0)
             return;
         if (requestCode == 1) {
@@ -137,6 +144,11 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
                         @Override
                         public void apply(Object arg0, Object arg1) {
                             InterlockOperation.deleteId(detailSelected.type, detailSelected.uid);
+                            if(adapter.details.size()==1){
+                                user.delete();
+                                Bus.post(new UsersChanged());
+                                finish();
+                            }
                         }
                     };
                     String message = getString(R.string.delete_conform_id);
