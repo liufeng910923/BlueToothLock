@@ -6,9 +6,7 @@ import android.util.DisplayMetrics;
 import com.lncosie.ilandroidos.bluenet.Net;
 import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.model.DbHelper;
-
 import org.codejargon.feather.Feather;
-
 import java.util.Locale;
 
 public class App extends com.activeandroid.app.Application {
