@@ -176,6 +176,8 @@ public class DbHelper {
     }
     public static String getPatternPwd() {
         Settings setting = new Select().from(Settings.class).executeSingle();
+        if(setting==null)
+            return null;
         return setting.password;
     }
     public static void setPatternPwd(String password) {

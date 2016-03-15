@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="lock9view-0.0.10">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.takwolf.android/lock9view/0.0.10/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.takwolf.android/lock9view/0.0.10/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.takwolf.android/lock9view/0.0.10/2f9d9888b123a6bc05ffeccf800d76ef98a3a5e5/lock9view-0.0.10-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -20,6 +20,7 @@
 
         <com.lncosie.ilandroidos.view.LanguageTextView
             style="@style/PreferencePageTitle"
+            android:clickable="true"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_gravity="center"
@@ -31,6 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:clickable="true"
             android:onClick="onClick"
             android:paddingRight="@dimen/padding_normal"
             android:src="@android:drawable/ic_menu_myplaces"

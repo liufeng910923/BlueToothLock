@@ -1,5 +1,6 @@
 package com.lncosie.ilandroidos.bluenet;
 
+import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
@@ -8,7 +9,11 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.bluetooth.le.BluetoothLeScanner;
+import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -78,7 +83,12 @@ public class NetTransfer {
         taskThread = new Handler(Looper.getMainLooper());
         sender = new SendTask();
         timeout = new TimeoutTask();
-        scanner = new Scanner(this);
+
+        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.LOLLIPOP)
+            scanner = new ScannerHuawei(this);
+        else
+            scanner = new Scanner(this);
+
         heartbeat = new Heartbeat();
         connector = new Connector(this);
         buildConnection();
@@ -664,8 +674,73 @@ class Heartbeat implements Runnable {
         }
     }
 }
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
+class ScannerHuawei extends Task {
+    List<BluetoothDevice> devices = new ArrayList<>();
+    android.bluetooth.le.ScanCallback callback=new android.bluetooth.le.ScanCallback() {
+        @Override
+        public void onScanResult(int callbackType, ScanResult result) {
+            super.onScanResult(callbackType, result);
+            BluetoothDevice device=result.getDevice();
+            if (devices.contains(device))
+                return;
+            devices.add(device);
+            Bus.post(new BluetoothDiscovered(device));
+        }
 
+        @Override
+        public void onBatchScanResults(List<ScanResult> results) {
+            super.onBatchScanResults(results);
+        }
 
+        @Override
+        public void onScanFailed(int errorCode) {
+            super.onScanFailed(errorCode);
+        }
+    };
+    ScannerHuawei(NetTransfer transfer) {
+        super(transfer);
+    }
+
+    @Override
+    public long delayTime() {
+        return 100;//wait bluetooth  device enable
+    }
+
+    public long getTimeout() {
+        return 5000;
+    }
+
+    @Override
+    protected void onTaskDown() {
+        stopScan();
+    }
+
+    @Override
+    protected void onTaskStart() {
+        net.setState(OnNetStateChange.NetState.Searching);
+        devices.clear();
+        if (net.adapter != null) {
+            BluetoothLeScanner scanner=net.adapter.getBluetoothLeScanner();
+            scanner.startScan(callback);
+        }
+    }
+
+    public void stopScan() {
+        if (net.adapter != null) {
+            BluetoothLeScanner scanner=net.adapter.getBluetoothLeScanner();
+            scanner.stopScan(callback);
+        }
+        devices.clear();
+        net.eraseCurrentTask();
+    }
+
+    @Override
+    protected void onTimeout() {
+        stopScan();
+        net.commands.clear();
+    }
+}
 class Scanner extends Task {
     List<BluetoothDevice> devices = new ArrayList<>();
     BluetoothAdapter.LeScanCallback scanner = new BluetoothAdapter.LeScanCallback() {

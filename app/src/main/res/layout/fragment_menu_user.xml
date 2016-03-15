@@ -13,15 +13,18 @@
     <com.lncosie.ilandroidos.view.LanguageTextView
         android:id="@+id/menu_item_view"
         style="@style/FrameLayoutMenu"
+        android:clickable="true"
         android:text="@string/menu_item_view" />
 
     <com.lncosie.ilandroidos.view.LanguageTextView
         android:id="@+id/menu_item_log"
         style="@style/FrameLayoutMenu"
+        android:clickable="true"
         android:text="@string/menu_item_log" />
 
     <com.lncosie.ilandroidos.view.LanguageTextView
         android:id="@+id/menu_item_delete_user"
         style="@style/FrameLayoutMenu"
+        android:clickable="true"
         android:text="@string/menu_item_delete_user" />
 </LinearLayout>

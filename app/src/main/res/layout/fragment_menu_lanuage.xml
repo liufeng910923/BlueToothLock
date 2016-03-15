@@ -13,12 +13,15 @@
     <com.lncosie.ilandroidos.view.LanguageTextView
         android:id="@+id/menu_item_chinese"
         style="@style/FrameLayoutMenu"
+        android:clickable="true"
         android:tag="zh"
+
         android:text="@string/menu_item_chinese" />
 
     <com.lncosie.ilandroidos.view.LanguageTextView
         android:id="@+id/menu_item_english"
         style="@style/FrameLayoutMenu"
         android:tag="en"
+        android:clickable="true"
         android:text="@string/menu_item_english" />
 </LinearLayout>
