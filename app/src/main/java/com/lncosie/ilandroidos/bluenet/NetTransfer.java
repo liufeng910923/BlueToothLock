@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
+import android.bluetooth.BluetoothManager;
 import android.bluetooth.BluetoothProfile;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
@@ -81,6 +82,7 @@ public class NetTransfer {
         if (adapter != null)
             adapter.enable();
         taskThread = new Handler(Looper.getMainLooper());
+//        taskThread=new Handler();
         sender = new SendTask();
         timeout = new TimeoutTask();
 
@@ -166,7 +168,11 @@ public class NetTransfer {
         writer = null;
         rawConnection = null;
         enable();
-        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+//        BluetoothAdapter adapter=BluetoothAdapter.getDefaultAdapter();
+        BluetoothManager manager = (BluetoothManager)
+                appContext.getSystemService(Context.BLUETOOTH_SERVICE);
+        adapter=manager.getAdapter();
+
         if(adapter!=null)
             device=adapter.getRemoteDevice(mac);
     }
@@ -576,7 +582,7 @@ public class NetTransfer {
     }
 }
 
-class Heartbeat implements Runnable {
+class  Heartbeat implements Runnable {
     ByteableTask heartbeat = new ByteableTask(null, ByteableTask.HEART_BEAT) {
         @Override
         protected void onTaskDown() {

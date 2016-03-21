@@ -101,7 +101,7 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
     boolean working=false;
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        /**forbid click to fast**/
+        /**forbid click too fast**/
         if(working)
             return;
         working=true;
@@ -153,6 +153,8 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
         for (ConnectedLocks it : DbHelper.getLocks()) {
             if (device.getAddress().equals(it.mac)) {
                 lock = it;
+                if (device.getName()==null||device.getName().length()==0)
+                    lock.name=device.getAddress();
                 lock.name = device.getName();
                 DbHelper.insertLock(lock);
                 break;

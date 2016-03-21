@@ -29,6 +29,7 @@ public abstract class EventableActivity extends AppCompatActivity {
 
     static EventableActivity lastactivity = null;
     static boolean pauseDetect = false;
+    public boolean isPause=true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public abstract class EventableActivity extends AppCompatActivity {
         super.onPause();
         if (pauseDetect)
             return;
+        if (isPause)
         Repass.pause(this);
     }
 

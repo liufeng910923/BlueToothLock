@@ -57,6 +57,18 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
     }
 
     @Override
+    protected void onPause() {
+        isPause=false;
+        super.onPause();
+
+//        super.onPause();
+//        if (pauseDetect)
+//            return;
+//        Repass.pause(this);
+
+    }
+
+    @Override
     public void onDestroy() {
         Bus.unregister(this);
         ButterKnife.unbind(this);

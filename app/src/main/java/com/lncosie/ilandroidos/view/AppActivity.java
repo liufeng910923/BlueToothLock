@@ -108,6 +108,7 @@ public class AppActivity extends EventableActivity {
 
 
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
