@@ -15,4 +15,9 @@ public class ConnectedLocks extends Model {
     public String mac;
     @Column(name = "PASSWORD")
     public String password;
+
+    @Override
+    public String toString() {
+        return "Lock: "+name+mac+password;
+    }
 }

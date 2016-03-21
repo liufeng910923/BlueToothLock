@@ -61,8 +61,8 @@ public class DeviceSelectorFragment extends DialogFragment implements AdapterVie
         adapter = new DeviceAdapter(inflater);
         deviceSearch.setAdapter(adapter);
         Bus.register(this);
-        deviceSearch.setOnItemClickListener(this);
         search();
+        deviceSearch.setOnItemClickListener(this);
         Dialog dialog= builder.create();
         dialog.setCanceledOnTouchOutside(false);
         return dialog;
