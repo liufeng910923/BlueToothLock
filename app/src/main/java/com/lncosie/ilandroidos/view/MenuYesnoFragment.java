@@ -4,11 +4,13 @@ package com.lncosie.ilandroidos.view;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.lncosie.ilandroidos.R;
@@ -23,6 +25,7 @@ import butterknife.ButterKnife;
 public class MenuYesnoFragment extends DialogFragment implements View.OnClickListener {
 
     Applyable applyable;
+
     @Bind(R.id.window_title)
     TextView windowTitle;
     @Bind(R.id.content)
@@ -68,6 +71,10 @@ public class MenuYesnoFragment extends DialogFragment implements View.OnClickLis
         if (v.getId() == ok.getId())
             applyable.apply(null, null);
         this.dismiss();
+        //将键盘dimiss掉；
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
     }
 
     @Override
