@@ -56,6 +56,7 @@ public class PatternSettingActivity extends EventableActivity {
         boolean has=hasPattern();
         frame_change_pattern.setVisibility(has? View.VISIBLE:View.INVISIBLE);
         switch_motion_pwd.setChecked(has);
+
     }
 
     @OnClick(R.id.switch_motion_pwd)

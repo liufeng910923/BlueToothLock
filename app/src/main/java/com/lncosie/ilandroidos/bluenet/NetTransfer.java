@@ -248,12 +248,13 @@ public class NetTransfer {
     }
 
     void sendNext() {
+        //如果当前任务不为空就return
         if (currentTask != null)
             return;
         synchronized (commands) {
             try {
                 currentTask = commands.poll();
-                if (currentTask == null)
+                if (currentTask == null)//如果轮询出来的task为空，return；
                     return;
                 taskThread.postDelayed(sender, currentTask.delayTime());
             } catch (Exception e) {

@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.lncosie.ilandroidos.bluenet.Net;
 import com.lncosie.ilandroidos.bluenet.OnNetStateChange;
 import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.bus.HistoryChanged;
+import com.lncosie.ilandroidos.bus.InputPwd;
 import com.lncosie.ilandroidos.bus.LanguageChanged;
 import com.lncosie.ilandroidos.bus.LoginSuccess;
 import com.lncosie.ilandroidos.bus.DeviceDisconnected;
@@ -58,6 +60,7 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
+        //homefragment中已配置的device
         adapter = new DeviceAdapter(getLayoutInflater(savedInstanceState));
         devices.setAdapter(adapter);
         devices.setOnItemClickListener(this);
@@ -143,6 +146,8 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
 
     ConnectedLocks activeLock = null;
 
+
+
     @Subscribe
     public void OnConnected(LoginSuccess state) {
 
@@ -153,9 +158,9 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
         for (ConnectedLocks it : DbHelper.getLocks()) {
             if (device.getAddress().equals(it.mac)) {
                 lock = it;
-                if (device.getName()==null||device.getName().length()==0)
-                    lock.name=device.getAddress();
-                lock.name = device.getName();
+                if (device.getName()==null||device.getName().length()==0){
+                    lock.name="HTL-"+lock.mac.substring(15,17);
+                }
                 DbHelper.insertLock(lock);
                 break;
             }
@@ -196,11 +201,12 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
         }
         void reinit() {
             lockses.clear();
+
             for(ConnectedLocks lock:DbHelper.getLocks())
             {
-                //if(lock.name!=null)
                 lockses.add(lock);
             }
+            Log.d("lockses：","has been connected lockes"+lockses.toString());
         }
         @Override
         public int getCount() {
@@ -228,7 +234,12 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
+            //判断设备名字是否为空，如果为空将mac地址的末两位命名为名字。
             ConnectedLocks lock = lockses.get(position);
+            if (lock.name==null||lock.name.length()==0){
+                lock.name="HTL-"+lock.mac.substring(15,17);
+            }
+            Log.d("TEST",lock.toString());
             holder.bind(lock, activeLock == lock);
             return convertView;
         }
@@ -256,9 +267,15 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
         }
 
         void bind(final ConnectedLocks lock, final boolean active) {
-            device_state.setTextRes(active ? R.string.connected : R.string.disconnected);
-            device_img.setImageDrawable(active ? device_img.getResources().getDrawable(R.drawable.keepass_2) : device_img.getResources().getDrawable(R.drawable.keepass));
-            device_name_connected.setText(lock.name);
+            if (lock==null)
+                return;
+            else {
+
+                Log.d("Lock name :",lock.name);
+                device_name_connected.setText(lock.name);
+                device_state.setTextRes(active ? R.string.connected : R.string.disconnected);
+                device_img.setImageDrawable(active ? device_img.getResources().getDrawable(R.drawable.keepass_2) : device_img.getResources().getDrawable(R.drawable.keepass));
+            }
         }
     }
 }

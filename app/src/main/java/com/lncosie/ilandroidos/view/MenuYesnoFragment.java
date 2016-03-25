@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -12,8 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lncosie.ilandroidos.R;
+import com.lncosie.ilandroidos.bus.Bus;
+import com.lncosie.ilandroidos.bus.InputPwd;
+import com.lncosie.ilandroidos.bus.LoginSuccess;
 import com.lncosie.ilandroidos.model.Applyable;
 
 import butterknife.Bind;
@@ -69,11 +74,15 @@ public class MenuYesnoFragment extends DialogFragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
         if (v.getId() == ok.getId())
-            applyable.apply(null, null);
+            applyable.apply(null, null);//重置网络。
+
+//        Intent intent =new Intent("com.hutlon.daniel.connet is ok");
+//        getContext().sendBroadcast(intent);
+//        Bus.post(new LoginSuccess());
+
+//
         this.dismiss();
-        //将键盘dimiss掉；
-        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
 
     }
 

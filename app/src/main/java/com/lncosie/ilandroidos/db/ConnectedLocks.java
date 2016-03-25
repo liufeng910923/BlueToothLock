@@ -18,6 +18,6 @@ public class ConnectedLocks extends Model {
 
     @Override
     public String toString() {
-        return "Lock: "+name+mac+password;
+        return "Lock:    "+name+"   "+mac+"     "+password;
     }
 }
