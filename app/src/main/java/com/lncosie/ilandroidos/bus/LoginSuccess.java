@@ -5,4 +5,5 @@ package com.lncosie.ilandroidos.bus;
  */
 public class LoginSuccess {
 
+
 }
