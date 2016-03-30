@@ -72,6 +72,7 @@
     <string name="user_add_finger_admin">Admin Finger</string>
 
     <!-- state-->
+    <string name="connect_successed">connect successed</string>
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>
     <!-- tips -->

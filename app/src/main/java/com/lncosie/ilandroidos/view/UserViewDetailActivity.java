@@ -89,6 +89,10 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
         super.backward(v);
     }
 
+    /**
+     * 修改用户头像代码块
+     * @param v
+     */
     @OnClick(R.id.user_image)
     void user_pick_image(View v) {
         pauseDetect=true;
@@ -98,6 +102,8 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
         intent.setType("image/*");
         startActivityForResult(intent, 3);
     }
+
+
 
     @OnClick(R.id.user_name_frame)
     public void user_name_frame(View v) {

@@ -44,4 +44,5 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.0.0'
     compile 'com.takwolf.android:lock9view:0.0.10'
     compile files('libs/feather.jar')
+    compile files('libs/universal-image-loader-1.9.4.jar')
 }

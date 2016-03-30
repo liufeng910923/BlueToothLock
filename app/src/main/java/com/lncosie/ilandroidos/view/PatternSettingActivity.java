@@ -31,13 +31,18 @@ public class PatternSettingActivity extends EventableActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pattern_setting);
         ButterKnife.bind(this);
-        updateUi();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateUi();
     }
 
     public void backward(View v){

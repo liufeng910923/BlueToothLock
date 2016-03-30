@@ -68,6 +68,7 @@
     <string name="user_add_finger">用户指纹</string>
     <string name="user_add_finger_admin">管理员指纹</string>
 
+    <string name="connect_successed">连接成功!</string>
     <!-- state-->
     <string name="connected">已连接</string>
     <string name="disconnected">未连接</string>

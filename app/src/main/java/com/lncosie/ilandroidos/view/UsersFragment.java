@@ -131,6 +131,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
                 int action = (int) arg0;
                 long gid = (long) arg1;
                 if (action == 0) {
+                    //编辑用户
                     Intent intent = new Intent(getContext(), UserViewDetailActivity.class);
                     intent.putExtra("uid", gid);
                     startActivity(intent);

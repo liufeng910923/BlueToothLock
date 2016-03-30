@@ -1,5 +1,6 @@
 package com.lncosie.ilandroidos.view;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -42,20 +43,17 @@ public class AppActivity extends EventableActivity {
     RadioButton prevActive;
     private SectionsPagerAdapter adapter;
 
+    public Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app);
         ButterKnife.bind(this);
         Bus.register(this);
+        context=this;
         grob = new GrobMessage(this);
         adapter = new SectionsPagerAdapter(getSupportFragmentManager());
         container.setOffscreenPageLimit(4);
-//        container.setOnTouchListener(new View.OnTouchListener() {
-//            public boolean onTouch(View arg0, MotionEvent arg1) {
-//                return true;
-//            }
-//        });
         container.setAdapter(adapter);
     }
 
@@ -72,6 +70,12 @@ public class AppActivity extends EventableActivity {
         fragment.show(getSupportFragmentManager(), "");
     }
 
+    @Override
+    public void onPause(){
+        isPause=true;
+        super.onPause();
+
+    }
     void exit() {
         Net.get().reset();
         Repass.exit();

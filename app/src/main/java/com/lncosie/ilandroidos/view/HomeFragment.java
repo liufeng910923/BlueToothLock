@@ -14,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bluenet.Net;
@@ -90,30 +91,31 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
         DeviceSelectorFragment fragment = new DeviceSelectorFragment();
         fragment.show(getFragmentManager().beginTransaction(), "DialogFragment");
     }
+
     @Subscribe
-    public void login(TryLogin a){
-        Net net=Net.get();
-        if(net.getState()== OnNetStateChange.NetState.Connected
-                ||net.getState()== OnNetStateChange.NetState.LoginFailed)
-        {
+    public void login(TryLogin a) {
+        Net net = Net.get();
+        if (net.getState() == OnNetStateChange.NetState.Connected
+                || net.getState() == OnNetStateChange.NetState.LoginFailed) {
             net.login();
-        }else
+        } else
             net.connect().login();
     }
 
-    boolean working=false;
+    boolean working = false;
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         /**forbid click too fast**/
-        if(working)
+        if (working)
             return;
-        working=true;
+        working = true;
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                working=false;
+                working = false;
             }
-        },500);
+        }, 500);
 
         final ConnectedLocks lock = adapter.lockses.get(position);
         if (adapter.isActiveLock(position)) {
@@ -132,7 +134,7 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
                 @Override
                 public void apply(Object arg0, Object arg1) {
                     Net net = Net.get();
-                    net.stateRetrying=false;
+                    net.stateRetrying = false;
                     BluetoothDevice bluetoothDevice = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(lock.mac);
                     net.reset().setDevice(bluetoothDevice);
                     net.connect();
@@ -147,6 +149,9 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
     ConnectedLocks activeLock = null;
 
 
+    public void showToast(String string) {
+        Toast.makeText(getContext(), string, Toast.LENGTH_SHORT).show();
+    }
 
     @Subscribe
     public void OnConnected(LoginSuccess state) {
@@ -158,14 +163,15 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
         for (ConnectedLocks it : DbHelper.getLocks()) {
             if (device.getAddress().equals(it.mac)) {
                 lock = it;
-                if (device.getName()==null||device.getName().length()==0){
-                    lock.name="HTL-"+lock.mac.substring(15,17);
+                if (device.getName() == null || device.getName().length() == 0) {
+                    lock.name = "HTL-" + lock.mac.substring(15, 17);
                 }
                 DbHelper.insertLock(lock);
                 break;
             }
         }
 
+        showToast(getActivity().getResources().getString(R.string.connect_successed));
         adapter.reinit();
         for (ConnectedLocks it : adapter.lockses) {
             if (device.getAddress().equals(it.mac)) {
@@ -195,19 +201,21 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
     class DeviceAdapter extends BaseAdapter {
         LayoutInflater inflater;
         List<ConnectedLocks> lockses = new ArrayList<ConnectedLocks>();
+
         DeviceAdapter(LayoutInflater inflater) {
             this.inflater = inflater;
             reinit();
         }
+
         void reinit() {
             lockses.clear();
 
-            for(ConnectedLocks lock:DbHelper.getLocks())
-            {
+            for (ConnectedLocks lock : DbHelper.getLocks()) {
                 lockses.add(lock);
             }
-            Log.d("lockses：","has been connected lockes"+lockses.toString());
+            Log.d("lockses：", "has been connected lockes" + lockses.toString());
         }
+
         @Override
         public int getCount() {
             return lockses.size();
@@ -236,10 +244,10 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
             }
             //判断设备名字是否为空，如果为空将mac地址的末两位命名为名字。
             ConnectedLocks lock = lockses.get(position);
-            if (lock.name==null||lock.name.length()==0){
-                lock.name="HTL-"+lock.mac.substring(15,17);
+            if (lock.name == null || lock.name.length() == 0) {
+                lock.name = "HTL-" + lock.mac.substring(15, 17);
             }
-            Log.d("TEST",lock.toString());
+            Log.d("TEST", lock.toString());
             holder.bind(lock, activeLock == lock);
             return convertView;
         }
@@ -267,14 +275,15 @@ public class HomeFragment extends ActiveAbleFragment implements AdapterView.OnIt
         }
 
         void bind(final ConnectedLocks lock, final boolean active) {
-            if (lock==null)
+            if (lock == null)
                 return;
             else {
 
-                Log.d("Lock name :",lock.name);
+                Log.d("Lock name :", lock.name);
                 device_name_connected.setText(lock.name);
                 device_state.setTextRes(active ? R.string.connected : R.string.disconnected);
-                device_img.setImageDrawable(active ? device_img.getResources().getDrawable(R.drawable.keepass_2) : device_img.getResources().getDrawable(R.drawable.keepass));
+                device_img.setImageDrawable(active ? device_img.getResources().getDrawable(R.drawable.keepass_2)
+                        : device_img.getResources().getDrawable(R.drawable.keepass));
             }
         }
     }
