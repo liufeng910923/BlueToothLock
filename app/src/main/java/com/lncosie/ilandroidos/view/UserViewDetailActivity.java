@@ -58,7 +58,7 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
 
     @Override
     protected void onPause() {
-        isPause=false;
+        pauseDetect = false;
         super.onPause();
 
 //        super.onPause();
@@ -74,10 +74,12 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
         ButterKnife.unbind(this);
         super.onDestroy();
     }
+
     @Subscribe
-    public void bluetoothConneted(BluetoothConneted state){
+    public void bluetoothConneted(BluetoothConneted state) {
         showLoginPassword(state.needPassword);
     }
+
     @Override
     public void onBackPressed() {
         Bus.post(new UsersChanged());
@@ -89,21 +91,15 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
         super.backward(v);
     }
 
-    /**
-     * 修改用户头像代码块
-     * @param v
-     */
     @OnClick(R.id.user_image)
     void user_pick_image(View v) {
-        pauseDetect=true;
+        pauseDetect = true;
         Intent intent = new Intent(
                 Intent.ACTION_PICK,
                 MediaStore.Images.Media.INTERNAL_CONTENT_URI);
         intent.setType("image/*");
         startActivityForResult(intent, 3);
     }
-
-
 
     @OnClick(R.id.user_name_frame)
     public void user_name_frame(View v) {
@@ -126,8 +122,8 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 2)
-            pauseDetect=false;
+        if (requestCode == 2)
+            pauseDetect = false;
         if (resultCode == 0)
             return;
         if (requestCode == 1) {
@@ -138,7 +134,8 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
             Bus.post(new UsersChanged());
         } else if (requestCode == 2) {
             String password = data.getStringExtra("password");
-            InterlockOperation.modifyPwd(detailSelected.type, detailSelected.uid, StringTools.getPwdBytes(detailSelected.uid, password));
+            InterlockOperation.modifyPwd(detailSelected.type,
+                    detailSelected.uid, StringTools.getPwdBytes(detailSelected.uid, password));
         } else if (requestCode == 3) {
             String img[] = new String[1];
             userImage.setImageBitmap(BitmapTool.cropBitmap(this, data.getData(), img));
@@ -162,7 +159,7 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
                         @Override
                         public void apply(Object arg0, Object arg1) {
                             InterlockOperation.deleteId(detailSelected.type, detailSelected.uid);
-                            if(adapter.details.size()==1){
+                            if (adapter.details.size() == 1) {
                                 user.delete();
                                 Bus.post(new UsersChanged());
                                 finish();

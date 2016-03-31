@@ -5,12 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,6 +20,7 @@ import com.lncosie.ilandroidos.bus.LanguageChanged;
 import com.lncosie.ilandroidos.bus.LoginSuccess;
 import com.lncosie.ilandroidos.bus.DeviceDisconnected;
 import com.lncosie.ilandroidos.bus.NetworkError;
+import com.lncosie.ilandroidos.bus.UserSet;
 import com.lncosie.ilandroidos.bus.UsersChanged;
 import com.lncosie.ilandroidos.bus.ViewUserLog;
 import com.lncosie.ilandroidos.db.UserDetail;
@@ -30,6 +31,7 @@ import com.lncosie.ilandroidos.model.BitmapTool;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.model.InterlockOperation;
 import com.lncosie.ilandroidos.model.Sync;
+import com.lncosie.ilandroidos.utils.UserTools;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -37,6 +39,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -134,6 +137,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
                     //编辑用户
                     Intent intent = new Intent(getContext(), UserViewDetailActivity.class);
                     intent.putExtra("uid", gid);
+                    Bus.post(new UserSet());
                     startActivity(intent);
                 } else if (action == 1) {
                     Bus.post(new ViewUserLog(gid));
@@ -203,7 +207,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
 
     static class ViewHolder {
         @Bind(R.id.user_image)
-        ImageView userImage;
+        CircleImageView userImage;
         @Bind(R.id.user_name)
         TextView userName;
 //        @Bind(R.id.password_cnt)
@@ -216,8 +220,10 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
         }
 
         void bind(UserWithTime user) {
+            Log.d("User",user.toString());
             userName.setText(user.name);
             userImage.setImageBitmap(BitmapTool.decodeBitmap(userImage.getContext(), user.image));
+//            UserTools.getInstance(user).setUserIcon(userImage);
         }
     }
 

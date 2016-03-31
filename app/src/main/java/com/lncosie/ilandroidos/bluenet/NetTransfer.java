@@ -176,9 +176,17 @@ public class NetTransfer {
         adapter = manager.getAdapter();
 
         if (adapter != null) {
-            BluetoothDevice remoteDevice = adapter.getRemoteDevice(mac);
-            if (remoteDevice != null)
-                device = remoteDevice;
+            if (mac!=null){
+
+                BluetoothDevice remoteDevice = adapter.getRemoteDevice(mac);
+                if (remoteDevice!=null){
+
+                    device = remoteDevice;
+                }else {
+                    return;
+                }
+            }else
+                return;
         }
     }
 
@@ -591,8 +599,8 @@ public class NetTransfer {
         public void run() {
             if (currentTask != null)
                 currentTask.onTimeout();
-            eraseCurrentTask();
-            sendNext();
+            eraseCurrentTask();//擦除当前任务
+            sendNext();//发送下一个指令
         }
     }
 }

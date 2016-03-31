@@ -18,6 +18,7 @@ public class App extends com.activeandroid.app.Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        //初始化操作
         DbHelper.DbInit();
         Net.get().init(this);
         Bus.busInit();

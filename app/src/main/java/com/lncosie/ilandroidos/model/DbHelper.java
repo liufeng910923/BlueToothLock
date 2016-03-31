@@ -50,6 +50,7 @@ public class DbHelper {
     static final String optimized = "CREATE INDEX IF NOT EXISTS idxUserMac ON Users (MAC ASC)";
 
     public static void DbInit() {
+
         execSQLNoThrow(dropTimeWithUser);
         execSQLNoThrow(dropUserWithTime);
         execSQLNoThrow(dropLockUser);

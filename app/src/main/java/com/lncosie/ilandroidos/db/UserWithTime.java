@@ -1,7 +1,13 @@
 package com.lncosie.ilandroidos.db;
 
+import android.widget.ImageView;
+
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
+import com.lncosie.ilandroidos.R;
+import com.lncosie.ilandroidos.utils.BitmapUtil;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class UserWithTime extends Model {
@@ -21,4 +27,37 @@ public class UserWithTime extends Model {
     public int type;
     @Column(name = "TIME")
     public long time;
+
+    @Override
+    public String toString() {
+        return "user :"
+                +"gid: "+gid
+                +"name  "+name
+                +"image  "+image
+                +"pAccounts  "+pAccounts
+                +"rAccounts  "+rAccounts
+                +"fAccounts  "+fAccounts
+                +"type  "+type
+                +"time  "+time
+                ;
+    }
+
+
+    /**
+     * @param circleImageView
+     */
+    public void setUserIcon(ImageView circleImageView) {
+        /**
+         *
+         * 显示用户自定义的头像
+         */
+
+            String userIconPath = image;
+            if (userIconPath != null) {
+                BitmapUtil.getInstance().setLocalImg(circleImageView, userIconPath);
+            } else {
+                //显示默认的头像
+                circleImageView.setImageResource(R.drawable.stack_of_photos);
+            }
+    }
 }

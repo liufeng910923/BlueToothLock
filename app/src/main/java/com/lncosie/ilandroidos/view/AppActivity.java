@@ -17,10 +17,13 @@ import com.lncosie.ilandroidos.bluenet.Net;
 import com.lncosie.ilandroidos.bus.BluetoothConneted;
 import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.bus.LanguageChanged;
+import com.lncosie.ilandroidos.bus.UserSet;
 import com.lncosie.ilandroidos.bus.ViewUserLog;
 import com.lncosie.ilandroidos.model.Applyable;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.bus.GrobMessage;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.squareup.otto.Subscribe;
 
 import butterknife.Bind;
@@ -55,6 +58,7 @@ public class AppActivity extends EventableActivity {
         adapter = new SectionsPagerAdapter(getSupportFragmentManager());
         container.setOffscreenPageLimit(4);
         container.setAdapter(adapter);
+        ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(this));
     }
 
     @Override
@@ -72,10 +76,21 @@ public class AppActivity extends EventableActivity {
 
     @Override
     public void onPause(){
-        isPause=true;
+//        pauseDetect=false;
         super.onPause();
 
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Subscribe
+    public void setPause(UserSet userSet){
+        pauseDetect=true;
+    }
+
     void exit() {
         Net.get().reset();
         Repass.exit();
