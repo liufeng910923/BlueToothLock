@@ -60,6 +60,12 @@
             android:theme="@style/AppTheme" >
 
         </activity>
+        <activity
+            android:name=".view.ActivityIconSeleted"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme" >
+
+        </activity>
 
         <activity
             android:name=".view.TestActivity"

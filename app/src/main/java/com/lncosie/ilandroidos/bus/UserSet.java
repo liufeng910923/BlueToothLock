@@ -8,4 +8,14 @@ package com.lncosie.ilandroidos.bus;
  * Funcation: 通知用户信息更改
  */
 public class UserSet {
+
+    long userId;
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public UserSet(long userId) {
+        this.userId = userId;
+    }
 }

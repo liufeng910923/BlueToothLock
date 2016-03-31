@@ -100,6 +100,7 @@
     <string name="users">Users</string>
     <string name="user_add">Add</string>
     <string name="user_edit">Edit User</string>
+    <string name="image_select">Image Select</string>
     <string name="history">History</string>
     <string name="setting">Setting</string>
     <string name="modify_name">Username</string>

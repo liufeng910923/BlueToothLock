@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/iconselected_item_uploadrl"
+    android:layout_width="120dp"
+    android:layout_height="120dp"
+    android:padding="10dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iconselected_item_upload"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/stack_of_photos" />
+
+
+
+
+</RelativeLayout>

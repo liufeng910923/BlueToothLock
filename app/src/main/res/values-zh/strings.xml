@@ -111,6 +111,7 @@
     <string name="version_update">版本</string>
     <string name="about_us">关于</string>
     <!-- View User-->
+    <string name="image_select">选择头像</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

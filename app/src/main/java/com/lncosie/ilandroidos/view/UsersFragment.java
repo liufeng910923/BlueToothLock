@@ -54,6 +54,8 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
     @Bind(R.id.title)
     TextView title;
 
+    long userId=0;
+
     public UsersFragment() {
         // Required empty public constructor
     }
@@ -132,17 +134,19 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
                     return;
                 }
                 int action = (int) arg0;
-                long gid = (long) arg1;
+//                long gid = (long) arg1;
+                userId=(long)arg1;
+                Users user = DbHelper.getUser(userId);
                 if (action == 0) {
                     //编辑用户
                     Intent intent = new Intent(getContext(), UserViewDetailActivity.class);
-                    intent.putExtra("uid", gid);
-                    Bus.post(new UserSet());
+                    intent.putExtra("uid", userId);
+                    Bus.post(new UserSet(userId));
                     startActivity(intent);
                 } else if (action == 1) {
-                    Bus.post(new ViewUserLog(gid));
+                    Bus.post(new ViewUserLog(userId));
                 } else if (action == 2) {
-                    deleteUser(gid);
+                    deleteUser(userId);
                 }
 
             }
@@ -222,8 +226,9 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
         void bind(UserWithTime user) {
             Log.d("User",user.toString());
             userName.setText(user.name);
-            userImage.setImageBitmap(BitmapTool.decodeBitmap(userImage.getContext(), user.image));
+//            userImage.setImageBitmap(BitmapTool.decodeBitmap(userImage.getContext(), user.image));
 //            UserTools.getInstance(user).setUserIcon(userImage);
+            UserTools.setLocalImg(userImage,user.image);
         }
     }
 

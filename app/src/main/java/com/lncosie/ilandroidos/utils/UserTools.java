@@ -1,8 +1,15 @@
 package com.lncosie.ilandroidos.utils;
 
+import android.graphics.Bitmap;
+import android.widget.ImageView;
+
 import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.db.TimeWithUser;
 import com.lncosie.ilandroidos.db.UserWithTime;
+import com.lncosie.ilandroidos.db.Users;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.download.ImageDownloader;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -15,16 +22,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class UserTools {
 
     static UserTools instance;
-    UserWithTime user;
+    Users user;
 
     /**
      * @param user
      */
-    private UserTools(UserWithTime user) {
+    private UserTools(Users user) {
         this.user = user;
     }
 
-    public synchronized static UserTools getInstance(UserWithTime user) {
+    public synchronized static UserTools getInstance(Users user) {
         if (instance == null)
             return new UserTools(user);
         else
@@ -50,42 +57,23 @@ public class UserTools {
 
     }
 
-
     /**
-     * @param userIconFlag
-     * @param circleImageView
+     * 加载本地图片
+     *
+     * @param imageView 图片ImageView控件
+     * @param imagePath 图片本地路径
      */
-//
-//    void setUserIconByFlag(int userIconFlag, CircleImageView circleImageView) {
-//        switch (userIconFlag) {
-//            case 0:
-//                circleImageView.setImageResource(R.drawable.default_user);
-//                break;
-//            case 1:
-//                circleImageView.setImageResource(R.drawable.grandpa);
-//                break;
-//            case 2:
-//                circleImageView.setImageResource(R.drawable.grandma);
-//                break;
-//            case 3:
-//                circleImageView.setImageResource(R.drawable.father);
-//                break;
-//            case 4:
-//                circleImageView.setImageResource(R.drawable.mother);
-//                break;
-//            case 5:
-//                circleImageView.setImageResource(R.drawable.son);
-//                break;
-//            case 6:
-//                circleImageView.setImageResource(R.drawable.daughter);
-//                break;
-//            case 7:
-//                circleImageView.setImageResource(R.drawable.children);
-//                break;
-//            default:
-//                circleImageView.setImageResource(R.drawable.default_user);
-//                break;
-//        }
-//    }
+    public static void setLocalImg(ImageView imageView, String imagePath) {
 
+        // 显示图片的配置
+        DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
+        builder.cacheInMemory(true).cacheOnDisk(true)
+                .bitmapConfig(Bitmap.Config.RGB_565);
+
+        DisplayImageOptions options = builder.build();
+
+        ImageLoader.getInstance().displayImage(ImageDownloader.Scheme.FILE.wrap(imagePath),
+                imageView, options);
+
+    }
 }  

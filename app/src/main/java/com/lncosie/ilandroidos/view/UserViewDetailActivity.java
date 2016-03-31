@@ -16,14 +16,17 @@ import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bus.BluetoothConneted;
 import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.bus.OperatorMessages;
+import com.lncosie.ilandroidos.bus.UserSet;
 import com.lncosie.ilandroidos.bus.UsersChanged;
 import com.lncosie.ilandroidos.db.UserDetail;
+import com.lncosie.ilandroidos.db.UserWithTime;
 import com.lncosie.ilandroidos.db.Users;
 import com.lncosie.ilandroidos.model.Applyable;
 import com.lncosie.ilandroidos.model.BitmapTool;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.model.InterlockOperation;
 import com.lncosie.ilandroidos.model.StringTools;
+import com.lncosie.ilandroidos.utils.UserTools;
 import com.squareup.otto.Subscribe;
 
 import java.util.List;
@@ -32,7 +35,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class UserViewDetailActivity extends EventableActivity implements AdapterView.OnItemClickListener {
+public class UserViewDetailActivity extends EventableActivity
+        implements AdapterView.OnItemClickListener {
     @Bind(R.id.user_name)
     TextView userName;
     @Bind(R.id.auth_list)
@@ -46,6 +50,7 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
     @Bind(R.id.user_name_frame)
     LinearLayout userNameFrame;
     UserDetail active_auth;
+    private long userId=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,19 +58,22 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
         setContentView(R.layout.activity_user_view_detail);
         ButterKnife.bind(this);
         Bus.register(this);
-        init();
+
     }
 
     @Override
     protected void onPause() {
-        pauseDetect = false;
+        pauseDetect = true;
         super.onPause();
 
-//        super.onPause();
-//        if (pauseDetect)
-//            return;
-//        Repass.pause(this);
 
+    }
+
+    @Override
+    protected void onResume() {
+        pauseDetect=true;
+        super.onResume();
+        init();
     }
 
     @Override
@@ -80,24 +88,32 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
         showLoginPassword(state.needPassword);
     }
 
-    @Override
-    public void onBackPressed() {
-        Bus.post(new UsersChanged());
-        super.onBackPressed();
-    }
+//    @Override
+//    public void onBackPressed() {
+////        Bus.post(new UsersChanged());
+//        super.onBackPressed();
+//    }
+
 
     public void backward(View v) {
-        Bus.post(new UsersChanged());
+//        Bus.post(new UsersChanged());
         super.backward(v);
     }
 
+    /**
+     * 修改头像的方法：
+     * @param v
+     */
     @OnClick(R.id.user_image)
     void user_pick_image(View v) {
-        pauseDetect = true;
-        Intent intent = new Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        intent.setType("image/*");
+        Intent intent = new Intent(UserViewDetailActivity.this,
+                ActivityIconSeleted.class);
+
+
+//        Intent intent = new Intent(
+//                Intent.ACTION_PICK,
+//                MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+//        intent.setType("image/*");
         startActivityForResult(intent, 3);
     }
 
@@ -137,10 +153,14 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
             InterlockOperation.modifyPwd(detailSelected.type,
                     detailSelected.uid, StringTools.getPwdBytes(detailSelected.uid, password));
         } else if (requestCode == 3) {
-            String img[] = new String[1];
-            userImage.setImageBitmap(BitmapTool.cropBitmap(this, data.getData(), img));
-            user.image = img[0];
-            user.save();
+            //设置用户头像
+
+//            String img[] = new String[1];
+//            userImage.setImageBitmap(BitmapTool.cropBitmap(this, data.getData(), img));
+//            user.image = img[0];
+//            user.save();
+//            UserTools.getInstance(user).setUserIcon(userImage);
+            UserTools.setLocalImg(userImage,user.image);
             Bus.post(new UsersChanged());
         }
     }
@@ -192,16 +212,23 @@ public class UserViewDetailActivity extends EventableActivity implements Adapter
     }
 
     void init() {
-        long uid = getIntent().getLongExtra("uid", -1);
-        if (uid != -1) {
-            user = DbHelper.getUser(uid);
+         userId = getIntent().getLongExtra("uid", -1);
+
+        if (userId != -1) {
+
+            user = DbHelper.getUser(userId);
             userName.setText(user.name);
-            userImage.setImageBitmap(BitmapTool.decodeBitmap(this, user.image));
+//            userImage.setImageBitmap(BitmapTool.decodeBitmap(this, user.image));
+            UserTools.setLocalImg(userImage,user.image);
             adapter = new AuthAdapter();
             authList.setAdapter(adapter);
         }
+
         authList.setOnItemClickListener(this);
     }
+
+
+
 
     @Subscribe
     public void delFromLock(OperatorMessages.OpDelAuth result) {
