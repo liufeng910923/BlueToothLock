@@ -147,6 +147,10 @@ public class DbHelper {
     public static List<TimeWithUser> getHistory() {
         return new Select().from(TimeWithUser.class).execute();
     }
+    public static List<TimeWithUser> getHistoryById(long gid) {
+//        return new Select().from(TimeWithUser.class).execute();
+        return  new Select().from(TimeWithUser.class).where("gid = ?" ,gid).execute();
+    }
 
     public static List<LockUsers> getCurLockUsers(int type) {
         return new Select().from(LockUsers.class).where("type=?", type).execute();

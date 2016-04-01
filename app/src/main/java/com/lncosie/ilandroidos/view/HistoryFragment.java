@@ -25,6 +25,7 @@ import com.lncosie.ilandroidos.bus.LanguageChanged;
 import com.lncosie.ilandroidos.bus.LoginSuccess;
 import com.lncosie.ilandroidos.bus.DeviceDisconnected;
 import com.lncosie.ilandroidos.bus.UsersChanged;
+import com.lncosie.ilandroidos.bus.ViewUserLog;
 import com.lncosie.ilandroidos.db.TimeWithUser;
 import com.lncosie.ilandroidos.db.Users;
 import com.lncosie.ilandroidos.model.Applyable;
@@ -32,6 +33,7 @@ import com.lncosie.ilandroidos.model.BitmapTool;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.model.Sync;
 import com.lncosie.ilandroidos.model.TimeTools;
+import com.lncosie.ilandroidos.utils.UserTools;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -40,6 +42,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -102,6 +105,11 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
     }
 
     @Subscribe
+    public void onViewUserLog(ViewUserLog viewUserLog){
+        ArrayList<TimeWithUser> histories=(ArrayList<TimeWithUser>) DbHelper.getHistoryById(viewUserLog.gid);
+        adapter.setHistory(histories);
+    }
+    @Subscribe
     public void langChanged(LanguageChanged languageChanged) {
         //title.setText(R.string.history);
         //adapter.notifyDataSetChanged();
@@ -113,6 +121,7 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
         adapter.filterInit(null);
         adapter.notifyDataSetChanged();
     }
+
 
     @Subscribe
     public void onHistoryChanged(HistoryChanged c) {
@@ -191,7 +200,7 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
 
     static class NodeView implements ViewBase {
         @Bind(R.id.open_user_img)
-        ImageView openUserImg;
+        CircleImageView openUserImg;
         @Bind(R.id.open_user_name)
         TextView openUserName;
         @Bind(R.id.open_type)
@@ -204,7 +213,8 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
         }
 
         public void bind(Context context, TimeWithUser history) {
-            openUserImg.setImageBitmap(BitmapTool.decodeBitmap(context, history.image));
+//            openUserImg.setImageBitmap(BitmapTool.decodeBitmap(context, history.image));
+            UserTools.setLocalImg(openUserImg,history.image);
             openUserName.setText(history.name);
             openType.setText(history.type == 0 ? R.string.password : R.string.finger);
             openTime.setText(TimeTools.toTimeString(history.time));
@@ -263,6 +273,8 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
             }
 
         }
+
+
 
         void reInit() {
             orgs = DbHelper.getHistory();
@@ -340,6 +352,11 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
                     notifyDataSetChanged();
                 }
             }
+        }
+
+        public void setHistory(ArrayList histories){
+            this.history =histories;
+            notifyDataSetChanged();
         }
     }
 

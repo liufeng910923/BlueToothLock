@@ -27,12 +27,12 @@
         <activity
             android:name=".view.UserViewDetailActivity"
             android:label="@string/title_activity_user_view_detail"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".view.UserAddActivity"
             android:label="@string/title_activity_user_view_detail"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <!-- android:theme="@style/AppTheme" -->
         <!-- android:windowSoftInputMode="adjustPan|stateAlwaysHidden" -->
@@ -50,7 +50,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".view.PatternActivity"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme" >
 
         </activity>

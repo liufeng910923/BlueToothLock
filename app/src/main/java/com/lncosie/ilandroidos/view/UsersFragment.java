@@ -1,6 +1,7 @@
 package com.lncosie.ilandroidos.view;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,7 +28,6 @@ import com.lncosie.ilandroidos.db.UserDetail;
 import com.lncosie.ilandroidos.db.UserWithTime;
 import com.lncosie.ilandroidos.db.Users;
 import com.lncosie.ilandroidos.model.Applyable;
-import com.lncosie.ilandroidos.model.BitmapTool;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.model.InterlockOperation;
 import com.lncosie.ilandroidos.model.Sync;
@@ -192,6 +192,10 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
         yesnoFragment.show(getFragmentManager(), "");
     }
 
+    /**
+     * 添加新用户
+     * @param v
+     */
     @OnClick(R.id.user_add)
     public void userAdd(View v) {
         if (!checkSendable()) {
@@ -265,7 +269,6 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
 
         void init() {
             users = DbHelper.getUsers();
-
         }
 
         void reInit() {

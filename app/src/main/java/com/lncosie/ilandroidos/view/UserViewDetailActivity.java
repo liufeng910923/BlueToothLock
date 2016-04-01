@@ -1,5 +1,6 @@
 package com.lncosie.ilandroidos.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bus.BluetoothConneted;
 import com.lncosie.ilandroidos.bus.Bus;
+import com.lncosie.ilandroidos.bus.NetworkError;
 import com.lncosie.ilandroidos.bus.OperatorMessages;
 import com.lncosie.ilandroidos.bus.UserSet;
 import com.lncosie.ilandroidos.bus.UsersChanged;
@@ -51,10 +53,12 @@ public class UserViewDetailActivity extends EventableActivity
     LinearLayout userNameFrame;
     UserDetail active_auth;
     private long userId=-1;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context=this;
         setContentView(R.layout.activity_user_view_detail);
         ButterKnife.bind(this);
         Bus.register(this);
@@ -98,6 +102,7 @@ public class UserViewDetailActivity extends EventableActivity
     public void backward(View v) {
 //        Bus.post(new UsersChanged());
         super.backward(v);
+        this.finish();
     }
 
     /**
@@ -109,7 +114,7 @@ public class UserViewDetailActivity extends EventableActivity
         Intent intent = new Intent(UserViewDetailActivity.this,
                 ActivityIconSeleted.class);
 
-
+        intent.putExtra("uid",userId);
 //        Intent intent = new Intent(
 //                Intent.ACTION_PICK,
 //                MediaStore.Images.Media.INTERNAL_CONTENT_URI);
@@ -124,15 +129,30 @@ public class UserViewDetailActivity extends EventableActivity
         startActivityForResult(intent, 1);
     }
 
+    /**
+     *
+     *添加新用户
+     */
+
     @OnClick(R.id.auth_add)
     public void authAdd(View v) {
-        if (checkSendable() == false) {
+//        if (checkSendable() == false) {
+//            return;
+//        }
+//        Intent intent = new Intent(this, UserAddActivity.class);
+//        intent.putExtra("uid", user != null ? user.getId() : -1);
+//        intent.putExtra("edit", false);
+//        startActivity(intent);
+
+        if (!checkSendable()) {
+            Bus.post(new NetworkError());
             return;
         }
-        Intent intent = new Intent(this, UserAddActivity.class);
-        intent.putExtra("uid", user != null ? user.getId() : -1);
-        intent.putExtra("edit", false);
+        Intent intent = new Intent(UserViewDetailActivity.this, UserAddActivity.class);
+        intent.putExtra("uid",userId==-1?-1:userId);
+        intent.putExtra("edit", true);
         startActivity(intent);
+        finish();
     }
 
     @Override

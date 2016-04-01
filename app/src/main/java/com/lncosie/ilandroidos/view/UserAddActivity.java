@@ -27,6 +27,7 @@ import com.lncosie.ilandroidos.model.BitmapTool;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.model.InterlockOperation;
 import com.lncosie.ilandroidos.model.StringTools;
+import com.lncosie.ilandroidos.utils.UserTools;
 import com.squareup.otto.Subscribe;
 
 import butterknife.Bind;
@@ -72,6 +73,7 @@ public class UserAddActivity extends EventableActivity {
     EditText user_name_edit;
     @Bind(R.id.user_name_view)
     TextView user_name_view;
+    private long userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,23 @@ public class UserAddActivity extends EventableActivity {
         Bus.register(this);
         init();
     }
+
+
+    @Override
+    protected void onPause() {
+        pauseDetect = true;
+        super.onPause();
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        pauseDetect=true;
+        super.onResume();
+        init();
+    }
+
 
     @Override
     public void onDestroy() {
@@ -97,11 +116,15 @@ public class UserAddActivity extends EventableActivity {
 
     @OnClick(R.id.user_image)
     void user_pick_image(View v) {
-        pauseDetect=true;
-        Intent intent = new Intent(
-                Intent.ACTION_PICK,
-                MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-        intent.setType("image/*");
+//        pauseDetect=true;
+//        Intent intent = new Intent(
+//                Intent.ACTION_PICK,
+//                MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+//        intent.setType("image/*");
+        Intent intent = new Intent(UserAddActivity.this,
+                ActivityIconSeleted.class);
+
+        intent.putExtra("uid",userId);
         startActivityForResult(intent, 3);
     }
 
@@ -118,15 +141,17 @@ public class UserAddActivity extends EventableActivity {
             return;
         if (requestCode == 3) {
             String img[] = new String[1];
-            userImage.setImageBitmap(BitmapTool.cropBitmap(this, data.getData(), img));
+//            userImage.setImageBitmap(BitmapTool.cropBitmap(this, data.getData(), img));
+            UserTools.setLocalImg(userImage,user.image);
             user.image = img[0];
             user.save();
         }
     }
 
     void init() {
+        userId=getIntent().getLongExtra("uid",-1);
         authAddFingerPage.setVisibility(View.GONE);
-        long uid = getIntent().getLongExtra("uid", -1);
+//        long uid = getIntent().getLongExtra("uid", -1);
         boolean edit = getIntent().getBooleanExtra("edit", false);
         if (edit) {
             user_name_edit_frame.setVisibility(View.VISIBLE);
@@ -136,11 +161,12 @@ public class UserAddActivity extends EventableActivity {
             user_name_view_frame.setVisibility(View.VISIBLE);
         }
 
-        if (uid != -1) {
-            user = DbHelper.getUser(uid);
+        if (userId != -1) {
+            user = DbHelper.getUser(userId);
             user_name_edit.setText(user.name);
             user_name_view.setText(user.name);
-            userImage.setImageBitmap(BitmapTool.decodeBitmap(this, user.image));
+//            userImage.setImageBitmap(BitmapTool.decodeBitmap(this, user.image));
+            UserTools.setLocalImg(userImage,user.image);
         }
 
         clickAddAuth(add_radio);

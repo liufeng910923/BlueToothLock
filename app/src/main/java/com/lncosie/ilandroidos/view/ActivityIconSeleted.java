@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -20,6 +21,7 @@ import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.bus.UsersChanged;
 import com.lncosie.ilandroidos.db.Users;
+import com.lncosie.ilandroidos.model.DbHelper;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -33,22 +35,17 @@ import butterknife.ButterKnife;
  * Time: 16:19
  * FIXME
  */
-public class ActivityIconSeleted extends EventableActivity {
+public class ActivityIconSeleted extends EventableActivity implements GridView.OnItemClickListener {
 
     @Bind(R.id.iconselected_icons_gv)
     GridView iconselected_icons_gv;
-    // 进度对话框
-    private ProgressDialog mProgressDialog;
     // 本地图片路径集合
     private ArrayList<String> urls = new ArrayList<String>();
-    // 加载完成标示
-    private final static int SCAN_OK = 1;
 
     public Users user;
-    public Handler mhandler;
     private static Context context;
     private ScanAdapter scanadapter;
-    private ImageLoader imageLoader;
+    private long userId;
 
 
     @Override
@@ -57,7 +54,6 @@ public class ActivityIconSeleted extends EventableActivity {
         setContentView(R.layout.activity_iconselected);
         ButterKnife.bind(this);
         context = this;
-        initData();
     }
 
     @Override
@@ -75,23 +71,13 @@ public class ActivityIconSeleted extends EventableActivity {
     }
 
     public void initData() {
-        urls =getImages();
+        userId = getIntent().getLongExtra("uid", -1);
+        user = DbHelper.getUser(userId);
+        urls = getImages();
         setAdapter();
-        iconselected_icons_gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                user.image=urls.get(position);
-//                notifyDataSetChanged();
-                user.save();
-                Bus.post(new UsersChanged());
-                Intent intent = new Intent(ActivityIconSeleted.this,UserViewDetailActivity.class);
-                startActivity(intent);
-//                finish();
-            }
-        });
+        iconselected_icons_gv.setOnItemClickListener(this);
 
     }
-
 
 
     /**
@@ -110,7 +96,7 @@ public class ActivityIconSeleted extends EventableActivity {
      * 获取手机上的图片
      */
     private ArrayList<String> getImages() {
-        ArrayList<String> mList=new ArrayList<>();
+        ArrayList<String> mList = new ArrayList<>();
         if (!Environment.getExternalStorageState().equals(
                 Environment.MEDIA_MOUNTED)) {
             Toast.makeText(this, "SD卡不存在", Toast.LENGTH_SHORT).show();
@@ -145,6 +131,7 @@ public class ActivityIconSeleted extends EventableActivity {
     public void backward(View v) {
         Bus.post(new UsersChanged());
         super.backward(v);
+        finish();
     }
 
 
@@ -155,4 +142,14 @@ public class ActivityIconSeleted extends EventableActivity {
     }
 
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//        Log.d("aaaa","sdsadas");
+        user.image = urls.get(position);
+        user.save();
+        Bus.post(new UsersChanged());
+        Intent intent = new Intent(ActivityIconSeleted.this, UserViewDetailActivity.class);
+        intent.putExtra("uid",userId);
+        startActivity(intent);
+    }
 }

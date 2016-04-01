@@ -46,7 +46,7 @@ public class UserWithTime extends Model {
     /**
      * @param circleImageView
      */
-    public void setUserIcon(ImageView circleImageView) {
+    public void setUserIcon(CircleImageView circleImageView) {
         /**
          *
          * 显示用户自定义的头像

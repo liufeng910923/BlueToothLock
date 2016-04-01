@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/lighterGray"
     android:clipToPadding="true"
+    android:focusable="false"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
@@ -35,7 +36,9 @@
             android:layout_width="@dimen/icon_with_click_padding"
             android:layout_height="match_parent"
             android:paddingRight="@dimen/padding_normal"
+            android:visibility="gone"
             android:src="@drawable/plus" />
+
 
     </LinearLayout>
 
@@ -48,6 +51,7 @@
         android:gravity="center"
         android:background="@color/lighterGray"
         android:numColumns="3"
+        android:focusable="true"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:stretchMode="columnWidth">

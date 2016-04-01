@@ -16,6 +16,7 @@ import com.lncosie.ilandroidos.bus.Bus;
 import com.lncosie.ilandroidos.bus.UserSet;
 import com.lncosie.ilandroidos.bus.UsersChanged;
 import com.lncosie.ilandroidos.db.Users;
+import com.lncosie.ilandroidos.utils.BitmapUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.download.ImageDownloader.Scheme;
@@ -68,70 +69,16 @@ public class ScanAdapter extends BaseAdapter {
 
         // 图片控件
         CircleImageView iv = (CircleImageView)convertView.findViewById(R.id.iconselected_item_upload);
-        setLocalImg(iv, path);
-//        iv.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                user.image=list.get(position);
-////                notifyDataSetChanged();
-//                user.save();
-//                Bus.post(new UsersChanged());
-//                Intent intent = new Intent(activityIconSelected,UserViewDetailActivity.class);
-//                activityIconSelected.startActivity(intent);
-//                activityIconSelected.finish();
-//            }
-//        });
+        BitmapUtil.setLocalImg(iv,path);
+//
         return convertView;
     }
 
 
-    @SuppressWarnings("unchecked")
-    public <T extends View> T getAdapterView(View convertView, int id,
-                                             Object tag) {
-        SparseArray<View> viewHolder = null;
-        try {
-            if (convertView.getTag(R.id.view_holder) instanceof SparseArray<?>) {
-                viewHolder = (SparseArray<View>) convertView
-                        .getTag(R.id.view_holder);
-            }
-        } catch (ClassCastException e) {
-        }
-        if (viewHolder == null) {
-            viewHolder = new SparseArray<View>();
-            convertView.setTag(R.id.view_holder, viewHolder);
-            convertView.setTag(R.id.path, tag);
-        }
-        View childView = viewHolder.get(id);
-        if (childView == null) {
-            childView = convertView.findViewById(id);
-            childView.setTag(tag);
-            viewHolder.put(id, childView);
-        }
-        return (T) childView;
-    }
 
 
 
 
-    /**
-     * 加载本地图片
-     *
-     * @param imageView 图片ImageView控件
-     * @param imagePath 图片本地路径
-     */
-    public static void setLocalImg(ImageView imageView, String imagePath) {
-
-        // 显示图片的配置
-        DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
-        builder.cacheInMemory(true).cacheOnDisk(true)
-                .bitmapConfig(Bitmap.Config.RGB_565);
-
-        DisplayImageOptions options = builder.build();
-
-        ImageLoader.getInstance().displayImage(Scheme.FILE.wrap(imagePath),
-                imageView, options);
-
-    }
 
     public List<String> getList() {
         return list;
