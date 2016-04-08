@@ -144,7 +144,6 @@ public class ActivityIconSeleted extends EventableActivity implements GridView.O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        Log.d("aaaa","sdsadas");
         user.image = urls.get(position);
         user.save();
         Bus.post(new UsersChanged());
