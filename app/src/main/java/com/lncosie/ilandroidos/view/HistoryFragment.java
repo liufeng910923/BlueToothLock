@@ -2,11 +2,13 @@ package com.lncosie.ilandroidos.view;
 
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +35,11 @@ import com.lncosie.ilandroidos.model.BitmapTool;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.model.Sync;
 import com.lncosie.ilandroidos.model.TimeTools;
+import com.lncosie.ilandroidos.utils.BitmapUtil;
 import com.lncosie.ilandroidos.utils.UserTools;
 import com.squareup.otto.Subscribe;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -214,9 +218,17 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
 
         public void bind(Context context, TimeWithUser history) {
 //            openUserImg.setImageBitmap(BitmapTool.decodeBitmap(context, history.image));
-            UserTools.setLocalImg(openUserImg,history.image);
-            openUserName.setText(history.name);
+//            BitmapUtil.getInstance().setLocalImg(openUserImg,history.image);
+//            Uri ImageUri = Uri.parse(history.image);
+//            try {
+//                openUserImg.setImageBitmap(BitmapUtil.decodeSampledBitmap(context,ImageUri));
+//            } catch (IOException e) {
+//                Log.e("HistoryFragment ","uri parse failed");
+//                e.printStackTrace();
+//            }
             openType.setText(history.type == 0 ? R.string.password : R.string.finger);
+            UserTools.getInstance().setIcon(context,openUserImg,history.image);
+            openUserName.setText(history.name);
             openTime.setText(TimeTools.toTimeString(history.time));
         }
     }

@@ -3,6 +3,8 @@ package com.lncosie.ilandroidos.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,6 +24,7 @@ import com.lncosie.ilandroidos.bus.LanguageChanged;
 import com.lncosie.ilandroidos.bus.LoginSuccess;
 import com.lncosie.ilandroidos.bus.DeviceDisconnected;
 import com.lncosie.ilandroidos.bus.NetworkError;
+import com.lncosie.ilandroidos.bus.ToturnBit;
 import com.lncosie.ilandroidos.bus.UserSet;
 import com.lncosie.ilandroidos.bus.UsersChanged;
 import com.lncosie.ilandroidos.bus.ViewUserLog;
@@ -31,9 +35,11 @@ import com.lncosie.ilandroidos.model.Applyable;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.model.InterlockOperation;
 import com.lncosie.ilandroidos.model.Sync;
+import com.lncosie.ilandroidos.utils.BitmapUtil;
 import com.lncosie.ilandroidos.utils.UserTools;
 import com.squareup.otto.Subscribe;
 
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.Bind;
@@ -67,7 +73,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
         super.onCreateView(inflater,container,savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_users, container, false);
         ButterKnife.bind(this, view);
-        adapter = new DeviceAdapter();
+        adapter = new DeviceAdapter(getContext());
         users.setAdapter(adapter);
         setupSwiper();
         users.setOnItemClickListener(this);
@@ -156,6 +162,8 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
 
     }
 
+
+
     private void deleteUser(final long gid) {
         if (!checkSendable()) {
             Bus.post(new NetworkError());
@@ -226,13 +234,23 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
-
-        void bind(UserWithTime user) {
+        @Subscribe
+        public void toturnBit(ToturnBit toturnBit){
+            CircleImageView imageView =toturnBit.imageView;
+            Bitmap bitmap =toturnBit.bitmap;
+            imageView.setImageBitmap(bitmap);
+        }
+        void bind(Context context,UserWithTime user) {
             Log.d("User",user.toString());
             userName.setText(user.name);
-//            userImage.setImageBitmap(BitmapTool.decodeBitmap(userImage.getContext(), user.image));
-//            UserTools.getInstance(user).setUserIcon(userImage);
-            UserTools.setLocalImg(userImage,user.image);
+//            BitmapUtil.getInstance().setLocalImg(userImage,user.image);
+//            try {
+//                userImage.setImageBitmap(BitmapUtil.decodeSampledBitmap(context, Uri.parse(user.image)));
+//            } catch (IOException e) {
+//                Log.e("UserFragment ","uri parse failed");
+//                e.printStackTrace();
+//            }
+            UserTools.getInstance().setIcon(context,userImage,user.image);
         }
     }
 
@@ -261,9 +279,10 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
 
     class DeviceAdapter extends BaseAdapter {
         List<UserWithTime> users = null;
-
-        DeviceAdapter() {
+        private Context context;
+        DeviceAdapter(Context context) {
             super();
+            this.context=context;
             init();
         }
 
@@ -302,7 +321,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.bind(users.get(position));
+            holder.bind(context,users.get(position));
             return convertView;
         }
     }

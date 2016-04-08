@@ -85,7 +85,7 @@ public class ActivityIconSeleted extends EventableActivity implements GridView.O
      */
     private void setAdapter() {
         if (scanadapter == null) {
-            scanadapter = new ScanAdapter(ActivityIconSeleted.this, user, urls);
+            scanadapter = new ScanAdapter(ActivityIconSeleted.this,  urls);
             iconselected_icons_gv.setAdapter(scanadapter);
         } else {
             scanadapter.setList(urls);
@@ -151,5 +151,6 @@ public class ActivityIconSeleted extends EventableActivity implements GridView.O
         Intent intent = new Intent(ActivityIconSeleted.this, UserViewDetailActivity.class);
         intent.putExtra("uid",userId);
         startActivity(intent);
+        this.finish();
     }
 }

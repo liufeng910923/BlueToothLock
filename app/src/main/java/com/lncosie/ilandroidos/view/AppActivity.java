@@ -1,7 +1,10 @@
 package com.lncosie.ilandroidos.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 
 import com.lncosie.ilandroidos.R;
@@ -47,6 +51,20 @@ public class AppActivity extends EventableActivity {
     private SectionsPagerAdapter adapter;
 
     public Context context;
+    public static Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 1:
+                    Bitmap bitmap = (Bitmap) msg.obj;
+                    ImageView imageView =(ImageView)msg.obj;
+                    imageView.setImageBitmap(bitmap);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -220,6 +238,11 @@ public class AppActivity extends EventableActivity {
                     break;
             }
             return getString(res);
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+//            super.destroyItem(container, position, object);
         }
     }
 

@@ -6,6 +6,7 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.utils.BitmapUtil;
+import com.lncosie.ilandroidos.utils.UserTools;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -43,21 +44,5 @@ public class UserWithTime extends Model {
     }
 
 
-    /**
-     * @param circleImageView
-     */
-    public void setUserIcon(CircleImageView circleImageView) {
-        /**
-         *
-         * 显示用户自定义的头像
-         */
 
-            String userIconPath = image;
-            if (userIconPath != null) {
-                BitmapUtil.getInstance().setLocalImg(circleImageView, userIconPath);
-            } else {
-                //显示默认的头像
-                circleImageView.setImageResource(R.drawable.stack_of_photos);
-            }
-    }
 }

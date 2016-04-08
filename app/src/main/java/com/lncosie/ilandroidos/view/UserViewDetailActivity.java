@@ -2,9 +2,11 @@ package com.lncosie.ilandroidos.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,9 +30,11 @@ import com.lncosie.ilandroidos.model.BitmapTool;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.model.InterlockOperation;
 import com.lncosie.ilandroidos.model.StringTools;
+import com.lncosie.ilandroidos.utils.BitmapUtil;
 import com.lncosie.ilandroidos.utils.UserTools;
 import com.squareup.otto.Subscribe;
 
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.Bind;
@@ -52,13 +56,13 @@ public class UserViewDetailActivity extends EventableActivity
     @Bind(R.id.user_name_frame)
     LinearLayout userNameFrame;
     UserDetail active_auth;
-    private long userId=-1;
+    private long userId = -1;
     Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context=this;
+        context = this;
         setContentView(R.layout.activity_user_view_detail);
         ButterKnife.bind(this);
         Bus.register(this);
@@ -75,7 +79,7 @@ public class UserViewDetailActivity extends EventableActivity
 
     @Override
     protected void onResume() {
-        pauseDetect=true;
+        pauseDetect = true;
         super.onResume();
         init();
     }
@@ -107,6 +111,7 @@ public class UserViewDetailActivity extends EventableActivity
 
     /**
      * 修改头像的方法：
+     *
      * @param v
      */
     @OnClick(R.id.user_image)
@@ -114,7 +119,7 @@ public class UserViewDetailActivity extends EventableActivity
         Intent intent = new Intent(UserViewDetailActivity.this,
                 ActivityIconSeleted.class);
 
-        intent.putExtra("uid",userId);
+        intent.putExtra("uid", userId);
 //        Intent intent = new Intent(
 //                Intent.ACTION_PICK,
 //                MediaStore.Images.Media.INTERNAL_CONTENT_URI);
@@ -130,8 +135,7 @@ public class UserViewDetailActivity extends EventableActivity
     }
 
     /**
-     *
-     *添加新用户
+     * 添加新用户
      */
 
     @OnClick(R.id.auth_add)
@@ -149,7 +153,7 @@ public class UserViewDetailActivity extends EventableActivity
             return;
         }
         Intent intent = new Intent(UserViewDetailActivity.this, UserAddActivity.class);
-        intent.putExtra("uid",userId==-1?-1:userId);
+        intent.putExtra("uid", userId == -1 ? -1 : userId);
         intent.putExtra("edit", true);
         startActivity(intent);
         finish();
@@ -174,13 +178,14 @@ public class UserViewDetailActivity extends EventableActivity
                     detailSelected.uid, StringTools.getPwdBytes(detailSelected.uid, password));
         } else if (requestCode == 3) {
             //设置用户头像
-
-//            String img[] = new String[1];
-//            userImage.setImageBitmap(BitmapTool.cropBitmap(this, data.getData(), img));
-//            user.image = img[0];
-//            user.save();
-//            UserTools.getInstance(user).setUserIcon(userImage);
-            UserTools.setLocalImg(userImage,user.image);
+//            BitmapUtil.getInstance().setLocalImg(userImage, user.image);
+//            try {
+//                userImage.setImageBitmap(BitmapUtil.decodeSampledBitmap(context, Uri.parse(user.image)));
+//            } catch (IOException e) {
+//                Log.e("UserFragment ","uri parse failed");
+//                e.printStackTrace();
+//            }
+            UserTools.getInstance().setIcon(context,userImage,user.image);
             Bus.post(new UsersChanged());
         }
     }
@@ -232,22 +237,26 @@ public class UserViewDetailActivity extends EventableActivity
     }
 
     void init() {
-         userId = getIntent().getLongExtra("uid", -1);
+        userId = getIntent().getLongExtra("uid", -1);
 
         if (userId != -1) {
 
             user = DbHelper.getUser(userId);
             userName.setText(user.name);
-//            userImage.setImageBitmap(BitmapTool.decodeBitmap(this, user.image));
-            UserTools.setLocalImg(userImage,user.image);
+//            BitmapUtil.getInstance().setLocalImg(userImage, user.image);
+//            try {
+//                userImage.setImageBitmap(BitmapUtil.decodeSampledBitmap(context, Uri.parse(user.image)));
+//            } catch (IOException e) {
+//                Log.e("UserViewDetailActivity ","uri parse failed");
+//                e.printStackTrace();
+//            }
+            UserTools.getInstance().setIcon(context,userImage,user.image);
             adapter = new AuthAdapter();
             authList.setAdapter(adapter);
         }
 
         authList.setOnItemClickListener(this);
     }
-
-
 
 
     @Subscribe

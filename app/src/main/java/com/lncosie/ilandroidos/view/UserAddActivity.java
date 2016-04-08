@@ -2,8 +2,10 @@ package com.lncosie.ilandroidos.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -27,8 +29,11 @@ import com.lncosie.ilandroidos.model.BitmapTool;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.model.InterlockOperation;
 import com.lncosie.ilandroidos.model.StringTools;
+import com.lncosie.ilandroidos.utils.BitmapUtil;
 import com.lncosie.ilandroidos.utils.UserTools;
 import com.squareup.otto.Subscribe;
+
+import java.io.IOException;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -141,8 +146,14 @@ public class UserAddActivity extends EventableActivity {
             return;
         if (requestCode == 3) {
             String img[] = new String[1];
-//            userImage.setImageBitmap(BitmapTool.cropBitmap(this, data.getData(), img));
-            UserTools.setLocalImg(userImage,user.image);
+//            BitmapUtil.getInstance().setLocalImg(userImage,user.image);
+//            try {
+//                userImage.setImageBitmap(BitmapUtil.decodeSampledBitmap(this, Uri.parse(user.image)));
+//            } catch (IOException e) {
+//                Log.e("HistoryFragment ","uri parse failed");
+//                e.printStackTrace();
+//            }
+            UserTools.getInstance().setIcon(this,userImage,user.image);
             user.image = img[0];
             user.save();
         }
@@ -151,7 +162,6 @@ public class UserAddActivity extends EventableActivity {
     void init() {
         userId=getIntent().getLongExtra("uid",-1);
         authAddFingerPage.setVisibility(View.GONE);
-//        long uid = getIntent().getLongExtra("uid", -1);
         boolean edit = getIntent().getBooleanExtra("edit", false);
         if (edit) {
             user_name_edit_frame.setVisibility(View.VISIBLE);
@@ -165,8 +175,14 @@ public class UserAddActivity extends EventableActivity {
             user = DbHelper.getUser(userId);
             user_name_edit.setText(user.name);
             user_name_view.setText(user.name);
-//            userImage.setImageBitmap(BitmapTool.decodeBitmap(this, user.image));
-            UserTools.setLocalImg(userImage,user.image);
+            UserTools.getInstance().setIcon(this,userImage,user.image);
+//            BitmapUtil.getInstance().setLocalImg(userImage,user.image);
+//            try {
+//                userImage.setImageBitmap(BitmapUtil.decodeSampledBitmap(this, Uri.parse(user.image)));
+//            } catch (IOException e) {
+//                Log.e("HistoryFragment ","uri parse failed");
+//                e.printStackTrace();
+//            }
         }
 
         clickAddAuth(add_radio);
