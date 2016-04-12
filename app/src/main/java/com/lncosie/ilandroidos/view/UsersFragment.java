@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
@@ -24,7 +25,6 @@ import com.lncosie.ilandroidos.bus.LanguageChanged;
 import com.lncosie.ilandroidos.bus.LoginSuccess;
 import com.lncosie.ilandroidos.bus.DeviceDisconnected;
 import com.lncosie.ilandroidos.bus.NetworkError;
-import com.lncosie.ilandroidos.bus.ToturnBit;
 import com.lncosie.ilandroidos.bus.UserSet;
 import com.lncosie.ilandroidos.bus.UsersChanged;
 import com.lncosie.ilandroidos.bus.ViewUserLog;
@@ -35,11 +35,9 @@ import com.lncosie.ilandroidos.model.Applyable;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.model.InterlockOperation;
 import com.lncosie.ilandroidos.model.Sync;
-import com.lncosie.ilandroidos.utils.BitmapUtil;
 import com.lncosie.ilandroidos.utils.UserTools;
 import com.squareup.otto.Subscribe;
 
-import java.io.IOException;
 import java.util.List;
 
 import butterknife.Bind;
@@ -61,6 +59,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
     TextView title;
 
     long userId=0;
+    public final Handler handler= new Handler();
 
     public UsersFragment() {
         // Required empty public constructor
@@ -226,31 +225,22 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
         CircleImageView userImage;
         @Bind(R.id.user_name)
         TextView userName;
-//        @Bind(R.id.password_cnt)
-//        TextView passwordCnt;
-//        @Bind(R.id.finger_cnt)
-//        TextView fingerCnt;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
-        @Subscribe
-        public void toturnBit(ToturnBit toturnBit){
-            CircleImageView imageView =toturnBit.imageView;
-            Bitmap bitmap =toturnBit.bitmap;
-            imageView.setImageBitmap(bitmap);
-        }
+
         void bind(Context context,UserWithTime user) {
             Log.d("User",user.toString());
             userName.setText(user.name);
-//            BitmapUtil.getInstance().setLocalImg(userImage,user.image);
-//            try {
-//                userImage.setImageBitmap(BitmapUtil.decodeSampledBitmap(context, Uri.parse(user.image)));
-//            } catch (IOException e) {
-//                Log.e("UserFragment ","uri parse failed");
-//                e.printStackTrace();
-//            }
-            UserTools.getInstance().setIcon(context,userImage,user.image);
+            Handler handler = new Handler();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    UserTools.getInstance().setIcon(context,userImage,user.image);
+                }
+            });
+//            UserTools.getInstance().setIcon(context,userImage,user.image);
         }
     }
 

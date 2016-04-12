@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.util.Log;
@@ -58,11 +59,13 @@ public class UserViewDetailActivity extends EventableActivity
     UserDetail active_auth;
     private long userId = -1;
     Context context;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
+        handler = new Handler();
         setContentView(R.layout.activity_user_view_detail);
         ButterKnife.bind(this);
         Bus.register(this);
@@ -118,12 +121,8 @@ public class UserViewDetailActivity extends EventableActivity
     void user_pick_image(View v) {
         Intent intent = new Intent(UserViewDetailActivity.this,
                 ActivityIconSeleted.class);
-
+        intent.putExtra("flag",2);//标识2表示修改头像。
         intent.putExtra("uid", userId);
-//        Intent intent = new Intent(
-//                Intent.ACTION_PICK,
-//                MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-//        intent.setType("image/*");
         startActivityForResult(intent, 3);
     }
 
@@ -137,17 +136,8 @@ public class UserViewDetailActivity extends EventableActivity
     /**
      * 添加新用户
      */
-
     @OnClick(R.id.auth_add)
     public void authAdd(View v) {
-//        if (checkSendable() == false) {
-//            return;
-//        }
-//        Intent intent = new Intent(this, UserAddActivity.class);
-//        intent.putExtra("uid", user != null ? user.getId() : -1);
-//        intent.putExtra("edit", false);
-//        startActivity(intent);
-
         if (!checkSendable()) {
             Bus.post(new NetworkError());
             return;
@@ -155,9 +145,10 @@ public class UserViewDetailActivity extends EventableActivity
         Intent intent = new Intent(UserViewDetailActivity.this, UserAddActivity.class);
         intent.putExtra("uid", userId == -1 ? -1 : userId);
         intent.putExtra("edit", true);
-        startActivity(intent);
+        startActivityForResult(intent,3);
         finish();
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -177,15 +168,19 @@ public class UserViewDetailActivity extends EventableActivity
             InterlockOperation.modifyPwd(detailSelected.type,
                     detailSelected.uid, StringTools.getPwdBytes(detailSelected.uid, password));
         } else if (requestCode == 3) {
-            //设置用户头像
-//            BitmapUtil.getInstance().setLocalImg(userImage, user.image);
-//            try {
-//                userImage.setImageBitmap(BitmapUtil.decodeSampledBitmap(context, Uri.parse(user.image)));
-//            } catch (IOException e) {
-//                Log.e("UserFragment ","uri parse failed");
-//                e.printStackTrace();
-//            }
-            UserTools.getInstance().setIcon(context,userImage,user.image);
+
+            String img[] = new String[1];
+            userImage.setImageBitmap(BitmapTool.cropBitmap(this, data.getData(), img));
+            user.image = img[0];
+            user.save();
+            Bus.post(new UsersChanged());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    UserTools.getInstance().setIcon(context,userImage,user.image);
+                }
+            });
+//            UserTools.getInstance().setIcon(context,userImage,user.image);
             Bus.post(new UsersChanged());
         }
     }
@@ -238,19 +233,17 @@ public class UserViewDetailActivity extends EventableActivity
 
     void init() {
         userId = getIntent().getLongExtra("uid", -1);
-
         if (userId != -1) {
 
             user = DbHelper.getUser(userId);
             userName.setText(user.name);
-//            BitmapUtil.getInstance().setLocalImg(userImage, user.image);
-//            try {
-//                userImage.setImageBitmap(BitmapUtil.decodeSampledBitmap(context, Uri.parse(user.image)));
-//            } catch (IOException e) {
-//                Log.e("UserViewDetailActivity ","uri parse failed");
-//                e.printStackTrace();
-//            }
-            UserTools.getInstance().setIcon(context,userImage,user.image);
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    UserTools.getInstance().setIcon(context,userImage,user.image);
+                }
+            });
+//            UserTools.getInstance().setIcon(context,userImage,user.image);
             adapter = new AuthAdapter();
             authList.setAdapter(adapter);
         }

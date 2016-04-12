@@ -30,7 +30,8 @@ import butterknife.ButterKnife;
  * Time: 16:19
  * FIXME
  */
-public class ActivityIconSeleted extends EventableActivity implements GridView.OnItemClickListener {
+public class ActivityIconSeleted extends EventableActivity
+        implements GridView.OnItemClickListener {
 
     @Bind(R.id.iconselected_icons_gv)
     GridView iconselected_icons_gv;
@@ -41,6 +42,7 @@ public class ActivityIconSeleted extends EventableActivity implements GridView.O
     private static Context context;
     private ScanAdapter scanadapter;
     private long userId;
+    private int flag;
 
 
     @Override
@@ -66,8 +68,10 @@ public class ActivityIconSeleted extends EventableActivity implements GridView.O
     }
 
     public void initData() {
+        flag = getIntent().getIntExtra("flag", -1);
         userId = getIntent().getLongExtra("uid", -1);
-        user = DbHelper.getUser(userId);
+        if (userId != -1)
+            user = DbHelper.getUser(userId);
         urls = getImages();
         setAdapter();
         iconselected_icons_gv.setOnItemClickListener(this);
@@ -80,7 +84,7 @@ public class ActivityIconSeleted extends EventableActivity implements GridView.O
      */
     private void setAdapter() {
         if (scanadapter == null) {
-            scanadapter = new ScanAdapter(ActivityIconSeleted.this,  urls);
+            scanadapter = new ScanAdapter(ActivityIconSeleted.this, urls);
             iconselected_icons_gv.setAdapter(scanadapter);
         } else {
             scanadapter.setList(urls);
@@ -123,6 +127,11 @@ public class ActivityIconSeleted extends EventableActivity implements GridView.O
 
     }
 
+    /**
+     * 返回按钮
+     *
+     * @param v
+     */
     public void backward(View v) {
         Bus.post(new UsersChanged());
         super.backward(v);
@@ -139,12 +148,29 @@ public class ActivityIconSeleted extends EventableActivity implements GridView.O
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        user.image = urls.get(position);
-        user.save();
-        Bus.post(new UsersChanged());
-        Intent intent = new Intent(ActivityIconSeleted.this, UserViewDetailActivity.class);
-        intent.putExtra("uid",userId);
-        startActivity(intent);
+
+        switch (flag) {
+            case 1://添加用户的
+                String imageUrl=urls.get(position);
+                Intent intent0 = new Intent(ActivityIconSeleted.this,
+                        UserAddActivity.class);
+                intent0.putExtra("imageUrl",imageUrl);
+//                intent0.putExtra("uid", userId);
+                startActivity(intent0);
+                break;
+            case 2://修改用户的
+                user.image = urls.get(position);
+                user.save();
+                Bus.post(new UsersChanged());
+                Intent intent = new Intent(ActivityIconSeleted.this,
+                        UserViewDetailActivity.class);
+                intent.putExtra("uid", userId);
+                startActivity(intent);
+                break;
+        }
+//        backward(view);
         this.finish();
     }
+
+
 }

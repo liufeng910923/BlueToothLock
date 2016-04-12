@@ -27,6 +27,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -60,33 +61,39 @@ public class BitmapUtil {
     }
 
 
-    //避免了回忆的大图片，我会建议你重新缩放图像：
-    private static final int MAX_HEIGHT = 216;
-    private static final int MAX_WIDTH = 216;
+    /**
+     *
+     * @param context
+     * @param ImageUri
+     * @return
+     */
+    public static Bitmap decodeSampledBitmap(Context context, Uri ImageUri) {
 
-    public static Bitmap decodeSampledBitmap(Context context, Uri selectedImage)
-            throws IOException {
-        if (selectedImage == null) {
-            return BitmapFactory.decodeResource(context.getResources(),R.drawable.stack_of_photos);
+        Bitmap sampledBitmap = null;
+        if (ImageUri == null) {
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.stack_of_photos);
         } else {
 
             // First decode with inJustDecodeBounds=true to check dimensions
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            InputStream imageStream = context.getContentResolver().openInputStream(selectedImage);
-            BitmapFactory.decodeStream(imageStream, null, options);
-            imageStream.close();
-
             // Calculate inSampleSize
-            options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT);
 
+            options.inSampleSize = 2;
             // Decode bitmap with inSampleSize set
             options.inJustDecodeBounds = false;
-            imageStream = context.getContentResolver().openInputStream(selectedImage);
-            Bitmap img = BitmapFactory.decodeStream(imageStream, null, options);
+            InputStream imageStream = null;
+            try {
+                imageStream = context.getContentResolver().openInputStream(ImageUri);
+                sampledBitmap = BitmapFactory.decodeStream(imageStream, null, options);
+                imageStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.d("BitmapUtils ", "DecodeSampledBitmap failed");
+                return BitmapFactory.decodeResource(context.getResources(), R.drawable.stack_of_photos);
+            }
 
-            img = rotateImageIfRequired(context, img, selectedImage);
-            return img;
+            return sampledBitmap;
         }
     }
 
@@ -98,14 +105,15 @@ public class BitmapUtil {
      * @param selectedImage
      * @return
      */
-    private static Bitmap rotateImageIfRequired(Context context, Bitmap img, Uri selectedImage) {
+    public static Bitmap rotateImageIfRequired(Context context, Bitmap img, Uri selectedImage) {
 
         // Detect rotation
-        int rotation = getRotation(context, selectedImage);
+        int rotation = readPictureDegree(selectedImage);
         if (rotation != 0) {
             Matrix matrix = new Matrix();
-            matrix.postRotate(rotation);
+            boolean b = matrix.postRotate(rotation);
             Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+
             img.recycle();
             return rotatedImg;
         } else {
@@ -113,29 +121,24 @@ public class BitmapUtil {
         }
     }
 
+
     /**
-     * Get the rotation of the last image added.
+     * 如果有需要就旋转获取到bitmap图片
      *
      * @param context
      * @param selectedImage
-     * @return
+     * @return 旋转后的bitmap
      */
-    private static int getRotation(Context context, Uri selectedImage) {
-        int rotation = 0;
-        ContentResolver content = context.getContentResolver();
+    public static Bitmap rotateImageIfRequired(Context context, Uri selectedImage) {
+        Bitmap rotateBitmap = null;
+        int rotation = readPictureDegree(selectedImage);
+        Bitmap bitmap = decodeSampledBitmap(context, selectedImage);
+        if (rotation != 0) {
+            rotateBitmap = toturn(bitmap, rotation);
+        } else
+            rotateBitmap = bitmap;
+        return rotateBitmap;
 
-
-        Cursor mediaCursor = content.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[]{"orientation", "date_added"}, null, null, "date_added desc");
-
-        if (mediaCursor != null && mediaCursor.getCount() != 0) {
-            while (mediaCursor.moveToNext()) {
-                rotation = mediaCursor.getInt(0);
-                break;
-            }
-        }
-        mediaCursor.close();
-        return rotation;
     }
 
 
@@ -164,164 +167,95 @@ public class BitmapUtil {
                 inSampleSize *= 2;
             }
         }
-
         return inSampleSize;
     }
 
 
-    public Bitmap getSmallBitmap(Activity activity, Uri uri) throws IOException {
+    /**
+     * 通过Bitmap地址获取图片Bitmap；
+     *
+     * @param pathString
+     * @return
+     */
+    public Bitmap getDiskBitmap(String pathString) {
+        Bitmap bitmap = null;
+        try {
+            File file = new File(pathString);
+            if (file.exists()) {
 
-        ContentResolver crs = activity.getContentResolver();
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(crs.openInputStream(uri), null, options);
-        options.inSampleSize = calculateInSampleSize(options, 120, 120);
-        options.inJustDecodeBounds = false;
-        Bitmap bm = BitmapFactory.decodeStream(crs.openInputStream(uri), null, options);
-        if (bm == null) {
-            return null;
+
+                DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
+                builder.cacheInMemory(true);
+//                bitmap = BitmapFactory.decodeFile(pathString, );
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+            Log.d("getDiskBitmap", e.toString());
         }
-        return bm;
+        return bitmap;
+    }
+
+
+    /**
+     * 读取照片exif信息中的旋转角度
+     *
+     * @param path 照片路径
+     * @return角度
+     */
+    public static int readPictureDegree(Uri path) {
+        int degree = 0;
+        try {
+            ExifInterface exifInterface = new ExifInterface(path.getPath());
+            degree = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            switch (degree) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    degree = 90;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    degree = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    degree = 270;
+                    break;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return degree;
+    }
+
+    private static void setPictureDegreeZero(String path) {
+        try {
+            ExifInterface exifInterface = new ExifInterface(path);
+            //修正图片的旋转角度，设置其不旋转。这里也可以设置其旋转的角度，可以传值过去，
+            //例如旋转90度，传值ExifInterface.ORIENTATION_ROTATE_90，需要将这个值转换为String类型的
+            exifInterface.setAttribute(ExifInterface.TAG_ORIENTATION, "no");
+            exifInterface.saveAttributes();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
     }
 
-//    public static int calculateInSampleSize(BitmapFactory.Options options,
-//                                            int reqWidth, int reqHeight) {
-//        // Raw height and width of image
-//        final int height = options.outHeight;
-//        final int width = options.outWidth;
-//        int inSampleSize = 1;
-//
-//        if (height > reqHeight || width > reqWidth) {
-//
-//            // Calculate ratios of height and width to requested height and
-//            // width
-//            final int heightRatio = Math.round((float) height
-//                    / (float) reqHeight);
-//            final int widthRatio = Math.round((float) width / (float) reqWidth);
-//
-//            // Choose the smallest ratio as inSampleSize value, this will
-//            // guarantee
-//            // a final image with both dimensions larger than or equal to the
-//            // requested height and width.
-//            inSampleSize = heightRatio < widthRatio ? widthRatio : heightRatio;
-//        }
+    /**
+     * 旋转图片的角度；
+     *
+     * @param img
+     * @param degrees
+     * @return 旋转后的图片
+     */
+    public static Bitmap toturn(Bitmap img, float degrees) {
+        if (img == null)
+            return null;
+        Matrix matrix = new Matrix();
+        matrix.postRotate(+degrees); /*反转度数*/
+        int width = img.getWidth() / 4;
+        int height = img.getHeight() / 4;
+        Bitmap rorateImg = Bitmap.createBitmap(img, 0, 0, width, height, matrix, true);
+        img.recycle();
+        return rorateImg;
+    }
 
-//        return inSampleSize;
-//    }
-
-
-//    /**
-//     * 通过Bitmap地址获取图片Bitmap；
-//     *
-//     * @param pathString
-//     * @return
-//     */
-//    public Bitmap getDiskBitmap(String pathString) {
-//        Bitmap bitmap = null;
-//        try {
-//            File file = new File(pathString);
-//            if (file.exists()) {
-//
-//
-//                DisplayImageOptions.Builder builder = new DisplayImageOptions.Builder();
-//                builder.cacheInMemory(true);
-////                bitmap = BitmapFactory.decodeFile(pathString, );
-//            }
-//        } catch (Exception e) {
-//            // TODO: handle exception
-//            Log.d("getDiskBitmap", e.toString());
-//        }
-//        return bitmap;
-//    }
-
-
-//    /**
-//     * 读取照片exif信息中的旋转角度
-//     *
-//     * @param path 照片路径
-//     * @return角度
-//     */
-//    public static int readPictureDegree(String path) {
-//        int degree = 0;
-//        try {
-//            ExifInterface exifInterface = new ExifInterface(path);
-//            int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-//                    ExifInterface.ORIENTATION_NORMAL);
-//            switch (orientation) {
-//                case ExifInterface.ORIENTATION_ROTATE_90:
-//                    degree = 90;
-//                    break;
-//                case ExifInterface.ORIENTATION_ROTATE_180:
-//                    degree = 180;
-//                    break;
-//                case ExifInterface.ORIENTATION_ROTATE_270:
-//                    degree = 270;
-//                    break;
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return degree;
-//    }
-
-//    private static void setPictureDegreeZero(String path) {
-//        try {
-//            ExifInterface exifInterface = new ExifInterface(path);
-//            //修正图片的旋转角度，设置其不旋转。这里也可以设置其旋转的角度，可以传值过去，
-//            //例如旋转90度，传值ExifInterface.ORIENTATION_ROTATE_90，需要将这个值转换为String类型的
-//            exifInterface.setAttribute(ExifInterface.TAG_ORIENTATION, "no");
-//            exifInterface.saveAttributes();
-//        } catch (IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//
-//    }
-
-//    /**
-//     * 旋转图片的角度；
-//     *
-//     * @param img
-//     * @param degrees
-//     * @return 旋转后的图片
-//     */
-//    public Bitmap toturn(Bitmap img, float degrees) {
-//        if (img == null)
-//            return null;
-//        Matrix matrix = new Matrix();
-//        matrix.postRotate(+degrees); /*反转度数*/
-//        int width = img.getWidth() / 4;
-//        int height = img.getHeight() / 4;
-//        img = Bitmap.createBitmap(img, 0, 0, width, height, matrix, true);
-//        return img;
-//    }
-
-//    /**
-//     * @param imageView
-//     * @param imagePath
-//     */
-//    public void setLocalImg(CircleImageView imageView, String imagePath) {
-//        Bitmap bitmap = null;
-//        if (imagePath == null) {
-//            imageView.setImageResource(R.drawable.stack_of_photos);
-//
-//        } else {
-//            bitmap = ImageLoader.getInstance().loadImageSync(imagePath, getOptions());
-////            bitmap = BitmapUtil.getInstance().getDiskBitmap(imagePath);
-//            if (bitmap != null) {
-//
-//                int mDegree = BitmapUtil.getInstance().readPictureDegree(imagePath);
-//                if (0 != mDegree) {
-//                    bitmap = toturn(bitmap, mDegree);
-//                    imageView.setImageBitmap(bitmap);
-//                } else {
-//                    ImageLoader.getInstance().loadImage(imagePath, getOptions(), null);
-//                }
-//            } else {
-//                imageView.setImageResource(R.drawable.stack_of_photos);
-//            }
-//        }
-//    }
 
 }

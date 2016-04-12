@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
@@ -79,6 +80,8 @@ public class UserAddActivity extends EventableActivity {
     @Bind(R.id.user_name_view)
     TextView user_name_view;
     private long userId;
+    private String imageUrl;
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,15 +124,10 @@ public class UserAddActivity extends EventableActivity {
 
     @OnClick(R.id.user_image)
     void user_pick_image(View v) {
-//        pauseDetect=true;
-//        Intent intent = new Intent(
-//                Intent.ACTION_PICK,
-//                MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-//        intent.setType("image/*");
         Intent intent = new Intent(UserAddActivity.this,
                 ActivityIconSeleted.class);
-
-        intent.putExtra("uid",userId);
+//        intent.putExtra("uid",userId);
+        intent.putExtra("flag",1);//标识1表示添加。
         startActivityForResult(intent, 3);
     }
 
@@ -146,14 +144,13 @@ public class UserAddActivity extends EventableActivity {
             return;
         if (requestCode == 3) {
             String img[] = new String[1];
-//            BitmapUtil.getInstance().setLocalImg(userImage,user.image);
-//            try {
-//                userImage.setImageBitmap(BitmapUtil.decodeSampledBitmap(this, Uri.parse(user.image)));
-//            } catch (IOException e) {
-//                Log.e("HistoryFragment ","uri parse failed");
-//                e.printStackTrace();
-//            }
-            UserTools.getInstance().setIcon(this,userImage,user.image);
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    //user 为null.
+                    UserTools.getInstance().setIcon(UserAddActivity.this,userImage,user.image);
+                }
+            });
             user.image = img[0];
             user.save();
         }
@@ -161,6 +158,8 @@ public class UserAddActivity extends EventableActivity {
 
     void init() {
         userId=getIntent().getLongExtra("uid",-1);
+        handler = new Handler();
+        imageUrl =getIntent().getStringExtra("imageUrl");
         authAddFingerPage.setVisibility(View.GONE);
         boolean edit = getIntent().getBooleanExtra("edit", false);
         if (edit) {
@@ -171,18 +170,18 @@ public class UserAddActivity extends EventableActivity {
             user_name_view_frame.setVisibility(View.VISIBLE);
         }
 
+        //当userID不为-1时，user是在数据库存在的
         if (userId != -1) {
             user = DbHelper.getUser(userId);
             user_name_edit.setText(user.name);
             user_name_view.setText(user.name);
-            UserTools.getInstance().setIcon(this,userImage,user.image);
-//            BitmapUtil.getInstance().setLocalImg(userImage,user.image);
-//            try {
-//                userImage.setImageBitmap(BitmapUtil.decodeSampledBitmap(this, Uri.parse(user.image)));
-//            } catch (IOException e) {
-//                Log.e("HistoryFragment ","uri parse failed");
-//                e.printStackTrace();
-//            }
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    UserTools.getInstance().setIcon(UserAddActivity.this,userImage,user.image);
+                }
+            });
+
         }
 
         clickAddAuth(add_radio);

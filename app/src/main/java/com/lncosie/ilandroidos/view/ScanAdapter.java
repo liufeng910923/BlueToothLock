@@ -1,5 +1,6 @@
 package com.lncosie.ilandroidos.view;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,8 +54,16 @@ public class ScanAdapter extends BaseAdapter {
         // 图片控件
         CircleImageView iv = (CircleImageView)convertView.findViewById(
                 R.id.iconselected_item_upload);
-        UserTools.getInstance().setIcon(
-                activityIconSelected.getBaseContext(),iv,path);
+
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                UserTools.getInstance().setIcon(
+                        activityIconSelected.getBaseContext(),iv,path);
+            }
+        });
+
         return convertView;
     }
 
