@@ -3,8 +3,6 @@ package com.lncosie.ilandroidos.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -15,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -58,8 +55,8 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
     @Bind(R.id.title)
     TextView title;
 
-    long userId=0;
-    public final Handler handler= new Handler();
+    long userId = 0;
+    public final Handler handler = new Handler();
 
     public UsersFragment() {
         // Required empty public constructor
@@ -69,7 +66,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        super.onCreateView(inflater,container,savedInstanceState);
+        super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_users, container, false);
         ButterKnife.bind(this, view);
         adapter = new DeviceAdapter(getContext());
@@ -89,25 +86,31 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
     protected void onActive(Object arg) {
         super.onActive(arg);
     }
+
     @Bind(R.id.net_tip)
     TextView net_tip;
+
     @Subscribe
-    public void OnConnected(LoginSuccess state){
+    public void OnConnected(LoginSuccess state) {
         net_tip.setVisibility(View.GONE);
     }
+
     @Subscribe
-    public void OnConnected(DeviceDisconnected state){
+    public void OnConnected(DeviceDisconnected state) {
         net_tip.setVisibility(View.VISIBLE);
     }
+
     @OnClick(R.id.net_tip)
-    public void connect(){
+    public void connect() {
         super.autoConnet();
     }
+
     @Subscribe
     public void langChanged(LanguageChanged languageChanged) {
         //title.setText(R.string.users);
         adapter.notifyDataSetChanged();
     }
+
     void setupSwiper() {
         swiper.setEnabled(false);
         swiper.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -119,6 +122,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
                         swiper.setRefreshing(false);
                         adapter.reInit();
                     }
+
                     @Override
                     public void cancel() {
                         swiper.setRefreshing(false);
@@ -128,6 +132,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
             }
         });
     }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -139,28 +144,27 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
                     return;
                 }
                 int action = (int) arg0;
-//                long gid = (long) arg1;
-                userId=(long)arg1;
-                Users user = DbHelper.getUser(userId);
-                if (action == 0) {
-                    //编辑用户
-                    Intent intent = new Intent(getContext(), UserViewDetailActivity.class);
-                    intent.putExtra("uid", userId);
-                    Bus.post(new UserSet(userId));
-                    startActivity(intent);
-                } else if (action == 1) {
-                    Bus.post(new ViewUserLog(userId));
-                } else if (action == 2) {
-                    deleteUser(userId);
+                userId = (long) arg1;
+                switch (action) {
+                    case 0:
+                        //编辑用户
+                        Intent intent = new Intent(getContext(), UserViewDetailActivity.class);
+                        intent.putExtra("uid", userId);
+                        Bus.post(new UserSet());
+                        startActivity(intent);
+                        break;
+                    case 1:
+                        Bus.post(new ViewUserLog(userId));
+                        break;
+                    case 2:
+                        deleteUser(userId);
+                        break;
                 }
-
             }
         };
         MenuUserFragment fragment = MenuUserFragment.newInstance(adapter.users.get(position).getId(), applyable);
         fragment.show(getFragmentManager().beginTransaction(), "");
-
     }
-
 
 
     private void deleteUser(final long gid) {
@@ -201,6 +205,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
 
     /**
      * 添加新用户
+     *
      * @param v
      */
     @OnClick(R.id.user_add)
@@ -210,8 +215,9 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
             return;
         }
         Intent intent = new Intent(getContext(), UserAddActivity.class);
-        intent.putExtra("uid", -1);
+        intent.putExtra("uid", (long) -1);
         intent.putExtra("edit", true);
+        Bus.post(new UserSet());
         startActivity(intent);
     }
 
@@ -230,17 +236,16 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
             ButterKnife.bind(this, view);
         }
 
-        void bind(Context context,UserWithTime user) {
-            Log.d("User",user.toString());
+        void bind(Context context, UserWithTime user) {
+            Log.d("User", user.toString());
             userName.setText(user.name);
             Handler handler = new Handler();
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    UserTools.getInstance().setIcon(context,userImage,user.image);
+                    UserTools.getInstance().setIcon(context, userImage, user.image);
                 }
             });
-//            UserTools.getInstance().setIcon(context,userImage,user.image);
         }
     }
 
@@ -270,9 +275,10 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
     class DeviceAdapter extends BaseAdapter {
         List<UserWithTime> users = null;
         private Context context;
+
         DeviceAdapter(Context context) {
             super();
-            this.context=context;
+            this.context = context;
             init();
         }
 
@@ -311,7 +317,7 @@ public class UsersFragment extends ActiveAbleFragment implements AdapterView.OnI
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.bind(context,users.get(position));
+            holder.bind(context, users.get(position));
             return convertView;
         }
     }

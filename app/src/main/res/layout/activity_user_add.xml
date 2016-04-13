@@ -38,16 +38,16 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
 
             <LinearLayout
                 android:id="@+id/a"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/b"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -56,6 +56,9 @@
                     style="@style/ImageStyle"
                     android:src="@drawable/stack_of_photos" />
             </LinearLayout>
+
+
+
 
             <LinearLayout
                 android:id="@+id/b"
@@ -201,6 +204,7 @@
                     <requestFocus/>
                 </com.lncosie.ilandroidos.view.LanguageTextView>
             </LinearLayout>
-        </RelativeLayout>
+
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>

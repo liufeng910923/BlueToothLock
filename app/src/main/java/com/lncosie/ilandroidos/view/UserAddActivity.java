@@ -20,6 +20,7 @@ import com.lncosie.ilandroidos.bluenet.Net;
 import com.lncosie.ilandroidos.bluenet.Task;
 import com.lncosie.ilandroidos.bus.BluetoothConneted;
 import com.lncosie.ilandroidos.bus.Bus;
+import com.lncosie.ilandroidos.bus.ImageUrlChange;
 import com.lncosie.ilandroidos.bus.NetworkError;
 import com.lncosie.ilandroidos.bus.OperatorMessages;
 import com.lncosie.ilandroidos.bus.TipOperation;
@@ -80,8 +81,9 @@ public class UserAddActivity extends EventableActivity {
     @Bind(R.id.user_name_view)
     TextView user_name_view;
     private long userId;
-    private String imageUrl;
+//    private String imageUrl;
     private Handler handler;
+    private String ImageChangedUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,9 +91,7 @@ public class UserAddActivity extends EventableActivity {
         setContentView(R.layout.activity_user_add);
         ButterKnife.bind(this);
         Bus.register(this);
-        init();
     }
-
 
     @Override
     protected void onPause() {
@@ -103,10 +103,11 @@ public class UserAddActivity extends EventableActivity {
 
     @Override
     protected void onResume() {
-        pauseDetect=true;
+        pauseDetect = true;
         super.onResume();
         init();
     }
+
 
 
     @Override
@@ -121,45 +122,43 @@ public class UserAddActivity extends EventableActivity {
         super.onNewIntent(intent);
         init();
     }
+    @Subscribe
+    public void getImageUrl(ImageUrlChange imageUrlChange){
+        ImageChangedUrl =imageUrlChange.getImagePath();
+
+        if (user!=null){
+            user.image = ImageChangedUrl;
+            user.save();
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    UserTools.getInstance().setIcon(UserAddActivity.this,userImage,user.image);
+                }
+            });
+        }else{
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    UserTools.getInstance().setIcon(UserAddActivity.this,userImage,ImageChangedUrl);
+                }
+            });
+        }
+    }
 
     @OnClick(R.id.user_image)
     void user_pick_image(View v) {
         Intent intent = new Intent(UserAddActivity.this,
                 ActivityIconSeleted.class);
-//        intent.putExtra("uid",userId);
-        intent.putExtra("flag",1);//标识1表示添加。
-        startActivityForResult(intent, 3);
+        intent.putExtra("uid",userId);
+        Bus.post(new UsersChanged());
+        startActivity(intent);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 3)
-        {
-            pauseDetect=false;
-        }
-        if (resultCode == 0)
-            return;
-        if (checkAddUser() == false)
-            return;
-        if (requestCode == 3) {
-            String img[] = new String[1];
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    //user 为null.
-                    UserTools.getInstance().setIcon(UserAddActivity.this,userImage,user.image);
-                }
-            });
-            user.image = img[0];
-            user.save();
-        }
-    }
+
 
     void init() {
-        userId=getIntent().getLongExtra("uid",-1);
+        userId= getIntent().getLongExtra("uid",-1);
         handler = new Handler();
-        imageUrl =getIntent().getStringExtra("imageUrl");
         authAddFingerPage.setVisibility(View.GONE);
         boolean edit = getIntent().getBooleanExtra("edit", false);
         if (edit) {
@@ -175,19 +174,20 @@ public class UserAddActivity extends EventableActivity {
             user = DbHelper.getUser(userId);
             user_name_edit.setText(user.name);
             user_name_view.setText(user.name);
+
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     UserTools.getInstance().setIcon(UserAddActivity.this,userImage,user.image);
                 }
             });
-
         }
-
         clickAddAuth(add_radio);
         add_radio.setChecked(true);
         HideWhenTouchOutside.setupUI(this);
     }
+
+
     @Subscribe
     public void bluetoothConneted(BluetoothConneted state){
         showLoginPassword(state.needPassword);
@@ -215,9 +215,11 @@ public class UserAddActivity extends EventableActivity {
         idLocked = result;
         idOfPwd.setText(String.format("%02d", idLocked.uid));
 
+        //添加时：
         if (isAdd) {
             user.save();
             UserDetail detail = new UserDetail();
+            user.image=ImageChangedUrl;
             detail.gid = user.getId();
             detail.type = idLocked.type;
             detail.uid = idLocked.uid;
@@ -293,6 +295,7 @@ public class UserAddActivity extends EventableActivity {
         }
     }
 
+    //点击添加确定键
     @OnClick(R.id.user_add_ok)
     void userAddOk(View v) {
         if (checkSendable() == false) {
@@ -329,6 +332,8 @@ public class UserAddActivity extends EventableActivity {
         }
         net.sendChecked(task);
     }
+
+
 
     byte[] checkPassword() {
         if (authAddSelect == 1 || authAddSelect == 3)
@@ -375,33 +380,5 @@ public class UserAddActivity extends EventableActivity {
         dialog.setCancelable(false);
         dialog.show();
 
-//        int h = animate_frame.getHeight();
-//        int w = animate_frame.getHeight();
-//        userAddFingerAnimate.setScaleX(1);
-//        userAddFingerAnimate.setX(-1);
-//        userAddFingerAnimate.setVisibility(View.VISIBLE);
-//
-//        userAddFingerAnimate.animate()//.setInterpolator(new AccelerateDecelerateInterpolator())
-//                .scaleX(w).setDuration(6000).setListener(new Animator.AnimatorListener() {
-//            @Override
-//            public void onAnimationStart(Animator animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                userAddFingerAnimate.setVisibility(View.INVISIBLE);
-//            }
-//
-//            @Override
-//            public void onAnimationCancel(Animator animation) {
-//
-//            }
-//
-//            @Override
-//            public void onAnimationRepeat(Animator animation) {
-//
-//            }
-//        }).start();
     }
 }

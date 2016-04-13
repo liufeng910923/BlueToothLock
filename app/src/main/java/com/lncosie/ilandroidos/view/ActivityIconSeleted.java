@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bus.Bus;
+import com.lncosie.ilandroidos.bus.ImageUrlChange;
 import com.lncosie.ilandroidos.bus.UsersChanged;
 import com.lncosie.ilandroidos.db.Users;
 import com.lncosie.ilandroidos.model.DbHelper;
@@ -42,7 +43,7 @@ public class ActivityIconSeleted extends EventableActivity
     private static Context context;
     private ScanAdapter scanadapter;
     private long userId;
-    private int flag;
+//    private int flag;
 
 
     @Override
@@ -68,7 +69,7 @@ public class ActivityIconSeleted extends EventableActivity
     }
 
     public void initData() {
-        flag = getIntent().getIntExtra("flag", -1);
+//        flag = getIntent().getIntExtra("flag", -1);
         userId = getIntent().getLongExtra("uid", -1);
         if (userId != -1)
             user = DbHelper.getUser(userId);
@@ -149,27 +150,10 @@ public class ActivityIconSeleted extends EventableActivity
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-        switch (flag) {
-            case 1://添加用户的
-                String imageUrl=urls.get(position);
-                Intent intent0 = new Intent(ActivityIconSeleted.this,
-                        UserAddActivity.class);
-                intent0.putExtra("imageUrl",imageUrl);
-//                intent0.putExtra("uid", userId);
-                startActivity(intent0);
-                break;
-            case 2://修改用户的
-                user.image = urls.get(position);
-                user.save();
-                Bus.post(new UsersChanged());
-                Intent intent = new Intent(ActivityIconSeleted.this,
-                        UserViewDetailActivity.class);
-                intent.putExtra("uid", userId);
-                startActivity(intent);
-                break;
-        }
-//        backward(view);
+        String imagePath = urls.get(position);
+        Bus.post(new ImageUrlChange(imagePath));
         this.finish();
+
     }
 
 

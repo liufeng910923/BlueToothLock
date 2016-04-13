@@ -163,7 +163,7 @@ public class NetTransfer {
         eraseCurrentTask();
         stopScan();
         if (rawConnection != null) {
-            Log.e("DATA", "time to disconnected");
+            Log.d("DATA", "time to disconnected");
             rawConnection.disconnect();
             rawConnection.close();
         }
@@ -289,7 +289,7 @@ public class NetTransfer {
             if (hook != null)
                 hook.onWrite(bytesToHex(data));
             heartbeat.onWrite();
-            Log.e("DATA", "Send:" + bytesToHex(data));
+            Log.d("DATA", "Send:" + bytesToHex(data));
             rawConnection.writeCharacteristic(writer);
 
         }
@@ -320,7 +320,7 @@ public class NetTransfer {
 
             @Override
             public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-                Log.e("DATA", String.format("event:%d--%d", status, newState));
+                Log.d("DATA", String.format("event:%d--%d", status, newState));
 
                 super.onConnectionStateChange(gatt, status, newState);
                 if (status != BluetoothGatt.GATT_SUCCESS) {
@@ -328,7 +328,7 @@ public class NetTransfer {
                 }
                 if (newState == BluetoothProfile.STATE_CONNECTED) {
                     gatt.discoverServices();
-                    Log.e("DATA", "time to discover");
+                    Log.d("DATA", "time to discover");
                 } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                     // fireStateChange(OnNetStateChange.NetState.Disconnected);
                 }
@@ -374,10 +374,10 @@ public class NetTransfer {
                 try {
                     long time = System.currentTimeMillis();
                     byte[] bytes = characteristic.getValue();
-                    Log.e("DATA", "Recv:[" + time + "]" + bytesToHex(bytes) + "<--->" + time + ":" + preTime);
+                    Log.d("DATA", "Recv:[" + time + "]" + bytesToHex(bytes) + "<--->" + time + ":" + preTime);
                     if (dump != null) {
                         if ((time - preTime) <= 4) {
-                            Log.e("DATA", "Ignore");
+                            Log.d("DATA", "Ignore");
                             return;
                         }
                     }
@@ -851,7 +851,7 @@ class Connector extends Task {
 
         if (net.device != null) {
             try {
-                Log.e("DATA", "time to connected");
+                Log.d("DATA", "time to connected");
                 if (net.rawConnection != null) {
                     net.clearState();
                 }
@@ -866,7 +866,7 @@ class Connector extends Task {
     @Override
     protected void onTaskDown() {
         net.setState(OnNetStateChange.NetState.Connected);
-        Log.e("DATA", "time connected");
+        Log.d("DATA", "time connected");
     }
 
     @Override
@@ -877,7 +877,7 @@ class Connector extends Task {
                 net.connect();
             } else {
                 net.setState(OnNetStateChange.NetState.LoginFailed);
-                Log.e("DATA", "timeout connected");
+                Log.d("DATA", "timeout connected");
             }
         }
 
@@ -931,7 +931,7 @@ class LoginTask extends ByteableTask {
 
     @Override
     protected void onTimeout() {
-        Log.e("DATA", "timeout to login");
+        Log.d("DATA", "timeout to login");
         net.setState(OnNetStateChange.NetState.Disconnected);
         retry(false);
 
@@ -952,7 +952,7 @@ class LoginTask extends ByteableTask {
             //retry(true);
             return;
         }
-        Log.e("DATA", "time login");
+        Log.d("DATA", "time login");
         net.login = true;
         net.setState(OnNetStateChange.NetState.Login);
     }
@@ -975,7 +975,7 @@ class LoginTask extends ByteableTask {
 
     @Override
     protected void onTaskStart() {
-        Log.e("DATA", "time to login");
+        Log.d("DATA", "time to login");
         net.login = false;
     }
 }

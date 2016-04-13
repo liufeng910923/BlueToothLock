@@ -165,16 +165,7 @@ public class HistoryFragment extends ActiveAbleFragment implements TextWatcher {
             }
         });
 
-        Handler handler= new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what){
-                    case 1:
 
-                        break;
-                }
-            }
-        };
     }
 
     private void syncHistory() {

@@ -19,23 +19,19 @@ import android.widget.TextView;
 import com.lncosie.ilandroidos.R;
 import com.lncosie.ilandroidos.bus.BluetoothConneted;
 import com.lncosie.ilandroidos.bus.Bus;
+import com.lncosie.ilandroidos.bus.ImageUrlChange;
 import com.lncosie.ilandroidos.bus.NetworkError;
 import com.lncosie.ilandroidos.bus.OperatorMessages;
-import com.lncosie.ilandroidos.bus.UserSet;
 import com.lncosie.ilandroidos.bus.UsersChanged;
 import com.lncosie.ilandroidos.db.UserDetail;
-import com.lncosie.ilandroidos.db.UserWithTime;
 import com.lncosie.ilandroidos.db.Users;
 import com.lncosie.ilandroidos.model.Applyable;
-import com.lncosie.ilandroidos.model.BitmapTool;
 import com.lncosie.ilandroidos.model.DbHelper;
 import com.lncosie.ilandroidos.model.InterlockOperation;
 import com.lncosie.ilandroidos.model.StringTools;
-import com.lncosie.ilandroidos.utils.BitmapUtil;
 import com.lncosie.ilandroidos.utils.UserTools;
 import com.squareup.otto.Subscribe;
 
-import java.io.IOException;
 import java.util.List;
 
 import butterknife.Bind;
@@ -60,6 +56,7 @@ public class UserViewDetailActivity extends EventableActivity
     private long userId = -1;
     Context context;
     private Handler handler;
+    private String ImageChangedUrl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,9 +118,9 @@ public class UserViewDetailActivity extends EventableActivity
     void user_pick_image(View v) {
         Intent intent = new Intent(UserViewDetailActivity.this,
                 ActivityIconSeleted.class);
-        intent.putExtra("flag",2);//标识2表示修改头像。
         intent.putExtra("uid", userId);
         startActivityForResult(intent, 3);
+
     }
 
     @OnClick(R.id.user_name_frame)
@@ -145,44 +142,54 @@ public class UserViewDetailActivity extends EventableActivity
         Intent intent = new Intent(UserViewDetailActivity.this, UserAddActivity.class);
         intent.putExtra("uid", userId == -1 ? -1 : userId);
         intent.putExtra("edit", true);
-        startActivityForResult(intent,3);
+        startActivityForResult(intent, 3);
         finish();
     }
 
+    /**
+     * @param imageUrlChange
+     */
+    @Subscribe
+    public void getImageUrl(ImageUrlChange imageUrlChange) {
+        ImageChangedUrl = imageUrlChange.getImagePath();
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2)
-            pauseDetect = false;
-        if (resultCode == 0)
-            return;
-        if (requestCode == 1) {
-            String username = data.getStringExtra("description");
-            user.name = username;
-            user.save();
-            userName.setText(username);
-            Bus.post(new UsersChanged());
-        } else if (requestCode == 2) {
-            String password = data.getStringExtra("password");
-            InterlockOperation.modifyPwd(detailSelected.type,
-                    detailSelected.uid, StringTools.getPwdBytes(detailSelected.uid, password));
-        } else if (requestCode == 3) {
+        switch (requestCode) {
+            case 0:
 
-            String img[] = new String[1];
-            userImage.setImageBitmap(BitmapTool.cropBitmap(this, data.getData(), img));
-            user.image = img[0];
-            user.save();
-            Bus.post(new UsersChanged());
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    UserTools.getInstance().setIcon(context,userImage,user.image);
-                }
-            });
-//            UserTools.getInstance().setIcon(context,userImage,user.image);
-            Bus.post(new UsersChanged());
+                break;
+            case 1:
+                String username = data.getStringExtra("description");
+                user.name = username;
+                user.save();
+                userName.setText(username);
+                Bus.post(new UsersChanged());
+                break;
+            case 2:
+//                pauseDetect = false;
+                String password = data.getStringExtra("password");
+                InterlockOperation.modifyPwd(detailSelected.type,
+                        detailSelected.uid, StringTools.getPwdBytes(detailSelected.uid, password));
+                break;
+            case 3:
+                user.image = ImageChangedUrl;
+                user.save();
+                Bus.post(new UsersChanged());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        UserTools.getInstance().setIcon(context, userImage, user.image);
+                    }
+                });
+                Bus.post(new UsersChanged());
+                break;
+
         }
+
+
     }
 
     @Override
@@ -240,7 +247,7 @@ public class UserViewDetailActivity extends EventableActivity
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    UserTools.getInstance().setIcon(context,userImage,user.image);
+                    UserTools.getInstance().setIcon(context, userImage, user.image);
                 }
             });
 //            UserTools.getInstance().setIcon(context,userImage,user.image);

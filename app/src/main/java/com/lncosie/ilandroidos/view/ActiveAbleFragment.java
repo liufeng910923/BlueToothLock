@@ -31,6 +31,13 @@ public class ActiveAbleFragment extends Fragment {
     protected void onActive(Object arg) {
 
     }
+
+
+    /**
+     *
+     *  检查网络是否可用，可以发送数据
+     */
+
     protected boolean checkSendable() {
         return Net.get().isSendable();
     }
